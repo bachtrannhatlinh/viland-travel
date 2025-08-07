@@ -4,9 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FlightSearchParams } from '@/types/flight.types'
 
-// Force dynamic rendering - no SSG
-export const dynamic = 'force-dynamic'
-
 export default function FlightsPage() {
   const router = useRouter()
   const [isSearching, setIsSearching] = useState(false)

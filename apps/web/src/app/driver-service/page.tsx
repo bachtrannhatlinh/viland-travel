@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export const metadata: Metadata = {
   title: 'Dịch vụ lái xe Go_Safe - GoSafe',
@@ -62,9 +63,7 @@ export default function DriverServicePage() {
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Ngày sử dụng
                 </Label>
-                <Input
-                  type="date"
-                />
+                <DatePicker placeholder="Chọn ngày sử dụng" />
               </div>
               <div>
                 <Label className="block text-sm font-medium text-gray-700 mb-2">

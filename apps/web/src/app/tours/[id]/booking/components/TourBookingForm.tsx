@@ -3,6 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Label } from '@/components/ui/label'
+import { Typography } from '@/components/ui/typography'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface TourData {
   id: string
@@ -235,11 +242,11 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
           {/* Step 1: Select Date & Participants */}
           {currentStep === 1 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Chọn ngày và số lượng khách</h2>
+              <Typography variant="h2" className="text-gray-900 mb-6">Chọn ngày và số lượng khách</Typography>
               
               {/* Date Selection */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Chọn ngày khởi hành</h3>
+                <Typography variant="h3" className="text-gray-900 mb-4">Chọn ngày khởi hành</Typography>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {tour.availability.map((date, index) => (
                     <div
@@ -251,15 +258,15 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                           : 'border-gray-200 hover:border-primary-300'
                       }`}
                     >
-                      <div className="font-semibold text-gray-900">
+                      <Typography as="div" className="font-semibold text-gray-900">
                         {formatDate(date.startDate)}
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1">
+                      </Typography>
+                      <Typography as="div" className="text-sm text-gray-600 mt-1">
                         Kết thúc: {formatDate(date.endDate)}
-                      </div>
-                      <div className="text-sm text-green-600 mt-2">
+                      </Typography>
+                      <Typography as="div" className="text-sm text-green-600 mt-2">
                         Còn {date.availableSlots} chỗ
-                      </div>
+                      </Typography>
                     </div>
                   ))}
                 </div>
@@ -267,96 +274,102 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
 
               {/* Participant Selection */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Số lượng khách</h3>
+                <Typography variant="h3" className="text-gray-900 mb-4">Số lượng khách</Typography>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between py-4 border-b border-gray-200">
                     <div>
-                      <div className="font-medium text-gray-900">Người lớn</div>
-                      <div className="text-sm text-gray-600">Từ 12 tuổi trở lên</div>
-                      <div className="text-sm font-medium text-primary-600">
+                      <Typography as="div" className="font-medium text-gray-900">Người lớn</Typography>
+                      <Typography as="div" className="text-sm text-gray-600">Từ 12 tuổi trở lên</Typography>
+                      <Typography as="div" className="text-sm font-medium text-primary-600">
                         {formatPrice(tour.discountPrice?.adult || tour.price.adult)}
-                      </div>
+                      </Typography>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <button
+                      <Button
                         onClick={() => handleParticipantChange('adults', Math.max(0, participants.adults - 1))}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                         disabled={participants.adults <= 1}
                       >
                         -
-                      </button>
-                      <span className="w-8 text-center font-medium">{participants.adults}</span>
-                      <button
+                      </Button>
+                      <Typography as="span" className="w-8 text-center font-medium">{participants.adults}</Typography>
+                      <Button
                         onClick={() => handleParticipantChange('adults', participants.adults + 1)}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                         disabled={getTotalParticipants() >= tour.maxGroupSize}
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between py-4 border-b border-gray-200">
                     <div>
-                      <div className="font-medium text-gray-900">Trẻ em</div>
-                      <div className="text-sm text-gray-600">Từ 2-11 tuổi</div>
-                      <div className="text-sm font-medium text-primary-600">
+                      <Typography as="div" className="font-medium text-gray-900">Trẻ em</Typography>
+                      <Typography as="div" className="text-sm text-gray-600">Từ 2-11 tuổi</Typography>
+                      <Typography as="div" className="text-sm font-medium text-primary-600">
                         {formatPrice(tour.discountPrice?.child || tour.price.child)}
-                      </div>
+                      </Typography>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <button
+                      <Button
                         onClick={() => handleParticipantChange('children', Math.max(0, participants.children - 1))}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                       >
                         -
-                      </button>
-                      <span className="w-8 text-center font-medium">{participants.children}</span>
-                      <button
+                      </Button>
+                      <Typography as="span" className="w-8 text-center font-medium">{participants.children}</Typography>
+                      <Button
                         onClick={() => handleParticipantChange('children', participants.children + 1)}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                         disabled={getTotalParticipants() >= tour.maxGroupSize}
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between py-4">
                     <div>
-                      <div className="font-medium text-gray-900">Em bé</div>
-                      <div className="text-sm text-gray-600">Dưới 2 tuổi</div>
-                      <div className="text-sm font-medium text-primary-600">
+                      <Typography as="div" className="font-medium text-gray-900">Em bé</Typography>
+                      <Typography as="div" className="text-sm text-gray-600">Dưới 2 tuổi</Typography>
+                      <Typography as="div" className="text-sm font-medium text-primary-600">
                         {formatPrice(tour.discountPrice?.infant || tour.price.infant)}
-                      </div>
+                      </Typography>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <button
+                      <Button
                         onClick={() => handleParticipantChange('infants', Math.max(0, participants.infants - 1))}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                       >
                         -
-                      </button>
-                      <span className="w-8 text-center font-medium">{participants.infants}</span>
-                      <button
+                      </Button>
+                      <Typography as="span" className="w-8 text-center font-medium">{participants.infants}</Typography>
+                      <Button
                         onClick={() => handleParticipantChange('infants', participants.infants + 1)}
-                        className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                        variant="outline"
+                        size="icon"
                         disabled={getTotalParticipants() >= tour.maxGroupSize}
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-sm text-gray-600">
+                  <Typography className="text-sm text-gray-600">
                     Tổng số khách: {getTotalParticipants()} người
                     <br />
                     Số khách tối thiểu: {tour.minGroupSize} người
                     <br />
                     Số khách tối đa: {tour.maxGroupSize} người
-                  </div>
+                  </Typography>
                 </div>
               </div>
             </div>
@@ -365,53 +378,53 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
           {/* Step 2: Contact Information */}
           {currentStep === 2 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Thông tin liên hệ</h2>
+              <Typography variant="h2" className="text-gray-900 mb-6">Thông tin liên hệ</Typography>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Họ và tên *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={contactInfo.fullName}
                     onChange={(e) => setContactInfo({...contactInfo, fullName: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full"
                     placeholder="Nhập họ và tên"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Email *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="email"
                     value={contactInfo.email}
                     onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full"
                     placeholder="Nhập email"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Số điện thoại *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="tel"
                     value={contactInfo.phone}
                     onChange={(e) => setContactInfo({...contactInfo, phone: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full"
                     placeholder="Nhập số điện thoại"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Địa chỉ *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={contactInfo.address}
                     onChange={(e) => setContactInfo({...contactInfo, address: e.target.value})}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full"
                     placeholder="Nhập địa chỉ"
                   />
                 </div>
@@ -422,60 +435,60 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
           {/* Step 3: Participant Details */}
           {currentStep === 3 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Thông tin khách tham gia</h2>
+              <Typography variant="h2" className="text-gray-900 mb-6">Thông tin khách tham gia</Typography>
               <div className="space-y-6">
                 {participantDetails.map((participant, index) => (
                   <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    <Typography variant="h3" className="text-gray-900 mb-4">
                       {participant.type === 'adult' ? 'Người lớn' : 
                        participant.type === 'child' ? 'Trẻ em' : 'Em bé'} #{index + 1}
-                    </h3>
+                    </Typography>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Họ và tên *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           value={participant.fullName}
                           onChange={(e) => handleParticipantDetailChange(index, 'fullName', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full"
                           placeholder="Nhập họ và tên"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Ngày sinh *
-                        </label>
-                        <input
-                          type="date"
+                        </Label>
+                        <DatePicker
                           value={participant.dateOfBirth}
-                          onChange={(e) => handleParticipantDetailChange(index, 'dateOfBirth', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          onChange={(value) => handleParticipantDetailChange(index, 'dateOfBirth', value)}
+                          placeholder="Chọn ngày sinh"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Giới tính
-                        </label>
-                        <select
-                          value={participant.gender}
-                          onChange={(e) => handleParticipantDetailChange(index, 'gender', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        >
-                          <option value="male">Nam</option>
-                          <option value="female">Nữ</option>
-                        </select>
+                        </Label>
+                        <Select value={participant.gender} onValueChange={(value) => handleParticipantDetailChange(index, 'gender', value)}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Chọn giới tính" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">Nam</SelectItem>
+                            <SelectItem value="female">Nữ</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           CMND/CCCD *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           value={participant.identityCard}
                           onChange={(e) => handleParticipantDetailChange(index, 'identityCard', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          className="w-full"
                           placeholder="Nhập số CMND/CCCD"
                         />
                       </div>
@@ -489,47 +502,47 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
           {/* Step 4: Special Requests & Confirmation */}
           {currentStep === 4 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Yêu cầu đặc biệt & Xác nhận</h2>
+              <Typography variant="h2" className="text-gray-900 mb-6">Yêu cầu đặc biệt & Xác nhận</Typography>
               
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Yêu cầu đặc biệt (không bắt buộc)
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   rows={4}
                   value={specialRequests}
                   onChange={(e) => setSpecialRequests(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full"
                   placeholder="Nhập yêu cầu đặc biệt nếu có..."
                 />
               </div>
 
               {/* Booking Summary */}
               <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Tóm tắt đặt tour</h3>
+                <Typography variant="h3" className="text-gray-900 mb-4">Tóm tắt đặt tour</Typography>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tour:</span>
-                    <span className="font-medium">{tour.title}</span>
+                    <Typography as="span" className="text-gray-600">Tour:</Typography>
+                    <Typography as="span" className="font-medium">{tour.title}</Typography>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Ngày khởi hành:</span>
-                    <span className="font-medium">{formatDate(selectedDate)}</span>
+                    <Typography as="span" className="text-gray-600">Ngày khởi hành:</Typography>
+                    <Typography as="span" className="font-medium">{formatDate(selectedDate)}</Typography>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Số khách:</span>
-                    <span className="font-medium">{getTotalParticipants()} người</span>
+                    <Typography as="span" className="text-gray-600">Số khách:</Typography>
+                    <Typography as="span" className="font-medium">{getTotalParticipants()} người</Typography>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Người liên hệ:</span>
-                    <span className="font-medium">{contactInfo.fullName}</span>
+                    <Typography as="span" className="text-gray-600">Người liên hệ:</Typography>
+                    <Typography as="span" className="font-medium">{contactInfo.fullName}</Typography>
                   </div>
                   <div className="border-t border-gray-200 pt-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-900 font-semibold">Tổng tiền:</span>
-                      <span className="text-primary-600 font-bold text-lg">
+                      <Typography as="span" className="text-gray-900 font-semibold">Tổng tiền:</Typography>
+                      <Typography as="span" className="text-primary-600 font-bold text-lg">
                         {formatPrice(calculateTotalPrice())}
-                      </span>
+                      </Typography>
                     </div>
                   </div>
                 </div>
@@ -541,11 +554,11 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Lưu ý quan trọng:</p>
+                    <Typography as="p" className="font-medium mb-1">Lưu ý quan trọng:</Typography>
                     <ul className="list-disc list-inside space-y-1">
-                      <li>Vui lòng kiểm tra kỹ thông tin trước khi xác nhận</li>
-                      <li>Sau khi đặt tour, bạn sẽ nhận được email xác nhận</li>
-                      <li>Mọi thay đổi cần liên hệ hotline: 1900 1234</li>
+                      <li><Typography as="span">Vui lòng kiểm tra kỹ thông tin trước khi xác nhận</Typography></li>
+                      <li><Typography as="span">Sau khi đặt tour, bạn sẽ nhận được email xác nhận</Typography></li>
+                      <li><Typography as="span">Mọi thay đổi cần liên hệ hotline: 1900 1234</Typography></li>
                     </ul>
                   </div>
                 </div>
@@ -557,32 +570,33 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
           <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
             <div>
               {currentStep > 1 && (
-                <button
+                <Button
                   onClick={handlePreviousStep}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  variant="outline"
+                  size="lg"
                 >
                   Quay lại
-                </button>
+                </Button>
               )}
             </div>
             <div>
               {currentStep < 4 ? (
-                <button
+                <Button
                   onClick={handleNextStep}
                   disabled={
                     (currentStep === 1 && !validateStep1()) ||
                     (currentStep === 2 && !validateStep2()) ||
                     (currentStep === 3 && !validateStep3())
                   }
-                  className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  size="lg"
                 >
                   Tiếp tục
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   onClick={handleBookingSubmit}
                   disabled={isProcessing}
-                  className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center"
+                  size="lg"
                 >
                   {isProcessing ? (
                     <>
@@ -595,7 +609,7 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                   ) : (
                     'Xác nhận đặt tour'
                   )}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -605,79 +619,79 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
       {/* Sidebar - Tour Summary */}
       <div className="lg:col-span-1">
         <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Chi tiết tour</h3>
+          <Typography variant="h3" className="text-gray-900 mb-4">Chi tiết tour</Typography>
           
           <div className="space-y-3 text-sm">
             <div>
-              <h4 className="font-semibold text-gray-900">{tour.title}</h4>
-              <p className="text-gray-600">{tour.duration.days} ngày {tour.duration.nights} đêm</p>
+              <Typography variant="h4" className="text-gray-900">{tour.title}</Typography>
+              <Typography variant="muted" as="p">{tour.duration.days} ngày {tour.duration.nights} đêm</Typography>
             </div>
             
             {selectedDate && (
               <div className="pt-3 border-t border-gray-200">
                 <div className="flex justify-between mb-2">
-                  <span className="text-gray-600">Ngày khởi hành:</span>
+                  <Typography as="span" className="text-gray-600">Ngày khởi hành:</Typography>
                 </div>
-                <div className="font-medium text-gray-900">{formatDate(selectedDate)}</div>
+                <Typography as="div" className="font-medium text-gray-900">{formatDate(selectedDate)}</Typography>
               </div>
             )}
 
             <div className="pt-3 border-t border-gray-200">
-              <h5 className="font-semibold text-gray-900 mb-2">Chi tiết giá</h5>
+              <Typography variant="h5" className="text-gray-900 mb-2">Chi tiết giá</Typography>
               
               {participants.adults > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Người lớn x {participants.adults}</span>
-                  <span className="text-gray-900">
+                  <Typography as="span" className="text-gray-600">Người lớn x {participants.adults}</Typography>
+                  <Typography as="span" className="text-gray-900">
                     {formatPrice((tour.discountPrice?.adult || tour.price.adult) * participants.adults)}
-                  </span>
+                  </Typography>
                 </div>
               )}
               
               {participants.children > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Trẻ em x {participants.children}</span>
-                  <span className="text-gray-900">
+                  <Typography as="span" className="text-gray-600">Trẻ em x {participants.children}</Typography>
+                  <Typography as="span" className="text-gray-900">
                     {formatPrice((tour.discountPrice?.child || tour.price.child) * participants.children)}
-                  </span>
+                  </Typography>
                 </div>
               )}
               
               {participants.infants > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Em bé x {participants.infants}</span>
-                  <span className="text-gray-900">
+                  <Typography as="span" className="text-gray-600">Em bé x {participants.infants}</Typography>
+                  <Typography as="span" className="text-gray-900">
                     {formatPrice((tour.discountPrice?.infant || tour.price.infant) * participants.infants)}
-                  </span>
+                  </Typography>
                 </div>
               )}
             </div>
 
             <div className="pt-3 border-t border-gray-200">
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
-                <span className="text-xl font-bold text-primary-600">
+                <Typography as="span" className="text-lg font-bold text-gray-900">Tổng cộng</Typography>
+                <Typography as="span" className="text-xl font-bold text-primary-600">
                   {formatPrice(calculateTotalPrice())}
-                </span>
+                </Typography>
               </div>
             </div>
           </div>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">Cần hỗ trợ?</h4>
+            <Typography variant="h4" className="text-gray-900 mb-2">Cần hỗ trợ?</Typography>
             <div className="space-y-2 text-sm text-gray-600">
               <div className="flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                 </svg>
-                <span>1900 1234</span>
+                <Typography as="span">1900 1234</Typography>
               </div>
               <div className="flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
-                <span>info@gosafe.vn</span>
+                <Typography as="span">info@gosafe.vn</Typography>
               </div>
             </div>
           </div>

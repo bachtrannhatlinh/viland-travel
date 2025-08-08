@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
 import { Typography } from '@/components/ui/typography';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
   Form,
   FormControl,
@@ -111,10 +112,11 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
                       Ngày nhận phòng
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
                         min={today}
-                        {...field}
+                        placeholder="Chọn ngày nhận phòng"
                       />
                     </FormControl>
                     <FormMessage />
@@ -135,10 +137,11 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
                       Ngày trả phòng
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="date"
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
                         min={form.watch('checkIn') || tomorrow}
-                        {...field}
+                        placeholder="Chọn ngày trả phòng"
                       />
                     </FormControl>
                     <FormMessage />

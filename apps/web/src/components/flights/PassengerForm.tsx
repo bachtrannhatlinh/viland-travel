@@ -1,4 +1,6 @@
 import { PassengerInfo } from '@/types/flight.types'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Label } from '@/components/ui/label'
 
 interface PassengerFormProps {
   passengers: PassengerInfo[]
@@ -107,15 +109,13 @@ export default function PassengerForm({
 
             {/* Date of Birth */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Label className="block text-sm font-medium text-gray-700 mb-2">
                 Ngày sinh *
-              </label>
-              <input
-                type="date"
+              </Label>
+              <DatePicker
                 value={passenger.dateOfBirth}
-                onChange={(e) => handlePassengerUpdate(index, 'dateOfBirth', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                required
+                onChange={(value) => handlePassengerUpdate(index, 'dateOfBirth', value)}
+                placeholder="Chọn ngày sinh"
               />
             </div>
 
@@ -161,15 +161,14 @@ export default function PassengerForm({
 
             {/* Passport Expiry - For international flights */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Label className="block text-sm font-medium text-gray-700 mb-2">
                 Ngày hết hạn hộ chiếu
-              </label>
-              <input
-                type="date"
+              </Label>
+              <DatePicker
                 value={passenger.passportExpiry || ''}
-                onChange={(e) => handlePassengerUpdate(index, 'passportExpiry', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                onChange={(value) => handlePassengerUpdate(index, 'passportExpiry', value)}
                 min={new Date().toISOString().split('T')[0]}
+                placeholder="Chọn ngày hết hạn hộ chiếu"
               />
             </div>
 

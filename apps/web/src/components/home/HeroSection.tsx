@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Section } from '@/components/ui/section'
 import { Typography } from '@/components/ui/typography'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState('tour')
@@ -74,9 +75,7 @@ export function HeroSection() {
                     <Label className="block mb-2">
                       Ngày khởi hành
                     </Label>
-                    <Input
-                      type="date"
-                    />
+                    <DatePicker placeholder="Chọn ngày khởi hành" />
                   </div>
                   <div>
                     <Label className="block mb-2">
@@ -127,9 +126,7 @@ export function HeroSection() {
                     <Label className="block mb-2">
                       Ngày bay
                     </Label>
-                    <Input
-                      type="date"
-                    />
+                    <DatePicker placeholder="Chọn ngày bay" />
                   </div>
                   <div className="flex items-end">
                     <Button className="w-full h-10">

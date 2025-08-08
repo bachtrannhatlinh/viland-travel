@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { DatePicker } from '@/components/ui/date-picker'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -152,10 +153,11 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
               <FormItem>
                 <FormLabel>Ngày bay</FormLabel>
                 <FormControl>
-                  <Input
-                    type="date"
+                  <DatePicker
+                    value={field.value}
+                    onChange={field.onChange}
                     min={new Date().toISOString().split('T')[0]}
-                    {...field}
+                    placeholder="Chọn ngày bay"
                   />
                 </FormControl>
                 <FormMessage />
@@ -172,10 +174,11 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
                 <FormItem>
                   <FormLabel>Ngày về</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
                       min={form.getValues('departureDate') || new Date().toISOString().split('T')[0]}
-                      {...field}
+                      placeholder="Chọn ngày về"
                     />
                   </FormControl>
                   <FormMessage />

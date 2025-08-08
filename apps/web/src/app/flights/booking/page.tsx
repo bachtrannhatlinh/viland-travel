@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Flight, FlightClass, PassengerInfo, FlightBookingData } from '@/types/flight.types'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Label } from '@/components/ui/label'
 
 export default function FlightBookingPage() {
   const router = useRouter()
@@ -404,15 +406,13 @@ export default function FlightBookingPage() {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Ngày sinh *
-                        </label>
-                        <input
-                          type="date"
+                        </Label>
+                        <DatePicker
                           value={passenger.dateOfBirth}
-                          onChange={(e) => handlePassengerUpdate(index, {...passenger, dateOfBirth: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                          required
+                          onChange={(value) => handlePassengerUpdate(index, {...passenger, dateOfBirth: value})}
+                          placeholder="Chọn ngày sinh"
                         />
                       </div>
                       

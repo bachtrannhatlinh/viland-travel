@@ -1,4 +1,6 @@
 import { Metadata } from 'next'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Label } from '@/components/ui/label'
 
 export const metadata: Metadata = {
   title: 'Tour du lịch - GoSafe',
@@ -37,13 +39,10 @@ export default function ToursPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Label className="block text-sm font-medium text-gray-700 mb-2">
                 Ngày khởi hành
-              </label>
-              <input
-                type="date"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
+              </Label>
+              <DatePicker placeholder="Chọn ngày khởi hành" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

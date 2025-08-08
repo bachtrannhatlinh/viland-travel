@@ -2,7 +2,7 @@
 
 import FlightFilters from '@/components/flights/FlightFilters'
 import FlightCard from '@/components/flights/FlightCard'
-import { Flight, FlightClass } from '@/types/flight.types'
+import { Flight, FlightClass, FlightStatus, FlightType } from '@/types/flight.types'
 
 const testFlight: Flight = {
   id: '1',
@@ -20,8 +20,8 @@ const testFlight: Flight = {
     economy: { available: 50, price: 2500000, originalPrice: 2800000 },
     business: { available: 10, price: 5500000, originalPrice: 6000000 }
   },
-  status: 'scheduled',
-  type: 'domestic',
+  status: FlightStatus.SCHEDULED,
+  type: FlightType.DOMESTIC,
   isDirect: true,
   formattedDuration: '2h 15m',
   rating: 4.5,

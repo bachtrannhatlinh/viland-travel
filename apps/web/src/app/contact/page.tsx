@@ -26,10 +26,10 @@ const contactFormSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactFormSchema>
 
-export const metadata: Metadata = {
-  title: 'Liên hệ - GoSafe',
-  description: 'Liên hệ với GoSafe để được tư vấn và hỗ trợ về các dịch vụ du lịch. Chúng tôi luôn sẵn sàng phục vụ bạn.',
-}
+// export const metadata: Metadata = {
+//   title: 'Liên hệ - GoSafe',
+//   description: 'Liên hệ với GoSafe để được tư vấn và hỗ trợ về các dịch vụ du lịch. Chúng tôi luôn sẵn sàng phục vụ bạn.',
+// }
 
 export default function ContactPage() {
   const form = useForm<ContactFormValues>({

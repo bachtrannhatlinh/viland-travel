@@ -1,4 +1,30 @@
+"use client"
+
 import { Metadata } from 'next'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card, CardContent } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Typography } from '@/components/ui/typography'
+import { Section } from '@/components/ui/section'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const contactFormSchema = z.object({
+  fullName: z.string().min(2, 'Họ và tên phải có ít nhất 2 ký tự'),
+  phone: z.string().min(10, 'Số điện thoại phải có ít nhất 10 ký tự'),
+  email: z.string().email('Email không hợp lệ'),
+  service: z.string().optional(),
+  subject: z.string().optional(),
+  message: z.string().min(10, 'Nội dung phải có ít nhất 10 ký tự'),
+  newsletter: z.boolean().default(false),
+})
+
+type ContactFormValues = z.infer<typeof contactFormSchema>
 
 export const metadata: Metadata = {
   title: 'Liên hệ - GoSafe',
@@ -6,205 +32,281 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      fullName: '',
+      phone: '',
+      email: '',
+      service: '',
+      subject: '',
+      message: '',
+      newsletter: false,
+    },
+  })
+
+  const onSubmit = (values: ContactFormValues) => {
+    console.log(values)
+    // Handle form submission here
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
+      <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6 text-white">
             Liên hệ với GoSafe
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+          </Typography>
+          <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto text-white">
             Chúng tôi luôn sẵn sàng hỗ trợ và tư vấn cho chuyến du lịch của bạn
-          </p>
+          </Typography>
         </div>
-      </div>
+      </Section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Gửi thông tin liên hệ</h2>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Họ và tên *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Nhập họ và tên"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Số điện thoại *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Nhập số điện thoại"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Nhập địa chỉ email"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dịch vụ quan tâm
-                </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                  <option value="">Chọn dịch vụ</option>
-                  <option value="tour">Tour du lịch</option>
-                  <option value="flight">Vé máy bay</option>
-                  <option value="hotel">Khách sạn</option>
-                  <option value="car">Thuê xe</option>
-                  <option value="driver">Dịch vụ lái xe</option>
-                  <option value="other">Khác</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tiêu đề
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Tiêu đề câu hỏi hoặc yêu cầu"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nội dung *
-                </label>
-                <textarea
-                  rows={5}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Mô tả chi tiết nhu cầu hoặc câu hỏi của bạn..."
-                ></textarea>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="newsletter"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="newsletter" className="ml-2 block text-sm text-gray-700">
-                  Tôi muốn nhận tin tức và ưu đãi từ GoSafe
-                </label>
-              </div>
-
-              <button type="submit" className="w-full btn-primary py-4">
+          <Card className="shadow-md">
+            <CardContent className="p-8">
+              <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-6">
                 Gửi thông tin liên hệ
-              </button>
-            </form>
-          </div>
+              </Typography>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Họ và tên *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Nhập họ và tên" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Số điện thoại *</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="Nhập số điện thoại" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="Nhập địa chỉ email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="service"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dịch vụ quan tâm</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn dịch vụ" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="tour">Tour du lịch</SelectItem>
+                            <SelectItem value="flight">Vé máy bay</SelectItem>
+                            <SelectItem value="hotel">Khách sạn</SelectItem>
+                            <SelectItem value="car">Thuê xe</SelectItem>
+                            <SelectItem value="driver">Dịch vụ lái xe</SelectItem>
+                            <SelectItem value="other">Khác</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="subject"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tiêu đề</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Tiêu đề câu hỏi hoặc yêu cầu" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nội dung *</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            rows={5}
+                            placeholder="Mô tả chi tiết nhu cầu hoặc câu hỏi của bạn..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="newsletter"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                            className="h-4 w-4"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            Tôi muốn nhận tin tức và ưu đãi từ GoSafe
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button type="submit" className="w-full py-4">
+                    Gửi thông tin liên hệ
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
 
           {/* Contact Information */}
           <div>
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Thông tin liên hệ</h2>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+            <Card className="shadow-md mb-8">
+              <CardContent className="p-8">
+                <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-6">
+                  Thông tin liên hệ
+                </Typography>
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <Typography variant="h3" className="font-semibold text-gray-900">
+                        Địa chỉ văn phòng
+                      </Typography>
+                      <Typography variant="p" className="text-gray-600 mt-1">
+                        Tầng 10, Tòa nhà ABC, 123 Đường Nguyễn Huệ<br />
+                        Quận 1, TP. Hồ Chí Minh
+                      </Typography>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Địa chỉ văn phòng</h3>
-                    <p className="text-gray-600 mt-1">
-                      Tầng 10, Tòa nhà ABC, 123 Đường Nguyễn Huệ<br />
-                      Quận 1, TP. Hồ Chí Minh
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <Typography variant="h3" className="font-semibold text-gray-900">
+                        Hotline
+                      </Typography>
+                      <Typography variant="p" className="text-gray-600 mt-1">
+                        <Typography variant="small" className="text-primary-600 hover:text-primary-700">
+                          1900 1234
+                        </Typography> (24/7)<br />
+                        <Typography variant="small" className="text-primary-600 hover:text-primary-700">
+                          090 123 4567
+                        </Typography> (Tư vấn)
+                      </Typography>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Hotline</h3>
-                    <p className="text-gray-600 mt-1">
-                      <a href="tel:19001234" className="text-primary-600 hover:text-primary-700">
-                        1900 1234
-                      </a> (24/7)<br />
-                      <a href="tel:0901234567" className="text-primary-600 hover:text-primary-700">
-                        090 123 4567
-                      </a> (Tư vấn)
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <Typography variant="h3" className="font-semibold text-gray-900">
+                        Email
+                      </Typography>
+                      <Typography variant="p" className="text-gray-600 mt-1">
+                        <Typography variant="small" className="text-primary-600 hover:text-primary-700">
+                          info@gosafe.vn
+                        </Typography><br />
+                        <Typography variant="small" className="text-primary-600 hover:text-primary-700">
+                          support@gosafe.vn
+                        </Typography>
+                      </Typography>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Email</h3>
-                    <p className="text-gray-600 mt-1">
-                      <a href="mailto:info@gosafe.vn" className="text-primary-600 hover:text-primary-700">
-                        info@gosafe.vn
-                      </a><br />
-                      <a href="mailto:support@gosafe.vn" className="text-primary-600 hover:text-primary-700">
-                        support@gosafe.vn
-                      </a>
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <Typography variant="h3" className="font-semibold text-gray-900">
+                        Giờ làm việc
+                      </Typography>
+                      <Typography variant="p" className="text-gray-600 mt-1">
+                        Thứ 2 - Thứ 6: 8:00 - 18:00<br />
+                        Thứ 7 - CN: 8:00 - 17:00
+                      </Typography>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Giờ làm việc</h3>
-                    <p className="text-gray-600 mt-1">
-                      Thứ 2 - Thứ 6: 8:00 - 18:00<br />
-                      Thứ 7 - CN: 8:00 - 17:00
-                    </p>
-                  </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Social Media */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Kết nối với chúng tôi</h3>
+            <Card className="shadow-md mb-8">
+              <CardContent className="p-8">
+                <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-4">
+                  Kết nối với chúng tôi
+                </Typography>
               <div className="flex space-x-4">
                 <a href="#" className="w-12 h-12 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -227,38 +329,53 @@ export default function ContactPage() {
                   </svg>
                 </a>
               </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Quick Contact */}
-            <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6 text-white text-center">
-              <h3 className="text-xl font-bold mb-3">Cần hỗ trợ ngay?</h3>
-              <p className="mb-4 opacity-90">Gọi hotline để được tư vấn miễn phí</p>
-              <a href="tel:19001234" className="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
-                📞 1900 1234
-              </a>
-            </div>
+            <Card className="bg-gradient-to-r from-primary-600 to-primary-800 text-center">
+              <CardContent className="p-6 text-white">
+                <Typography variant="h3" className="text-xl font-bold mb-3 text-white">
+                  Cần hỗ trợ ngay?
+                </Typography>
+                <Typography variant="p" className="mb-4 opacity-90 text-white">
+                  Gọi hotline để được tư vấn miễn phí
+                </Typography>
+                <Button variant="outline" className="bg-white text-primary-600 px-6 py-3 hover:bg-gray-100">
+                  📞 1900 1234
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
         {/* Map Section */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Vị trí văn phòng</h2>
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-gray-400 text-6xl mb-4">🗺️</div>
-                <p className="text-gray-600">Bản đồ Google Maps sẽ được tích hợp tại đây</p>
-                <p className="text-sm text-gray-500 mt-2">
-                  Tầng 10, Tòa nhà ABC, 123 Đường Nguyễn Huệ, Quận 1, TP. HCM
-                </p>
+        <Section className="mt-16">
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Vị trí văn phòng
+          </Typography>
+          <Card className="shadow-md">
+            <CardContent className="p-8">
+              <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-gray-400 text-6xl mb-4">🗺️</div>
+                  <Typography variant="p" className="text-gray-600">
+                    Bản đồ Google Maps sẽ được tích hợp tại đây
+                  </Typography>
+                  <Typography variant="small" className="text-sm text-gray-500 mt-2">
+                    Tầng 10, Tòa nhà ABC, 123 Đường Nguyễn Huệ, Quận 1, TP. HCM
+                  </Typography>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
+        </Section>
 
         {/* FAQ Section */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Câu hỏi thường gặp</h2>
+        <Section className="mt-16">
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">
+            Câu hỏi thường gặp
+          </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
@@ -278,13 +395,19 @@ export default function ContactPage() {
                 answer: 'Chúng tôi hỗ trợ thanh toán tiền mặt, chuyển khoản, thẻ tín dụng và ví điện tử.'
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="font-semibold text-gray-900 mb-3">{faq.question}</h3>
-                <p className="text-gray-600">{faq.answer}</p>
-              </div>
+              <Card key={index} className="shadow-md">
+                <CardContent className="p-6">
+                  <Typography variant="h3" className="font-semibold text-gray-900 mb-3">
+                    {faq.question}
+                  </Typography>
+                  <Typography variant="p" className="text-gray-600">
+                    {faq.answer}
+                  </Typography>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </div>
+        </Section>
       </div>
     </div>
   )

@@ -1,12 +1,26 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu } from 'lucide-react'
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
   const services = [
     { name: 'Vé máy bay', href: '/flights' },
     { name: 'Tour du lịch', href: '/tours' },
@@ -27,85 +41,114 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Trang chủ
-            </Link>
-            
-            {/* Services Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center text-gray-700 hover:text-primary-600 transition-colors">
-                Dịch vụ
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <div className="py-2">
-                  {services.map((service) => (
-                    <Link
-                      key={service.name}
-                      href={service.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600"
-                    >
-                      {service.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href="/" legacyBehavior passHref>
+                  <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
+                    Trang chủ
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              
+              {/* Services Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-gray-700 hover:text-primary-600 transition-colors">
+                  Dịch vụ
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid gap-3 p-4 w-[400px] grid-cols-2">
+                    {services.map((service) => (
+                      <Link
+                        key={service.name}
+                        href={service.href}
+                        legacyBehavior
+                        passHref
+                      >
+                        <NavigationMenuLink className="block p-3 space-y-1 rounded-md hover:bg-accent">
+                          <div className="text-sm font-medium leading-none">{service.name}</div>
+                        </NavigationMenuLink>
+                      </Link>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
-            <Link href="/about" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Giới thiệu
-            </Link>
-            <Link href="/blog" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Tin tức
-            </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-primary-600 transition-colors">
-              Liên hệ
-            </Link>
-          </nav>
+              <NavigationMenuItem>
+                <Link href="/about" legacyBehavior passHref>
+                  <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
+                    Giới thiệu
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link href="/blog" legacyBehavior passHref>
+                  <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
+                    Tin tức
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link href="/contact" legacyBehavior passHref>
+                  <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
+                    Liên hệ
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-primary-600"
-            >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>GoSafe Menu</SheetTitle>
+                  <SheetDescription>
+                    Điều hướng đến các trang và dịch vụ của GoSafe
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="py-4 space-y-4">
+                  <Link href="/" className="block text-gray-700 hover:text-primary-600">
+                    Trang chủ
+                  </Link>
+                  
+                  <div>
+                    <span className="block font-medium text-gray-900">Dịch vụ</span>
+                    <div className="ml-4 mt-2 space-y-2">
+                      {services.map((service) => (
+                        <Link
+                          key={service.name}
+                          href={service.href}
+                          className="block text-gray-700 hover:text-primary-600"
+                        >
+                          {service.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <Link href="/about" className="block text-gray-700 hover:text-primary-600">
+                    Giới thiệu
+                  </Link>
+                  <Link href="/blog" className="block text-gray-700 hover:text-primary-600">
+                    Tin tức
+                  </Link>
+                  <Link href="/contact" className="block text-gray-700 hover:text-primary-600">
+                    Liên hệ
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
-            <div className="space-y-4">
-              <Link href="/" className="block text-gray-700 hover:text-primary-600">
-                Trang chủ
-              </Link>
-              <div className="space-y-2">
-                <span className="block font-medium text-gray-900">Dịch vụ</span>
-                {services.map((service) => (
-                  <Link
-                    key={service.name}
-                    href={service.href}
-                    className="block pl-4 text-gray-700 hover:text-primary-600"
-                  >
-                    {service.name}
-                  </Link>
-                ))}
-              </div>
-              <Link href="/about" className="block text-gray-700 hover:text-primary-600">
-                Giới thiệu
-              </Link>
-              <Link href="/blog" className="block text-gray-700 hover:text-primary-600">
-                Tin tức
-              </Link>
-              <Link href="/contact" className="block text-gray-700 hover:text-primary-600">
-                Liên hệ
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   )

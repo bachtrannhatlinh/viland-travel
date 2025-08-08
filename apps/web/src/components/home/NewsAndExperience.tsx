@@ -1,5 +1,10 @@
 import Link from 'next/link'
-import { Calendar, User, ArrowRight } from 'lucide-react'
+import { Calendar, User, ArrowRight, Star } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Section } from '@/components/ui/section'
+import { Typography } from '@/components/ui/typography'
 
 export function NewsAndExperience() {
   const news = [
@@ -60,102 +65,107 @@ export function NewsAndExperience() {
   ]
 
   return (
-    <section className="py-16 bg-gray-50">
+    <Section variant="content" background="gray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* News & Knowledge */}
           <div>
             <div className="text-center lg:text-left mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
                 Tin tức & Kiến thức
-              </h2>
-              <p className="text-gray-600">
+              </Typography>
+              <Typography variant="p" className="text-gray-600">
                 Cập nhật những thông tin mới nhất về du lịch và chia sẻ kinh nghiệm hữu ích
-              </p>
+              </Typography>
             </div>
 
             <div className="space-y-6">
               {news.map((article) => (
-                <article key={article.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                  <div className="flex">
-                    <div className="w-32 h-24 bg-gray-200 flex-shrink-0">
-                      {/* Placeholder for image */}
-                      <div className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-600"></div>
-                    </div>
-                    <div className="flex-1 p-4">
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(article.date).toLocaleDateString('vi-VN')}
-                        <span className="mx-2">•</span>
-                        <User className="h-4 w-4 mr-1" />
-                        {article.author}
+                <Card key={article.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <CardContent className="p-0">
+                    <div className="flex">
+                      <div className="w-32 h-24 bg-gray-200 flex-shrink-0">
+                        {/* Placeholder for image */}
+                        <div className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-600"></div>
                       </div>
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                        {article.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                        {article.excerpt}
-                      </p>
-                      <Link 
-                        href={`/blog/${article.id}`}
-                        className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center"
-                      >
-                        Đọc thêm <ArrowRight className="h-3 w-3 ml-1" />
-                      </Link>
+                      <div className="flex-1 p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            {new Date(article.date).toLocaleDateString('vi-VN')}
+                            <Typography variant="small" className="mx-2">•</Typography>
+                            <User className="h-4 w-4 mr-1" />
+                            {article.author}
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {article.category}
+                          </Badge>
+                        </div>
+                        <Typography variant="h3" className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                          {article.title}
+                        </Typography>
+                        <Typography variant="small" className="text-sm text-gray-600 line-clamp-2 mb-2">
+                          {article.excerpt}
+                        </Typography>
+                        <Button variant="link" className="p-0 text-primary-600 hover:text-primary-700">
+                          Đọc thêm <ArrowRight className="h-3 w-3 ml-1" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
             <div className="text-center mt-8">
-              <Link 
-                href="/blog"
-                className="btn-primary inline-flex items-center"
-              >
+              <Button className="inline-flex items-center">
                 Xem tất cả tin tức <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
+              </Button>
             </div>
           </div>
 
           {/* Customer Experiences */}
           <div>
             <div className="text-center lg:text-left mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
                 Khách hàng đã trải nghiệm
-              </h2>
-              <p className="text-gray-600">
+              </Typography>
+              <Typography variant="p" className="text-gray-600">
                 Chia sẻ từ những khách hàng đã sử dụng dịch vụ của chúng tôi
-              </p>
+              </Typography>
             </div>
 
             <div className="space-y-6">
               {experiences.map((exp, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0">
-                      {/* Placeholder for avatar */}
-                      <div className="w-full h-full bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-full"></div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center mb-2">
-                        <h4 className="font-semibold text-gray-900">{exp.name}</h4>
-                        <span className="text-sm text-gray-500 ml-2">• {exp.location}</span>
+                <Card key={index} className="p-6">
+                  <CardContent className="p-0">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0">
+                        {/* Placeholder for avatar */}
+                        <div className="w-full h-full bg-gradient-to-br from-secondary-400 to-secondary-600 rounded-full"></div>
                       </div>
-                      <div className="flex items-center mb-3">
-                        {[...Array(exp.rating)].map((_, i) => (
-                          <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                          </svg>
-                        ))}
-                        <span className="text-sm text-gray-600 ml-2">{exp.tour}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center mb-2">
+                          <Typography variant="h4" className="font-semibold text-gray-900">{exp.name}</Typography>
+                          <Typography variant="small" className="text-sm text-gray-500 ml-2">• {exp.location}</Typography>
+                        </div>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center">
+                            {[...Array(exp.rating)].map((_, i) => (
+                              <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                            ))}
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {exp.tour}
+                          </Badge>
+                        </div>
+                        <Typography variant="small" className="text-gray-700 text-sm italic">
+                          &ldquo;{exp.comment}&rdquo;
+                        </Typography>
                       </div>
-                      <p className="text-gray-700 text-sm italic">
-                        "{exp.comment}"
-                      </p>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
@@ -170,6 +180,6 @@ export function NewsAndExperience() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   )
 }

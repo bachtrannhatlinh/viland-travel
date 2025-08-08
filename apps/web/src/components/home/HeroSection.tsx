@@ -2,6 +2,13 @@
 
 import { Search, Calendar, MapPin } from 'lucide-react'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Section } from '@/components/ui/section'
+import { Typography } from '@/components/ui/typography'
 
 export function HeroSection() {
   const [activeTab, setActiveTab] = useState('tour')
@@ -14,41 +21,38 @@ export function HeroSection() {
   ]
 
   return (
-    <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+    <Section variant="hero" background="gradient" className="text-white">
       {/* Background Image Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-30"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <Typography variant="h1" className="text-4xl md:text-6xl font-bold mb-6">
             Khám phá thế giới cùng
-            <span className="block text-secondary-400">GoSafe</span>
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200">
+            <Typography variant="small" className="block text-secondary-400">GoSafe</Typography>
+          </Typography>
+          <Typography variant="large" className="text-xl md:text-2xl mb-8 text-gray-200">
             Đặt tour, vé máy bay, khách sạn và thuê xe một cách dễ dàng
-          </p>
+          </Typography>
         </div>
 
         {/* Search Form */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-xl p-6">
+          <Card className="p-6">
             {/* Tabs */}
             <div className="flex flex-wrap gap-2 mb-6">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
-                  <button
+                  <Button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                      activeTab === tab.id
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
+                    variant={activeTab === tab.id ? "default" : "outline"}
+                    className="flex items-center"
                   >
                     <Icon className="h-4 w-4 mr-2" />
                     {tab.label}
-                  </button>
+                  </Button>
                 )
               })}
             </div>
@@ -58,40 +62,43 @@ export function HeroSection() {
               {activeTab === 'tour' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Điểm đến
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       placeholder="Chọn điểm đến"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Ngày khởi hành
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Số người
-                    </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900">
-                      <option>1 người</option>
-                      <option>2 người</option>
-                      <option>3-5 người</option>
-                      <option>6+ người</option>
-                    </select>
+                    </Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn số người" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 người</SelectItem>
+                        <SelectItem value="2">2 người</SelectItem>
+                        <SelectItem value="3-5">3-5 người</SelectItem>
+                        <SelectItem value="6+">6+ người</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="flex items-end">
-                    <button className="w-full btn-primary h-10 flex items-center justify-center">
+                    <Button className="w-full h-10">
                       <Search className="h-4 w-4 mr-2" />
                       Tìm tour
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -99,48 +106,45 @@ export function HeroSection() {
               {activeTab === 'flight' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Từ
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       placeholder="Thành phố đi"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Đến
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="text"
                       placeholder="Thành phố đến"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Label className="block mb-2">
                       Ngày bay
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       type="date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900"
                     />
                   </div>
                   <div className="flex items-end">
-                    <button className="w-full btn-primary h-10 flex items-center justify-center">
+                    <Button className="w-full h-10">
                       <Search className="h-4 w-4 mr-2" />
                       Tìm chuyến bay
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
 
               {/* Add similar forms for hotel and car tabs */}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
-    </section>
+    </Section>
   )
 }

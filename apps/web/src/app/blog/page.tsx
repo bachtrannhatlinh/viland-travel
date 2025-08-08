@@ -1,4 +1,10 @@
 import { Metadata } from 'next'
+import { Typography } from '@/components/ui/typography'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Section } from '@/components/ui/section'
+import { Input } from '@/components/ui/input'
 
 export const metadata: Metadata = {
   title: 'Blog - Tin tức & Kiến thức Du lịch - GoSafe',
@@ -100,62 +106,62 @@ export default function BlogPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Section className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
+      <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6">
             Blog Du lịch GoSafe
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto mb-8">
+          </Typography>
+          <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto mb-8">
             Khám phá thế giới qua những câu chuyện, kinh nghiệm và mẹo hay từ cộng đồng GoSafe
-          </p>
+          </Typography>
           <div className="max-w-md mx-auto">
             <div className="relative">
-              <input
+              <Input
                 type="text"
                 placeholder="Tìm kiếm bài viết..."
                 className="w-full px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
               />
-              <button className="absolute right-2 top-2 p-2 text-gray-400 hover:text-gray-600">
+              <Button variant="ghost" size="sm" className="absolute right-2 top-2 p-2 text-gray-400 hover:text-gray-600">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
-      </div>
+      </Section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Featured Posts */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Bài viết nổi bật</h2>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-8">Bài viết nổi bật</Typography>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {featuredPosts.map((post) => (
-              <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-w-16 aspect-h-9 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                  <span className="text-6xl">{post.image}</span>
+                  <Typography variant="large" className="text-6xl">{post.image}</Typography>
                 </div>
-                <div className="p-6">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="bg-primary-100 text-primary-600 px-3 py-1 rounded-full text-sm font-medium">
+                    <Badge variant="secondary">
                       {post.category}
-                    </span>
-                    <span className="text-gray-500 text-sm">{post.date}</span>
+                    </Badge>
+                    <Typography variant="small" className="text-gray-500">{post.date}</Typography>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600 cursor-pointer">
+                  <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600 cursor-pointer">
                     {post.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                  </Typography>
+                  <Typography variant="p" className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</Typography>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">{post.readTime}</span>
-                    <button className="text-primary-600 font-medium hover:text-primary-700">
+                    <Typography variant="small" className="text-gray-500">{post.readTime}</Typography>
+                    <Button variant="link" className="p-0 h-auto text-primary-600 font-medium hover:text-primary-700">
                       Đọc tiếp →
-                    </button>
+                    </Button>
                   </div>
-                </div>
-              </article>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -164,16 +170,14 @@ export default function BlogPage() {
         <div className="mb-8">
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
-              <button
+              <Button
                 key={category}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  category === 'Tất cả'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-white text-gray-600 hover:bg-primary-50 hover:text-primary-600'
-                }`}
+                variant={category === 'Tất cả' ? 'default' : 'outline'}
+                size="sm"
+                className={`rounded-full text-sm font-medium transition-colors`}
               >
                 {category}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -181,56 +185,58 @@ export default function BlogPage() {
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {blogPosts.map((post) => (
-            <article key={post.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-3">
-                <span className="bg-secondary-100 text-secondary-600 px-3 py-1 rounded-full text-sm font-medium">
-                  {post.category}
-                </span>
-                <span className="text-gray-500 text-sm">{post.date}</span>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600 cursor-pointer">
-                {post.title}
-              </h3>
-              <p className="text-gray-600 mb-4">{post.excerpt}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500 text-sm">{post.readTime}</span>
-                <button className="text-primary-600 font-medium hover:text-primary-700">
-                  Đọc tiếp →
-                </button>
-              </div>
-            </article>
+            <Card key={post.id} className="p-6 hover:shadow-lg transition-shadow">
+              <CardContent className="p-0">
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant="outline">
+                    {post.category}
+                  </Badge>
+                  <Typography variant="small" className="text-gray-500">{post.date}</Typography>
+                </div>
+                <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-3 hover:text-primary-600 cursor-pointer">
+                  {post.title}
+                </Typography>
+                <Typography variant="p" className="text-gray-600 mb-4">{post.excerpt}</Typography>
+                <div className="flex items-center justify-between">
+                  <Typography variant="small" className="text-gray-500">{post.readTime}</Typography>
+                  <Button variant="link" className="p-0 h-auto text-primary-600 font-medium hover:text-primary-700">
+                    Đọc tiếp →
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Load More */}
         <div className="text-center">
-          <button className="btn-primary px-8 py-3">
+          <Button className="px-8 py-3">
             Xem thêm bài viết
-          </button>
+          </Button>
         </div>
 
         {/* Newsletter Signup */}
-        <div className="bg-white rounded-lg shadow-md p-8 mt-16">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        <Card className="mt-16">
+          <CardContent className="text-center p-8">
+            <Typography variant="h3" className="text-2xl font-bold text-gray-900 mb-4">
               Đăng ký nhận tin tức du lịch
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            </Typography>
+            <Typography variant="p" className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Nhận những bài viết mới nhất, ưu đãi độc quyền và mẹo du lịch hữu ích 
               từ GoSafe ngay trong hộp thư của bạn.
-            </p>
+            </Typography>
             <div className="max-w-md mx-auto flex gap-3">
-              <input
+              <Input
                 type="email"
                 placeholder="Nhập email của bạn"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="flex-1"
               />
-              <button className="btn-primary px-6 py-3 whitespace-nowrap">
+              <Button className="px-6 py-3 whitespace-nowrap">
                 Đăng ký
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Coming Soon Message */}
         <div className="text-center py-16">
@@ -239,19 +245,19 @@ export default function BlogPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-4">
             Hệ thống blog đang hoàn thiện
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+          </Typography>
+          <Typography variant="p" className="text-gray-600 mb-8 max-w-md mx-auto">
             Chúng tôi đang xây dựng một nền tảng blog phong phú với những câu chuyện du lịch 
             và kinh nghiệm thực tế từ cộng đồng.
-          </p>
+          </Typography>
           <div className="space-x-4">
-            <button className="btn-primary">Theo dõi fanpage</button>
-            <button className="btn-secondary">Quay về trang chủ</button>
+            <Button>Theo dõi fanpage</Button>
+            <Button variant="secondary">Quay về trang chủ</Button>
           </div>
         </div>
       </div>
-    </div>
+    </Section>
   )
 }

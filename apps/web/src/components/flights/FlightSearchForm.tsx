@@ -2,6 +2,31 @@
 
 import { useState } from 'react'
 import { FlightSearchParams, FlightClass } from '@/types/flight.types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Card, CardContent } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const flightSearchSchema = z.object({
+  from: z.string().min(1, 'Vui lòng chọn điểm đi'),
+  to: z.string().min(1, 'Vui lòng chọn điểm đến'),
+  departureDate: z.string().min(1, 'Vui lòng chọn ngày bay'),
+  returnDate: z.string().optional(),
+  tripType: z.enum(['one-way', 'round-trip']),
+  flightClass: z.nativeEnum(FlightClass),
+  passengers: z.object({
+    adults: z.number().min(1, 'Phải có ít nhất 1 người lớn'),
+    children: z.number().min(0),
+    infants: z.number().min(0),
+  }),
+})
+
+type FlightSearchFormValues = z.infer<typeof flightSearchSchema>
 
 interface FlightSearchFormProps {
   onSearch: (params: FlightSearchParams) => void
@@ -9,263 +34,310 @@ interface FlightSearchFormProps {
 }
 
 export default function FlightSearchForm({ onSearch, isLoading = false }: FlightSearchFormProps) {
-  const [tripType, setTripType] = useState<'one-way' | 'round-trip'>('one-way')
-  const [searchParams, setSearchParams] = useState<FlightSearchParams>({
-    from: '',
-    to: '',
-    departureDate: '',
-    returnDate: '',
-    passengers: {
-      adults: 1,
-      children: 0,
-      infants: 0
-    },
-    flightClass: FlightClass.ECONOMY,
-    tripType: 'one-way'
+  const form = useForm<FlightSearchFormValues>({
+    resolver: zodResolver(flightSearchSchema),
+    defaultValues: {
+      from: '',
+      to: '',
+      departureDate: '',
+      returnDate: '',
+      tripType: 'one-way',
+      flightClass: FlightClass.ECONOMY,
+      passengers: {
+        adults: 1,
+        children: 0,
+        infants: 0
+      }
+    }
   })
 
-  const handleInputChange = (field: string, value: any) => {
-    setSearchParams(prev => ({
-      ...prev,
-      [field]: value
-    }))
-  }
+  const tripType = form.watch('tripType')
 
   const handlePassengerChange = (type: 'adults' | 'children' | 'infants', value: number) => {
-    setSearchParams(prev => ({
-      ...prev,
-      passengers: {
-        ...prev.passengers,
-        [type]: Math.max(0, value)
-      }
-    }))
+    const currentPassengers = form.getValues('passengers')
+    form.setValue('passengers', {
+      ...currentPassengers,
+      [type]: Math.max(0, value)
+    })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchParams.from || !searchParams.to || !searchParams.departureDate) {
-      alert('Vui lòng điền đầy đủ thông tin tìm kiếm')
-      return
-    }
-    
+  const onSubmit = (values: FlightSearchFormValues) => {
     onSearch({
-      ...searchParams,
-      tripType
+      ...values,
+      passengers: values.passengers
     })
   }
 
   const getTotalPassengers = () => {
-    return searchParams.passengers.adults + searchParams.passengers.children + searchParams.passengers.infants
+    const passengers = form.getValues('passengers')
+    return passengers.adults + passengers.children + passengers.infants
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Trip Type Selection */}
-      <div className="flex space-x-4 mb-6">
-        <label className="flex items-center">
-          <input
-            type="radio"
-            value="one-way"
-            checked={tripType === 'one-way'}
-            onChange={(e) => setTripType(e.target.value as 'one-way')}
-            className="mr-2"
-          />
-          <span>Một chiều</span>
-        </label>
-        <label className="flex items-center">
-          <input
-            type="radio"
-            value="round-trip"
-            checked={tripType === 'round-trip'}
-            onChange={(e) => setTripType(e.target.value as 'round-trip')}
-            className="mr-2"
-          />
-          <span>Khứ hồi</span>
-        </label>
-      </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Trip Type Selection */}
+        <FormField
+          control={form.control}
+          name="tripType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Loại chuyến bay</FormLabel>
+              <FormControl>
+                <div className="flex space-x-4">
+                  <Label className="flex items-center space-x-2 cursor-pointer">
+                    <Input
+                      type="radio"
+                      value="one-way"
+                      checked={field.value === 'one-way'}
+                      onChange={() => field.onChange('one-way')}
+                      className="w-4 h-4"
+                    />
+                    <span>Một chiều</span>
+                  </Label>
+                  <Label className="flex items-center space-x-2 cursor-pointer">
+                    <Input
+                      type="radio"
+                      value="round-trip"
+                      checked={field.value === 'round-trip'}
+                      onChange={() => field.onChange('round-trip')}
+                      className="w-4 h-4"
+                    />
+                    <span>Khứ hồi</span>
+                  </Label>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      {/* Main Search Form */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* From */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Từ
-          </label>
-          <input
-            type="text"
-            placeholder="Thành phố đi"
-            value={searchParams.from}
-            onChange={(e) => handleInputChange('from', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            required
+        {/* Main Search Form */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* From */}
+          <FormField
+            control={form.control}
+            name="from"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Từ</FormLabel>
+                <FormControl>
+                  <Input placeholder="Thành phố đi" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        {/* To */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Đến
-          </label>
-          <input
-            type="text"
-            placeholder="Thành phố đến"
-            value={searchParams.to}
-            onChange={(e) => handleInputChange('to', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            required
+          {/* To */}
+          <FormField
+            control={form.control}
+            name="to"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Đến</FormLabel>
+                <FormControl>
+                  <Input placeholder="Thành phố đến" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        {/* Departure Date */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Ngày bay
-          </label>
-          <input
-            type="date"
-            value={searchParams.departureDate}
-            onChange={(e) => handleInputChange('departureDate', e.target.value)}
-            min={new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            required
+          {/* Departure Date */}
+          <FormField
+            control={form.control}
+            name="departureDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ngày bay</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    min={new Date().toISOString().split('T')[0]}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        {/* Return Date (if round trip) */}
-        {tripType === 'round-trip' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Ngày về
-            </label>
-            <input
-              type="date"
-              value={searchParams.returnDate || ''}
-              onChange={(e) => handleInputChange('returnDate', e.target.value)}
-              min={searchParams.departureDate || new Date().toISOString().split('T')[0]}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          {/* Return Date (if round trip) */}
+          {tripType === 'round-trip' && (
+            <FormField
+              control={form.control}
+              name="returnDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ngày về</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      min={form.getValues('departureDate') || new Date().toISOString().split('T')[0]}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Passengers and Class */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Passengers */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Hành khách
-          </label>
-          <div className="relative">
-            <button
-              type="button"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-left focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
+        {/* Passengers and Class */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Passengers Display */}
+          <div>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Hành khách
+            </Label>
+            <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white">
               {getTotalPassengers()} hành khách
-            </button>
-            {/* Passenger dropdown would go here - simplified for now */}
+            </div>
+          </div>
+
+          {/* Flight Class */}
+          <FormField
+            control={form.control}
+            name="flightClass"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Hạng vé</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn hạng vé" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={FlightClass.ECONOMY}>Phổ thông</SelectItem>
+                    <SelectItem value={FlightClass.PREMIUM_ECONOMY}>Phổ thông đặc biệt</SelectItem>
+                    <SelectItem value={FlightClass.BUSINESS}>Thương gia</SelectItem>
+                    <SelectItem value={FlightClass.FIRST}>Hạng nhất</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Search Button */}
+          <div className="flex items-end">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3"
+            >
+              {isLoading ? 'Đang tìm kiếm...' : 'Tìm chuyến bay'}
+            </Button>
           </div>
         </div>
 
-        {/* Flight Class */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Hạng vé
-          </label>
-          <select
-            value={searchParams.flightClass}
-            onChange={(e) => handleInputChange('flightClass', e.target.value as FlightClass)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            <option value={FlightClass.ECONOMY}>Phổ thông</option>
-            <option value={FlightClass.PREMIUM_ECONOMY}>Phổ thông đặc biệt</option>
-            <option value={FlightClass.BUSINESS}>Thương gia</option>
-            <option value={FlightClass.FIRST}>Hạng nhất</option>
-          </select>
-        </div>
-
-        {/* Search Button */}
-        <div className="flex items-end">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Đang tìm kiếm...' : 'Tìm chuyến bay'}
-          </button>
-        </div>
-      </div>
-
-      {/* Quick passenger adjustment */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h4 className="font-medium mb-3">Chi tiết hành khách</h4>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Người lớn (12+)</label>
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('adults', searchParams.passengers.adults - 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-                disabled={searchParams.passengers.adults <= 1}
-              >
-                -
-              </button>
-              <span className="w-8 text-center">{searchParams.passengers.adults}</span>
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('adults', searchParams.passengers.adults + 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-              >
-                +
-              </button>
+        {/* Quick passenger adjustment */}
+        <Card>
+          <CardContent className="p-4">
+            <h4 className="font-medium mb-3">Chi tiết hành khách</h4>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label className="block text-sm text-gray-600 mb-1">Người lớn (12+)</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentAdults = form.getValues('passengers.adults')
+                      handlePassengerChange('adults', currentAdults - 1)
+                    }}
+                    disabled={form.getValues('passengers.adults') <= 1}
+                    className="h-8 w-8 p-0"
+                  >
+                    -
+                  </Button>
+                  <span className="w-8 text-center">{form.watch('passengers.adults')}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentAdults = form.getValues('passengers.adults')
+                      handlePassengerChange('adults', currentAdults + 1)
+                    }}
+                    className="h-8 w-8 p-0"
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="block text-sm text-gray-600 mb-1">Trẻ em (2-11)</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentChildren = form.getValues('passengers.children')
+                      handlePassengerChange('children', currentChildren - 1)
+                    }}
+                    disabled={form.getValues('passengers.children') <= 0}
+                    className="h-8 w-8 p-0"
+                  >
+                    -
+                  </Button>
+                  <span className="w-8 text-center">{form.watch('passengers.children')}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentChildren = form.getValues('passengers.children')
+                      handlePassengerChange('children', currentChildren + 1)
+                    }}
+                    className="h-8 w-8 p-0"
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="block text-sm text-gray-600 mb-1">Em bé (&lt;2)</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentInfants = form.getValues('passengers.infants')
+                      handlePassengerChange('infants', currentInfants - 1)
+                    }}
+                    disabled={form.getValues('passengers.infants') <= 0}
+                    className="h-8 w-8 p-0"
+                  >
+                    -
+                  </Button>
+                  <span className="w-8 text-center">{form.watch('passengers.infants')}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentInfants = form.getValues('passengers.infants')
+                      handlePassengerChange('infants', currentInfants + 1)
+                    }}
+                    className="h-8 w-8 p-0"
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Trẻ em (2-11)</label>
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('children', searchParams.passengers.children - 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-                disabled={searchParams.passengers.children <= 0}
-              >
-                -
-              </button>
-              <span className="w-8 text-center">{searchParams.passengers.children}</span>
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('children', searchParams.passengers.children + 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-              >
-                +
-              </button>
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Em bé (&lt;2)</label>
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('infants', searchParams.passengers.infants - 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-                disabled={searchParams.passengers.infants <= 0}
-              >
-                -
-              </button>
-              <span className="w-8 text-center">{searchParams.passengers.infants}</span>
-              <button
-                type="button"
-                onClick={() => handlePassengerChange('infants', searchParams.passengers.infants + 1)}
-                className="w-8 h-8 border border-gray-300 rounded text-sm hover:bg-gray-50"
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+          </CardContent>
+        </Card>
+      </form>
+    </Form>
   )
 }

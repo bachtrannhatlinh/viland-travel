@@ -1,4 +1,5 @@
-import { Flight, FlightClass } from '@/types/flight.types'
+import { Button } from '@/components/ui/button'
+import { Flight } from '@/types/flight.types'
 
 interface FlightCardProps {
   flight: Flight
@@ -163,12 +164,9 @@ export default function FlightCard({ flight, onSelect }: FlightCardProps) {
               </div>
             )}
 
-            <button
-              onClick={() => onSelect(flight)}
-              className="btn-primary px-6 py-2"
-            >
+            <Button onClick={() => onSelect(flight)}>
               Chọn chuyến bay
-            </button>
+            </Button>
           </div>
         </div>
       </div>

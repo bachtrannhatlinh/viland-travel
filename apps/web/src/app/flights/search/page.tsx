@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Flight, FlightSearchParams, FlightClass } from '@/types/flight.types'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Typography } from '@/components/ui/typography'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { AlertCircle } from 'lucide-react'
+
 
 // Lazy load components để tránh SSR issues
 const FlightCard = dynamic(() => import('@/components/flights/FlightCard'), { ssr: false })
@@ -83,7 +89,7 @@ export default function FlightSearchPage() {
       searchCriteria,
       selectedClass: searchCriteria?.flightClass || FlightClass.ECONOMY
     }
-    
+
     sessionStorage.setItem('selectedFlight', JSON.stringify(bookingData))
     router.push('/flights/booking')
   }
@@ -126,8 +132,8 @@ export default function FlightSearchPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-          <h2 className="text-xl font-bold text-gray-900">Đang tìm kiếm chuyến bay...</h2>
-          <p className="text-gray-600">Vui lòng chờ trong giây lát</p>
+          <Typography variant="h2" className="text-xl font-bold text-gray-900">Đang tìm kiếm chuyến bay...</Typography>
+          <Typography variant="p" className="text-gray-600">Vui lòng chờ trong giây lát</Typography>
         </div>
       </div>
     )
@@ -140,13 +146,13 @@ export default function FlightSearchPage() {
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <Typography variant="h1" className="text-2xl font-bold text-gray-900 mb-2">
                 Kết quả tìm kiếm chuyến bay
-              </h1>
+              </Typography>
               {searchCriteria && (
-                <p className="text-gray-600">
+                <Typography variant="p" className="text-gray-600">
                   {searchCriteria.from} → {searchCriteria.to} • {new Date(searchCriteria.departureDate).toLocaleDateString('vi-VN')} • {searchCriteria.passengers.adults + searchCriteria.passengers.children} hành khách
-                </p>
+                </Typography>
               )}
             </div>
             <button
@@ -161,7 +167,7 @@ export default function FlightSearchPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters */}
           <div className="lg:col-span-1">
-            <FlightFilters 
+            <FlightFilters
               flights={flights}
               onFilterChange={handleFilterChange}
             />
@@ -170,39 +176,42 @@ export default function FlightSearchPage() {
           {/* Results */}
           <div className="lg:col-span-3">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <Typography variant="h2" className="text-lg font-semibold text-gray-900">
                 {filteredFlights.length} chuyến bay được tìm thấy
-              </h2>
+              </Typography>
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Sắp xếp theo:</span>
-                <select className="border border-gray-300 rounded px-3 py-1 text-sm">
-                  <option value="price">Giá thấp nhất</option>
-                  <option value="duration">Thời gian bay</option>
-                  <option value="departure">Giờ khởi hành</option>
-                </select>
+                <Typography variant="small" className="text-sm text-gray-600">Sắp xếp theo:</Typography>
+                <Select defaultValue="price">
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="price">Giá thấp nhất</SelectItem>
+                    <SelectItem value="duration">Thời gian bay</SelectItem>
+                    <SelectItem value="departure">Giờ khởi hành</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             {filteredFlights.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 20.07a7.962 7.962 0 01-5-1.779M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
+                <div className="text-gray-400 mb-4 flex justify-center">
+                  <AlertCircle className="w-16 h-16" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <Typography variant="h3" className="text-lg font-semibold text-gray-900 mb-2">
                   Không tìm thấy chuyến bay phù hợp
-                </h3>
-                <p className="text-gray-600">
+                </Typography>
+                <Typography variant="p" className="text-gray-600">
                   Vui lòng thử thay đổi bộ lọc hoặc tiêu chí tìm kiếm
-                </p>
+                </Typography>
               </div>
             ) : (
               <div className="space-y-4">
                 {filteredFlights.map((flight) => (
-                  <FlightCard 
-                    key={flight.id} 
-                    flight={flight} 
+                  <FlightCard
+                    key={flight.id}
+                    flight={flight}
                     onSelect={handleSelectFlight}
                   />
                 ))}

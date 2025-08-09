@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { PreloadLinks } from '@/components/layout/PreloadLinks'
 import { Section } from '@/components/ui/section'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -29,6 +30,7 @@ export default function RootLayout({
               {children}
             </Section>
             <Footer />
+            <PreloadLinks />
           </div>
         </Providers>
       </body>

@@ -1,5 +1,8 @@
 import { Flight } from '@/types/flight.types'
 import { useState, useMemo } from 'react'
+import { Button } from '@/components/ui/button'
+import { Typography } from '@/components/ui/typography'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface FlightFiltersProps {
   flights: Flight[]
@@ -93,116 +96,119 @@ export default function FlightFilters({ flights, onFilterChange }: FlightFilters
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg">Bộ lọc</h3>
-        <button
-          onClick={resetFilters}
-          className="text-sm text-primary-600 hover:text-primary-700"
-        >
-          Đặt lại
-        </button>
-      </div>
-
-      {/* Price Filter */}
-      <div className="mb-6">
-        <h4 className="font-semibold text-gray-900 mb-3">Khoảng giá</h4>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>{formatPrice(availableFilters.priceRange.min)}</span>
-            <span>{formatPrice(availableFilters.priceRange.max)}</span>
-          </div>
-          <input
-            type="range"
-            min={availableFilters.priceRange.min}
-            max={availableFilters.priceRange.max}
-            value={selectedFilters.priceRange.max}
-            onChange={(e) => handlePriceRangeChange(availableFilters.priceRange.min, parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-          <p className="text-sm text-gray-600">
-            Tối đa: {formatPrice(selectedFilters.priceRange.max)} VND
-          </p>
+    <Card className="sticky top-4">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <Typography variant="h3" className="font-bold text-lg">Bộ lọc</Typography>
+          <Button
+            onClick={resetFilters}
+            variant="link"
+            className="text-sm text-primary-600 hover:text-primary-700 p-0"
+          >
+            Đặt lại
+          </Button>
         </div>
-      </div>
 
-      {/* Airlines Filter */}
-      {availableFilters.airlines.length > 0 && (
+        {/* Price Filter */}
         <div className="mb-6">
-          <h4 className="font-semibold text-gray-900 mb-3">Hãng hàng không</h4>
+          <Typography variant="h4" className="font-semibold text-gray-900 mb-3">Khoảng giá</Typography>
           <div className="space-y-2">
-            {availableFilters.airlines.map((airline: string) => (
-              <label key={airline} className="flex items-center">
+            <div className="flex justify-between text-sm text-gray-600">
+              <Typography variant="small">{formatPrice(availableFilters.priceRange.min)}</Typography>
+              <Typography variant="small">{formatPrice(availableFilters.priceRange.max)}</Typography>
+            </div>
+            <input
+              type="range"
+              min={availableFilters.priceRange.min}
+              max={availableFilters.priceRange.max}
+              value={selectedFilters.priceRange.max}
+              onChange={(e) => handlePriceRangeChange(availableFilters.priceRange.min, parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <Typography variant="small" className="text-sm text-gray-600">
+              Tối đa: {formatPrice(selectedFilters.priceRange.max)} VND
+            </Typography>
+          </div>
+        </div>
+
+        {/* Airlines Filter */}
+        {availableFilters.airlines.length > 0 && (
+          <div className="mb-6">
+            <Typography variant="h4" className="font-semibold text-gray-900 mb-3">Hãng hàng không</Typography>
+            <div className="space-y-2">
+              {availableFilters.airlines.map((airline: string) => (
+                <label key={airline} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.airlines.includes(airline)}
+                    onChange={(e) => handleAirlineChange(airline, e.target.checked)}
+                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <Typography variant="small" className="ml-2 text-sm text-gray-700">{airline}</Typography>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Departure Time Filter */}
+        <div className="mb-6">
+          <Typography variant="h4" className="font-semibold text-gray-900 mb-3">Giờ khởi hành</Typography>
+          <div className="space-y-2">
+            {availableFilters.departureTimeRanges.map((timeRange: string) => (
+              <label key={timeRange} className="flex items-center">
                 <input
-                  type="checkbox"
-                  checked={selectedFilters.airlines.includes(airline)}
-                  onChange={(e) => handleAirlineChange(airline, e.target.checked)}
-                  className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  type="radio"
+                  name="departureTime"
+                  checked={selectedFilters.departureTime === timeRange}
+                  onChange={() => handleDepartureTimeChange(timeRange)}
+                  className="border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
-                <span className="ml-2 text-sm text-gray-700">{airline}</span>
+                <Typography variant="small" className="ml-2 text-sm text-gray-700">
+                  {getTimeLabel(timeRange)}
+                </Typography>
               </label>
             ))}
           </div>
         </div>
-      )}
 
-      {/* Departure Time Filter */}
-      <div className="mb-6">
-        <h4 className="font-semibold text-gray-900 mb-3">Giờ khởi hành</h4>
-        <div className="space-y-2">
-          {availableFilters.departureTimeRanges.map((timeRange: string) => (
-            <label key={timeRange} className="flex items-center">
+        {/* Stops Filter */}
+        <div className="mb-6">
+          <Typography variant="h4" className="font-semibold text-gray-900 mb-3">Điểm dừng</Typography>
+          <div className="space-y-2">
+            <label className="flex items-center">
               <input
                 type="radio"
-                name="departureTime"
-                checked={selectedFilters.departureTime === timeRange}
-                onChange={() => handleDepartureTimeChange(timeRange)}
+                name="stops"
+                value="direct"
+                checked={selectedFilters.stops === 'direct'}
+                onChange={(e) => {
+                  const newFilters = { ...selectedFilters, stops: e.target.value }
+                  setSelectedFilters(newFilters)
+                  onFilterChange(newFilters)
+                }}
                 className="border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <span className="ml-2 text-sm text-gray-700">
-                {getTimeLabel(timeRange)}
-              </span>
+              <Typography variant="small" className="ml-2 text-sm text-gray-700">Bay thẳng</Typography>
             </label>
-          ))}
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="stops"
+                value="all"
+                checked={selectedFilters.stops === 'all'}
+                onChange={(e) => {
+                  const newFilters = { ...selectedFilters, stops: e.target.value }
+                  setSelectedFilters(newFilters)
+                  onFilterChange(newFilters)
+                }}
+                className="border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <Typography variant="small" className="ml-2 text-sm text-gray-700">Tất cả</Typography>
+            </label>
+          </div>
         </div>
-      </div>
-
-      {/* Stops Filter */}
-      <div className="mb-6">
-        <h4 className="font-semibold text-gray-900 mb-3">Điểm dừng</h4>
-        <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="stops"
-              value="direct"
-              checked={selectedFilters.stops === 'direct'}
-              onChange={(e) => {
-                const newFilters = { ...selectedFilters, stops: e.target.value }
-                setSelectedFilters(newFilters)
-                onFilterChange(newFilters)
-              }}
-              className="border-gray-300 text-primary-600 focus:ring-primary-500"
-            />
-            <span className="ml-2 text-sm text-gray-700">Bay thẳng</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="stops"
-              value="all"
-              checked={selectedFilters.stops === 'all'}
-              onChange={(e) => {
-                const newFilters = { ...selectedFilters, stops: e.target.value }
-                setSelectedFilters(newFilters)
-                onFilterChange(newFilters)
-              }}
-              className="border-gray-300 text-primary-600 focus:ring-primary-500"
-            />
-            <span className="ml-2 text-sm text-gray-700">Tất cả</span>
-          </label>
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

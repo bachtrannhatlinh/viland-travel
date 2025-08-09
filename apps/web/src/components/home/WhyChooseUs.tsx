@@ -59,7 +59,7 @@ export function WhyChooseUs() {
                 <div className="text-3xl md:text-4xl font-bold text-primary-600 mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-600">{stat.label}</div>
+                <Typography variant="p" className="text-gray-600">{stat.label}</Typography>
               </CardContent>
             </Card>
           ))}

@@ -1,35 +1,13 @@
-'use client'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { FlightSearchParams } from '@/types/flight.types'
-
-// Force dynamic rendering - no SSG
-export const dynamic = 'force-dynamic'
+export const metadata: Metadata = {
+  title: 'Vé máy bay giá rẻ - GoSafe',
+  description: 'Tìm kiếm và đặt vé máy bay đến mọi điểm đến trên thế giới với giá tốt nhất.',
+}
 
 export default function FlightsPage() {
-  const router = useRouter()
-  const [isSearching, setIsSearching] = useState(false)
-
-  const handleSearch = async (searchParams: FlightSearchParams) => {
-    setIsSearching(true)
-    
-    // Tạo query string từ search params
-    const queryParams = new URLSearchParams({
-      from: searchParams.from,
-      to: searchParams.to,
-      departureDate: searchParams.departureDate,
-      adults: searchParams.passengers.adults.toString(),
-      children: searchParams.passengers.children.toString(),
-      infants: searchParams.passengers.infants.toString(),
-      class: searchParams.flightClass,
-      tripType: searchParams.tripType,
-      ...(searchParams.returnDate && { returnDate: searchParams.returnDate })
-    })
-
-    // Chuyển hướng đến trang kết quả tìm kiếm
-    router.push(`/flights/search?${queryParams.toString()}`)
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,12 +30,9 @@ export default function FlightsPage() {
             <p className="text-gray-600 mb-8">
               Form tìm kiếm chuyến bay đang được phát triển
             </p>
-            <button 
-              onClick={() => router.push('/flights/search?demo=true')}
-              className="btn-primary px-8 py-3"
-            >
-              Xem demo kết quả tìm kiếm
-            </button>
+            <Button asChild size="lg">
+              <Link href="/flights/search?demo=true" prefetch={true}>Xem demo kết quả tìm kiếm</Link>
+            </Button>
           </div>
         </div>
 

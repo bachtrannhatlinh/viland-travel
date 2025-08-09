@@ -1,4 +1,10 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { Typography } from '@/components/ui/typography'
+import { Section } from '@/components/ui/section'
+import { Button } from '@/components/ui/button'
+import { Zap, Eye, Check } from 'lucide-react'
+
 
 export const metadata: Metadata = {
   title: 'Về chúng tôi - GoSafe',
@@ -9,16 +15,16 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
+      <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6 text-white">
             Về GoSafe
-          </h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+          </Typography>
+          <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto text-white">
             Nền tảng đặt tour du lịch an toàn và tin cậy hàng đầu Việt Nam
-          </p>
+          </Typography>
         </div>
-      </div>
+      </Section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Mission & Vision */}
@@ -26,42 +32,37 @@ export default function AboutPage() {
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-                <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <Zap className="w-8 h-8 text-primary-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Sứ mệnh</h2>
+              <Typography variant="h2" className="text-2xl font-bold text-gray-900">Sứ mệnh</Typography>
             </div>
-            <p className="text-gray-600 leading-relaxed">
-              Mang đến trải nghiệm du lịch an toàn, chất lượng và đáng nhớ cho mọi khách hàng. 
-              Chúng tôi cam kết xây dựng một nền tảng đáng tin cậy, giúp kết nối du khách với 
-              những dịch vụ du lịch tốt nhất, từ tour trọn gói đến các dịch vụ riêng lẻ như 
+            <Typography variant="p" className="text-gray-600 leading-relaxed">
+              Mang đến trải nghiệm du lịch an toàn, chất lượng và đáng nhớ cho mọi khách hàng.
+              Chúng tôi cam kết xây dựng một nền tảng đáng tin cậy, giúp kết nối du khách với
+              những dịch vụ du lịch tốt nhất, từ tour trọn gói đến các dịch vụ riêng lẻ như
               vé máy bay, khách sạn, thuê xe và tài xế.
-            </p>
+            </Typography>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary-100 rounded-full mb-4">
-                <svg className="w-8 h-8 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
+                <Eye className="w-8 h-8 text-secondary-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Tầm nhìn</h2>
+              <Typography variant="h2" className="text-2xl font-bold text-gray-900">Tầm nhìn</Typography>
             </div>
-            <p className="text-gray-600 leading-relaxed">
-              Trở thành nền tảng du lịch hàng đầu Việt Nam, được tin tưởng bởi hàng triệu 
-              khách hàng. Chúng tôi hướng đến việc số hóa ngành du lịch, tạo ra một hệ sinh thái 
-              hoàn chỉnh và hiện đại, nơi mọi nhu cầu du lịch đều được đáp ứng một cách 
+            <Typography variant="p" className="text-gray-600 leading-relaxed">
+              Trở thành nền tảng du lịch hàng đầu Việt Nam, được tin tưởng bởi hàng triệu
+              khách hàng. Chúng tôi hướng đến việc số hóa ngành du lịch, tạo ra một hệ sinh thái
+              hoàn chỉnh và hiện đại, nơi mọi nhu cầu du lịch đều được đáp ứng một cách
               thuận tiện và an toàn nhất.
-            </p>
+            </Typography>
           </div>
         </div>
 
         {/* Core Values */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Giá trị cốt lõi</h2>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">Giá trị cốt lõi</Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
@@ -87,8 +88,8 @@ export default function AboutPage() {
             ].map((value, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center">
                 <div className="text-4xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
+                <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-3">{value.title}</Typography>
+                <Typography variant="p" className="text-gray-600">{value.description}</Typography>
               </div>
             ))}
           </div>
@@ -96,7 +97,7 @@ export default function AboutPage() {
 
         {/* Company Stats */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">GoSafe trong con số</h2>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">GoSafe trong con số</Typography>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { number: '50,000+', label: 'Khách hàng hài lòng' },
@@ -106,7 +107,7 @@ export default function AboutPage() {
             ].map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-primary-600 mb-2">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
+                <Typography variant="p" className="text-gray-600">{stat.label}</Typography>
               </div>
             ))}
           </div>
@@ -114,7 +115,7 @@ export default function AboutPage() {
 
         {/* Team Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Đội ngũ lãnh đạo</h2>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">Đội ngũ lãnh đạo</Typography>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
@@ -138,9 +139,9 @@ export default function AboutPage() {
             ].map((member, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md p-6 text-center">
                 <div className="text-6xl mb-4">{member.image}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{member.name}</h3>
-                <p className="text-primary-600 font-medium mb-3">{member.position}</p>
-                <p className="text-gray-600 text-sm">{member.bio}</p>
+                <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-2">{member.name}</Typography>
+                <Typography variant="p" className="text-primary-600 font-medium mb-3">{member.position}</Typography>
+                <Typography variant="p" className="text-gray-600 text-sm">{member.bio}</Typography>
               </div>
             ))}
           </div>
@@ -148,7 +149,7 @@ export default function AboutPage() {
 
         {/* Certifications & Awards */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Chứng nhận & Giải thưởng</h2>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">Chứng nhận & Giải thưởng</Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -178,9 +179,7 @@ export default function AboutPage() {
             ].map((cert, index) => (
               <div key={index} className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-                  <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Check className="w-8 h-8 text-primary-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{cert.title}</h3>
                 <p className="text-gray-600 text-sm">{cert.description}</p>
@@ -191,17 +190,13 @@ export default function AboutPage() {
 
         {/* Contact CTA */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Bắt đầu hành trình cùng GoSafe</h2>
-          <p className="text-xl opacity-90 mb-8">
+          <Typography variant="h2" className="text-3xl font-bold mb-4">Bắt đầu hành trình cùng GoSafe</Typography>
+          <Typography variant="large" className="text-xl opacity-90 mb-8">
             Khám phá thế giới với sự an toàn và tin cậy
-          </p>
+          </Typography>
           <div className="space-x-4">
-            <button className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Liên hệ ngay
-            </button>
-            <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors">
-              Xem tour hot
-            </button>
+            <Button className="bg-white text-primary-600 px-8 py-3 font-semibold hover:bg-gray-100">Liên hệ ngay</Button>
+            <Button variant="outline" className="border-2 border-white text-white px-8 py-3 font-semibold hover:bg-white hover:text-primary-600">Xem tour hot</Button>
           </div>
         </div>
       </div>

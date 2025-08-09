@@ -101,7 +101,7 @@ export default function DriverServicePage() {
               </div>
               <div className="md:col-span-2">
                 <Button className="w-full py-3" asChild>
-                  <Link href="/driver-service/booking">Đặt tài xế ngay</Link>
+                  <Link href="/driver-service/booking" prefetch={true}>Đặt tài xế ngay</Link>
                 </Button>
               </div>
             </div>

@@ -170,12 +170,11 @@ export function NewsAndExperience() {
             </div>
 
             <div className="text-center mt-8">
-              <Link 
-                href="/reviews"
-                className="btn-secondary inline-flex items-center"
-              >
-                Xem thêm đánh giá <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
+              <Button asChild variant="secondary" className="inline-flex items-center">
+                <Link href="/reviews">
+                  Xem thêm đánh giá <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

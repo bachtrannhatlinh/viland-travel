@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Flight, FlightClass, PassengerInfo, FlightBookingData } from '@/types/flight.types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Typography } from '@/components/ui/typography'
+import Link from 'next/link'
+import { FlightClass, PassengerInfo, FlightBookingData } from '@/types/flight.types'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Label } from '@/components/ui/label'
 
@@ -194,12 +200,9 @@ export default function FlightBookingPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Không tìm thấy thông tin chuyến bay</h2>
-          <button
-            onClick={() => router.push('/flights')}
-            className="btn-primary"
-          >
-            Quay lại trang tìm kiếm
-          </button>
+          <Button asChild>
+            <Link href="/flights">Quay lại trang tìm kiếm</Link>
+          </Button>
         </div>
       </div>
     )
@@ -292,57 +295,53 @@ export default function FlightBookingPage() {
 
             {/* Contact Information */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Thông tin liên hệ</h3>
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Thông tin liên hệ</Typography>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Họ và tên *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={contactInfo.name}
                     onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Email *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="email"
                     value={contactInfo.email}
                     onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Số điện thoại *
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="tel"
                     value={contactInfo.phone}
                     onChange={(e) => setContactInfo({...contactInfo, phone: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Label className="block text-sm font-medium text-gray-700 mb-2">
                     Địa chỉ
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={contactInfo.address}
                     onChange={(e) => setContactInfo({...contactInfo, address: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                   />
                 </div>
               </div>
@@ -350,57 +349,54 @@ export default function FlightBookingPage() {
 
             {/* Passenger Information */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Thông tin hành khách</h3>
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Thông tin hành khách</Typography>
               
               <div className="space-y-6">
                 {passengers.map((passenger, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-3">
+                    <Typography variant="h4" className="font-semibold text-gray-900 mb-3">
                       Hành khách {index + 1} - {
                         passenger.type === 'adult' ? 'Người lớn' :
                         passenger.type === 'child' ? 'Trẻ em' : 'Em bé'
                       }
-                    </h4>
+                    </Typography>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Danh xưng *
-                        </label>
-                        <select
-                          value={passenger.title}
-                          onChange={(e) => handlePassengerUpdate(index, {...passenger, title: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                          required
-                        >
-                          <option value="">Chọn danh xưng</option>
-                          <option value="Mr">Ông</option>
-                          <option value="Ms">Bà</option>
-                          <option value="Miss">Cô</option>
-                        </select>
+                        </Label>
+                        <Select value={passenger.title} onValueChange={(value) => handlePassengerUpdate(index, {...passenger, title: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn danh xưng" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Mr">Ông</SelectItem>
+                            <SelectItem value="Ms">Bà</SelectItem>
+                            <SelectItem value="Miss">Cô</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Tên *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           value={passenger.firstName}
                           onChange={(e) => handlePassengerUpdate(index, {...passenger, firstName: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                           required
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Họ *
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           value={passenger.lastName}
                           onChange={(e) => handlePassengerUpdate(index, {...passenger, lastName: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                           required
                         />
                       </div>
@@ -417,32 +413,31 @@ export default function FlightBookingPage() {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Quốc tịch *
-                        </label>
-                        <select
-                          value={passenger.nationality}
-                          onChange={(e) => handlePassengerUpdate(index, {...passenger, nationality: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                          required
-                        >
-                          <option value="VN">Việt Nam</option>
-                          <option value="US">Hoa Kỳ</option>
-                          <option value="UK">Anh</option>
-                          <option value="AU">Úc</option>
-                          <option value="CA">Canada</option>
-                        </select>
+                        </Label>
+                        <Select value={passenger.nationality} onValueChange={(value) => handlePassengerUpdate(index, {...passenger, nationality: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="VN">Việt Nam</SelectItem>
+                            <SelectItem value="US">Hoa Kỳ</SelectItem>
+                            <SelectItem value="UK">Anh</SelectItem>
+                            <SelectItem value="AU">Úc</SelectItem>
+                            <SelectItem value="CA">Canada</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label className="block text-sm font-medium text-gray-700 mb-2">
                           Số hộ chiếu
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                           type="text"
                           value={passenger.passportNumber || ''}
                           onChange={(e) => handlePassengerUpdate(index, {...passenger, passportNumber: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
                     </div>
@@ -453,13 +448,12 @@ export default function FlightBookingPage() {
 
             {/* Special Requests */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Yêu cầu đặc biệt</h3>
-              
-              <textarea
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Yêu cầu đặc biệt</Typography>
+
+              <Textarea
                 value={specialRequests}
                 onChange={(e) => setSpecialRequests(e.target.value)}
                 placeholder="Ví dụ: Suất ăn chay, ghế gần lối đi, hỗ trợ người khuyết tật..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                 rows={3}
               />
             </div>
@@ -468,50 +462,50 @@ export default function FlightBookingPage() {
           {/* Booking Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
+              <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-6">
                 Tóm tắt đặt vé
-              </h3>
+              </Typography>
 
               {/* Flight Information */}
               <div className="mb-6 pb-6 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-gray-900">Chuyến bay</h4>
-                  <span className="text-sm text-gray-600">
+                  <Typography variant="h4" className="font-semibold text-gray-900">Chuyến bay</Typography>
+                  <Typography variant="small" className="text-sm text-gray-600">
                     {formatDate(bookingData.flight.departureDate)}
-                  </span>
+                  </Typography>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
+                    <Typography variant="small" className="text-sm text-gray-600">
                       {bookingData.flight.departureCity} → {bookingData.flight.arrivalCity}
-                    </span>
-                    <span className="text-sm font-medium">
+                    </Typography>
+                    <Typography variant="small" className="text-sm font-medium">
                       {formatTime(bookingData.flight.departureDate)} - {formatTime(bookingData.flight.arrivalDate)}
-                    </span>
+                    </Typography>
                   </div>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
+                    <Typography variant="small" className="text-sm text-gray-600">
                       {bookingData.flight.airline} • {bookingData.flight.flightNumber}
-                    </span>
+                    </Typography>
                   </div>
                 </div>
               </div>
 
               {/* Passengers */}
               <div className="mb-6 pb-6 border-b border-gray-200">
-                <h4 className="font-semibold text-gray-900 mb-3">Hành khách</h4>
+                <Typography variant="h4" className="font-semibold text-gray-900 mb-3">Hành khách</Typography>
                 <div className="space-y-2">
                   {passengers.map((passenger, index) => (
                     <div key={index} className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">
+                      <Typography variant="small" className="text-gray-600">
                         {passenger.firstName} {passenger.lastName}
-                      </span>
-                      <span className="text-gray-900">
-                        {passenger.type === 'adult' ? 'Người lớn' : 
+                      </Typography>
+                      <Typography variant="small" className="text-gray-900">
+                        {passenger.type === 'adult' ? 'Người lớn' :
                          passenger.type === 'child' ? 'Trẻ em' : 'Em bé'}
-                      </span>
+                      </Typography>
                     </div>
                   ))}
                 </div>
@@ -520,32 +514,29 @@ export default function FlightBookingPage() {
               {/* Total Amount */}
               <div className="mb-6">
                 <div className="flex justify-between items-center text-xl font-bold text-gray-900">
-                  <span>Tổng cộng</span>
-                  <span className="text-primary-600">
+                  <Typography variant="large">Tổng cộng</Typography>
+                  <Typography variant="large" className="text-primary-600">
                     {formatPrice(calculateTotalAmount())}
-                  </span>
+                  </Typography>
                 </div>
               </div>
 
               {/* Confirm Button */}
-              <button
-                onClick={handleConfirmBooking}
-                className="w-full py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
-              >
+              <Button className="w-full py-4" onClick={handleConfirmBooking}>
                 Tiếp tục thanh toán
-              </button>
+              </Button>
 
               {/* Terms */}
-              <div className="mt-4 text-xs text-gray-500 text-center">
+              <Typography variant="small" className="mt-4 text-xs text-gray-500 text-center">
                 Bằng cách tiếp tục, bạn đồng ý với{' '}
-                <a href="/terms" className="text-primary-600 hover:underline">
+                <Link href="/terms" className="text-primary-600 hover:underline">
                   Điều khoản dịch vụ
-                </a>{' '}
+                </Link>{' '}
                 và{' '}
-                <a href="/privacy" className="text-primary-600 hover:underline">
+                <Link href="/privacy" className="text-primary-600 hover:underline">
                   Chính sách bảo mật
-                </a>
-              </div>
+                </Link>
+              </Typography>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Menu } from 'lucide-react'
+import { Typography } from '@/components/ui/typography'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -36,7 +37,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-primary-600">GoSafe</span>
+              <Typography variant="large" className="text-2xl font-bold text-primary-600">GoSafe</Typography>
             </Link>
           </div>
 
@@ -62,11 +63,12 @@ export function Header() {
                       <Link
                         key={service.name}
                         href={service.href}
+                        prefetch={true}
                         legacyBehavior
                         passHref
                       >
                         <NavigationMenuLink className="block p-3 space-y-1 rounded-md hover:bg-accent">
-                          <div className="text-sm font-medium leading-none">{service.name}</div>
+                          <Typography variant="small" className="text-sm font-medium leading-none">{service.name}</Typography>
                         </NavigationMenuLink>
                       </Link>
                     ))}
@@ -127,6 +129,7 @@ export function Header() {
                         <Link
                           key={service.name}
                           href={service.href}
+                          prefetch={true}
                           className="block text-gray-700 hover:text-primary-600"
                         >
                           {service.name}

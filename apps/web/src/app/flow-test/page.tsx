@@ -2,6 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Typography } from '@/components/ui/typography'
+import { Card, CardContent } from '@/components/ui/card'
+import { Section } from '@/components/ui/section'
 
 export default function FlightFlowTestPage() {
   const router = useRouter()
@@ -126,100 +130,99 @@ export default function FlightFlowTestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <Section className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center">
+        <Typography variant="h1" className="text-3xl font-bold mb-8 text-center">
           🧪 Test Flow: Vé máy bay → Tìm chuyến → Đặt vé → Thanh toán
-        </h1>
+        </Typography>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Current Flow Status:</h2>
-          <div className="flex items-center space-x-4">
-            <div className={`px-4 py-2 rounded ${step >= 1 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
-              1. Vé máy bay
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <Typography variant="h2" className="text-xl font-semibold mb-4">Current Flow Status:</Typography>
+            <div className="flex items-center space-x-4">
+              <div className={`px-4 py-2 rounded ${step >= 1 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
+                1. Vé máy bay
+              </div>
+              <Typography variant="small">→</Typography>
+              <div className={`px-4 py-2 rounded ${step >= 2 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
+                2. Tìm chuyến
+              </div>
+              <Typography variant="small">→</Typography>
+              <div className={`px-4 py-2 rounded ${step >= 3 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
+                3. Đặt vé
+              </div>
+              <Typography variant="small">→</Typography>
+              <div className={`px-4 py-2 rounded ${step >= 4 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
+                4. Thanh toán
+              </div>
             </div>
-            <span>→</span>
-            <div className={`px-4 py-2 rounded ${step >= 2 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
-              2. Tìm chuyến
-            </div>
-            <span>→</span>
-            <div className={`px-4 py-2 rounded ${step >= 3 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
-              3. Đặt vé
-            </div>
-            <span>→</span>
-            <div className={`px-4 py-2 rounded ${step >= 4 ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
-              4. Thanh toán
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <div className="space-y-4">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">🔍 Step 1: Test Search Flow</h3>
-            <p className="text-gray-600 mb-4">Test trang tìm kiếm chuyến bay với params: SGN → HAN, 15/08/2025</p>
-            <button
-              onClick={testStep1_FlightSearch}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-            >
-              Test Tìm chuyến bay
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <Typography variant="h3" className="text-lg font-semibold mb-4">🔍 Step 1: Test Search Flow</Typography>
+              <Typography variant="p" className="text-gray-600 mb-4">Test trang tìm kiếm chuyến bay với params: SGN → HAN, 15/08/2025</Typography>
+              <Button onClick={testStep1_FlightSearch}>
+                Test Tìm chuyến bay
+              </Button>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">✈️ Step 2: Test Booking Flow</h3>
-            <p className="text-gray-600 mb-4">Giả lập việc chọn chuyến bay và chuyển đến trang đặt vé</p>
-            <button
-              onClick={testStep2_SelectFlight}
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-            >
-              Test Chọn chuyến bay
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <Typography variant="h3" className="text-lg font-semibold mb-4">✈️ Step 2: Test Booking Flow</Typography>
+              <Typography variant="p" className="text-gray-600 mb-4">Giả lập việc chọn chuyến bay và chuyển đến trang đặt vé</Typography>
+              <Button onClick={testStep2_SelectFlight} className="bg-green-600 hover:bg-green-700">
+                Test Chọn chuyến bay
+              </Button>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">📝 Step 3: Test Payment Flow</h3>
-            <p className="text-gray-600 mb-4">Giả lập việc điền form và chuyển đến thanh toán</p>
-            <button
-              onClick={testStep3_BookingForm}
-              className="bg-orange-600 text-white px-6 py-2 rounded hover:bg-orange-700"
-            >
-              Test Đặt vé
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <Typography variant="h3" className="text-lg font-semibold mb-4">📝 Step 3: Test Payment Flow</Typography>
+              <Typography variant="p" className="text-gray-600 mb-4">Giả lập việc điền form và chuyển đến thanh toán</Typography>
+              <Button onClick={testStep3_BookingForm} className="bg-orange-600 hover:bg-orange-700">
+                Test Đặt vé
+              </Button>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">💳 Step 4: Complete Flow</h3>
-            <p className="text-gray-600 mb-4">Hoàn thành flow thanh toán</p>
-            <button
-              onClick={testStep4_Payment}
-              className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
-            >
-              Test Thanh toán
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <Typography variant="h3" className="text-lg font-semibold mb-4">💳 Step 4: Complete Flow</Typography>
+              <Typography variant="p" className="text-gray-600 mb-4">Hoàn thành flow thanh toán</Typography>
+              <Button onClick={testStep4_Payment} className="bg-purple-600 hover:bg-purple-700">
+                Test Thanh toán
+              </Button>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">🔧 Test API Directly</h3>
-            <p className="text-gray-600 mb-4">Test API search trực tiếp</p>
-            <button
-              onClick={testAPIDirectly}
-              className="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700"
-            >
-              Test API Search
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <Typography variant="h3" className="text-lg font-semibold mb-4">🔧 Test API Directly</Typography>
+              <Typography variant="p" className="text-gray-600 mb-4">Test API search trực tiếp</Typography>
+              <Button onClick={testAPIDirectly} variant="secondary">
+                Test API Search
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-800 mb-2">📋 Hướng dẫn test:</h4>
-          <ol className="list-decimal list-inside text-blue-700 space-y-1">
-            <li>Click &quot;Test Tìm chuyến bay&quot; → sẽ mở tab mới với kết quả search</li>
-            <li>Click &quot;Test Chọn chuyến bay&quot; → sẽ mở trang booking với data giả lập</li>
-            <li>Click &quot;Test Đặt vé&quot; → sẽ mở trang payment với booking data</li>
-            <li>Click &quot;Test API Search&quot; → kiểm tra API có hoạt động không</li>
-          </ol>
-        </div>
+        <Card className="mt-8 bg-blue-50 border border-blue-200">
+          <CardContent className="p-4">
+            <Typography variant="h4" className="font-semibold text-blue-800 mb-2">📋 Hướng dẫn test:</Typography>
+            <ol className="list-decimal list-inside text-blue-700 space-y-1">
+              <li>Click &quot;Test Tìm chuyến bay&quot; → sẽ mở tab mới với kết quả search</li>
+              <li>Click &quot;Test Chọn chuyến bay&quot; → sẽ mở trang booking với data giả lập</li>
+              <li>Click &quot;Test Đặt vé&quot; → sẽ mở trang payment với booking data</li>
+              <li>Click &quot;Test API Search&quot; → kiểm tra API có hoạt động không</li>
+            </ol>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </Section>
   )
 }

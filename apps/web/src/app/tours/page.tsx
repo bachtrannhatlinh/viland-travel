@@ -1,6 +1,11 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Label } from '@/components/ui/label'
+import { Typography } from '@/components/ui/typography'
+import { Section } from '@/components/ui/section'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'Tour du lịch - GoSafe',
@@ -12,21 +17,22 @@ export default function ToursPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-4">
             Tour du lịch
-          </h1>
-          <p className="text-xl text-gray-600">
+          </Typography>
+          <Typography variant="large" className="text-xl text-gray-600">
             Khám phá những điểm đến tuyệt vời với các tour du lịch đa dạng
-          </p>
+          </Typography>
         </div>
 
         {/* Tour Search Form */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Điểm đến
-              </label>
+        <Card className="mb-12">
+          <CardContent className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div>
+                <Label className="block text-sm font-medium text-gray-700 mb-2">
+                  Điểm đến
+                </Label>
               <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                 <option value="">Chọn điểm đến</option>
                 <option value="hanoi">Hà Nội</option>
@@ -56,12 +62,11 @@ export default function ToursPage() {
               </select>
             </div>
             <div className="flex items-end">
-              <button className="w-full btn-primary py-3">
-                Tìm tour
-              </button>
+              <Button className="w-full py-3">Tìm tour</Button>
             </div>
           </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Featured Tours */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -107,12 +112,9 @@ export default function ToursPage() {
                   <span className="text-2xl font-bold text-primary-600">2,200,000₫</span>
                   <span className="text-sm text-gray-500 line-through ml-2">2,500,000₫</span>
                 </div>
-                <a
-                  href="/tours/1"
-                  className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
-                >
-                  Xem chi tiết
-                </a>
+                <Button asChild size="sm">
+                  <Link href="/tours/1">Xem chi tiết</Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -158,9 +160,9 @@ export default function ToursPage() {
                 <div>
                   <span className="text-2xl font-bold text-primary-600">1,800,000₫</span>
                 </div>
-                <button className="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed text-sm font-medium">
+                <Button variant="outline" size="sm" disabled>
                   Sắp ra mắt
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -207,9 +209,9 @@ export default function ToursPage() {
                   <span className="text-2xl font-bold text-primary-600">3,200,000₫</span>
                   <span className="text-sm text-gray-500 line-through ml-2">3,800,000₫</span>
                 </div>
-                <button className="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed text-sm font-medium">
+                <Button variant="outline" size="sm" disabled>
                   Sắp ra mắt
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -231,8 +233,8 @@ export default function ToursPage() {
             Đăng ký nhận thông báo để không bỏ lỡ các ưu đãi đặc biệt.
           </p>
           <div className="space-x-4">
-            <button className="btn-primary">Đăng ký nhận tin</button>
-            <button className="btn-secondary">Liên hệ tư vấn</button>
+            <Button>Đăng ký nhận tin</Button>
+            <Button variant="secondary">Liên hệ tư vấn</Button>
           </div>
         </div>
       </div>

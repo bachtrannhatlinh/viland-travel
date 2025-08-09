@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Typography } from '@/components/ui/typography'
+import { Card, CardContent } from '@/components/ui/card'
+import { Section } from '@/components/ui/section'
 
 export default function SimpleFlightSearchPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -19,24 +23,25 @@ export default function SimpleFlightSearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <Section className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Simple Flight Search Test</h1>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <button
-            onClick={handleSearch}
-            disabled={isLoading}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isLoading ? 'Đang tìm kiếm...' : 'Test Search API'}
-          </button>
-          
-          <div className="mt-4 text-sm text-gray-600">
-            Mở Developer Console để xem kết quả API
-          </div>
-        </div>
+        <Typography variant="h1" className="text-3xl font-bold mb-8">Simple Flight Search Test</Typography>
+
+        <Card>
+          <CardContent className="p-6">
+            <Button
+              onClick={handleSearch}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Đang tìm kiếm...' : 'Test Search API'}
+            </Button>
+
+            <Typography variant="small" className="mt-4 text-sm text-gray-600">
+              Mở Developer Console để xem kết quả API
+            </Typography>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </Section>
   )
 }

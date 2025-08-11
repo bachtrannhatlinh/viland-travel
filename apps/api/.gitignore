@@ -7,6 +7,10 @@ yarn-error.log*
 # Production build
 dist/
 build/
+lib/
+
+# TypeScript
+*.tsbuildinfo
 
 # Environment variables
 .env

@@ -4,9 +4,17 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
     },
-    "lint": {},
+    "build:fast": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "SKIP_ENV_VALIDATION"]
+    },
+    "lint": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true
@@ -14,6 +22,8 @@
     "clean": {
       "cache": false
     },
-    "type-check": {}
+    "type-check": {
+      "outputs": ["**/*.tsbuildinfo"]
+    }
   }
 }

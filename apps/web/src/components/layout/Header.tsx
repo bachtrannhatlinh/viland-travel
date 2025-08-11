@@ -24,10 +24,10 @@ import { Button } from '@/components/ui/button'
 export function Header() {
   const services = [
     { name: 'Vé máy bay', href: '/flights' },
-    { name: 'Tour du lịch', href: '/tours' },
-    { name: 'Khách sạn', href: '/hotels' },
-    { name: 'Thuê xe', href: '/car-rental' },
-    { name: 'Go_Safe Driver', href: '/driver-service' },
+    { name: 'Tour du lịch', href: '' },
+    { name: 'Khách sạn', href: '' },
+    { name: 'Thuê xe', href: '' },
+    { name: 'Go_Safe Driver', href: '' },
   ]
 
   return (
@@ -63,7 +63,7 @@ export function Header() {
                       <Link
                         key={service.name}
                         href={service.href}
-                        prefetch={true}
+                        prefetch={false}
                         legacyBehavior
                         passHref
                       >
@@ -129,7 +129,7 @@ export function Header() {
                         <Link
                           key={service.name}
                           href={service.href}
-                          prefetch={true}
+                          prefetch={false}
                           className="block text-gray-700 hover:text-primary-600"
                         >
                           {service.name}

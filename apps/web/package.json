@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:fast": "cross-env SKIP_ENV_VALIDATION=1 next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",
@@ -39,6 +42,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
+    "cross-env": "^10.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",
     "postcss": "^8",

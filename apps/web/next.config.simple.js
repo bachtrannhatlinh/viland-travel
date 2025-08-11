@@ -16,18 +16,20 @@ const nextConfig = {
   swcMinify: true,
   trailingSlash: false,
   poweredByHeader: false,
-
-  // Performance optimizations
+  
+  // Simple performance optimizations
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    webpackBuildWorker: true,
   },
-
+  
   // Enable compression
   compress: true,
-
+  
   // Simple webpack optimization
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
+      // Simple chunk splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {

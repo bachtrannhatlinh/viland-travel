@@ -6,6 +6,8 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { PreloadLinks } from '@/components/layout/PreloadLinks'
 import { Section } from '@/components/ui/section'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import { ChunkErrorHandler } from '@/components/ChunkErrorHandler'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,14 +26,17 @@ export default function RootLayout({
     <html lang="vi">
       <body className={inter.className}>
         <Providers>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <Section as="main" className="flex-1">
-              {children}
-            </Section>
-            <Footer />
-            <PreloadLinks />
-          </div>
+          <ErrorBoundary>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <Section as="main" className="flex-1">
+                {children}
+              </Section>
+              <Footer />
+              <PreloadLinks />
+              <ChunkErrorHandler />
+            </div>
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

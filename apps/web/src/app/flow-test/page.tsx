@@ -119,7 +119,8 @@ export default function FlightFlowTestPage() {
 
   const testAPIDirectly = async () => {
     try {
-      const response = await fetch('/api/flights/search?from=SGN&to=HAN&departureDate=2025-08-15&adults=1&children=0&infants=0&class=economy')
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://server666.vercel.app'
+      const response = await fetch(`${API_URL}/api/v1/flights/search?from=SGN&to=HAN&departureDate=2025-08-15&adults=1&children=0&infants=0&class=economy`)
       const data = await response.json()
       console.log('API Response:', data)
       alert('✅ API hoạt động tốt! Check console để xem data')

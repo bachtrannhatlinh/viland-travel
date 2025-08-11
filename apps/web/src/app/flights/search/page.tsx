@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Typography } from '@/components/ui/typography'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AlertCircle } from 'lucide-react'
+import { apiClient } from '@/lib/utils'
 
 
 // Lazy load components để tránh SSR issues
@@ -48,7 +49,7 @@ export default function FlightSearchPage() {
     // Call API to search flights
     const searchFlights = async () => {
       try {
-        const queryParams = new URLSearchParams({
+        const searchParams = {
           from,
           to,
           departureDate,
@@ -57,12 +58,13 @@ export default function FlightSearchPage() {
           infants: infants.toString(),
           class: flightClass,
           ...(returnDate && { returnDate })
-        })
+        }
 
-        const response = await fetch(`/api/flights/search?${queryParams.toString()}`)
-        const data = await response.json()
+        console.log('🔍 Searching flights with params:', searchParams)
+        const data = await apiClient.get('/flights/search', searchParams)
 
         if (data.success) {
+          console.log(`✅ Found ${data.data.totalCount} flights from ${data.data.dataSource}`)
           setFlights(data.data.flights)
           setFilteredFlights(data.data.flights)
         } else {

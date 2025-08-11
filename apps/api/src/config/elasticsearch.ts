@@ -54,6 +54,11 @@ export class ElasticsearchService {
     console.log('⚠️  Elasticsearch aggregations skipped');
     return {};
   }
+
+  async indexDocument(indexName: string, id: string, document: any): Promise<boolean> {
+    console.log(`⚠️  Elasticsearch document indexing skipped: ${indexName}/${id}`);
+    return false;
+  }
 }
 
 // Export default instance

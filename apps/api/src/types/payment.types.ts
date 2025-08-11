@@ -34,14 +34,16 @@ export interface PaymentCallback {
   responseCode: string;
   message: string;
   signature: string;
+  status?: 'pending' | 'completed' | 'failed' | 'cancelled';
   rawData: any;
 }
 
 export interface PaymentStatus {
   transactionId: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  status: 'pending' | 'completed' | 'failed' | 'cancelled' | 'processing';
   amount: number;
   currency: string;
+  paidAt?: string;
   gatewayResponse: any;
 }
 

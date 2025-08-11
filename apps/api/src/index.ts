@@ -6,7 +6,7 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
-import { connectDatabase } from './config/database';
+import { supabaseService } from './config/supabase';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
 
@@ -58,14 +58,31 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV,
-    version: process.env.npm_package_version || '1.0.0'
-  });
+app.get('/health', async (req, res) => {
+  try {
+    // Test Supabase connection
+    await supabaseService.initializeDatabase();
+
+    res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV,
+      version: process.env.npm_package_version || '1.0.0',
+      database: 'Supabase connected',
+      services: {
+        supabase: 'connected',
+        payment: 'available'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: 'Database connection failed',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 // API Routes
@@ -87,12 +104,18 @@ app.use(errorHandler);
 // Database connection and server startup
 const startServer = async () => {
   try {
-    await connectDatabase();
-    
+    // Initialize Supabase
+    console.log('🔄 Initializing Supabase...');
+    await supabaseService.initializeDatabase();
+
     app.listen(PORT, () => {
       console.log(`🚀 GoSafe API Server is running on port ${PORT}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+      console.log(`✈️ Flight API: http://localhost:${PORT}/api/v1/flights/search`);
+      console.log(`💳 Payment API: http://localhost:${PORT}/api/v1/payments/create`);
+      console.log('\n🎯 Ready for flight booking:');
+      console.log('   Vé máy bay ──> Tìm chuyến ──> Đặt vé ──> Thanh toán');
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

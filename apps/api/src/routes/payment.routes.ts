@@ -2,6 +2,13 @@ import { Router } from 'express';
 import { PaymentController } from '../controllers/PaymentController';
 import { PaymentService } from '../services/payment/PaymentService';
 import { protect } from '../middleware/auth';
+import {
+  createPayment,
+  queryPaymentStatus,
+  handlePaymentCallback,
+  getAvailableGateways,
+  healthCheck
+} from '../controllers/payment.controller';
 
 // Initialize payment service from environment
 const paymentService = PaymentService.fromEnv();
@@ -24,7 +31,7 @@ const router = Router();
  *   gateway?: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * }
  */
-router.post('/create', paymentController.createPayment);
+router.post('/create', createPayment);
 
 /**
  * @route POST /api/payments/callback/:gateway
@@ -33,7 +40,7 @@ router.post('/create', paymentController.createPayment);
  * @params gateway: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * @body Gateway-specific callback data
  */
-router.post('/callback/:gateway', paymentController.handleCallback);
+router.post('/callback/:gateway', handlePaymentCallback);
 
 /**
  * @route GET /api/payments/return/:gateway
@@ -51,7 +58,7 @@ router.get('/return/:gateway', paymentController.handleReturn);
  * @params gateway: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * @params transactionId: string
  */
-router.get('/status/:gateway/:transactionId', protect, paymentController.queryPaymentStatus);
+router.get('/status/:gateway/:transactionId', protect, queryPaymentStatus);
 
 /**
  * @route POST /api/payments/refund/:gateway
@@ -84,14 +91,14 @@ router.post('/verify/:gateway', protect, paymentController.verifySignature);
  * @desc Get available payment gateways
  * @access Public
  */
-router.get('/gateways', paymentController.getGateways);
+router.get('/gateways', getAvailableGateways);
 
 /**
  * @route GET /api/payments/health
  * @desc Health check for payment service
  * @access Public
  */
-router.get('/health', paymentController.healthCheck);
+router.get('/health', healthCheck);
 
 // Webhook handlers for payment gateways
 const vnpayWebhook = (req: any, res: any) => {

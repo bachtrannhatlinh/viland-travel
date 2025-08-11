@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoSafe API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .method {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 GoSafe Flight Booking API</h1>
+        <p>Welcome to GoSafe API server. This API provides flight booking services.</p>
+        
+        <h2>📋 Available Endpoints:</h2>
+        
+        <div class="endpoint">
+            <span class="method">GET</span>
+            <strong>/api/health</strong><br>
+            <small>Health check endpoint</small><br>
+            <a href="/api/health" target="_blank">Test Health Check</a>
+        </div>
+        
+        <div class="endpoint">
+            <span class="method">GET</span>
+            <strong>/api/v1/flights/search</strong><br>
+            <small>Search flights with parameters: from, to, departureDate</small><br>
+            <a href="/api/v1/flights/search?from=Ho Chi Minh City&to=Hanoi&departureDate=2024-01-15" target="_blank">Test Flight Search</a>
+        </div>
+        
+        <h2>🔗 Example Usage:</h2>
+        <pre>
+GET /api/v1/flights/search?from=Ho Chi Minh City&to=Hanoi&departureDate=2024-01-15
+
+Response:
+{
+  "success": true,
+  "data": {
+    "flights": [...],
+    "totalCount": 2,
+    "searchParams": {...},
+    "dataSource": "mock"
+  },
+  "message": "Flight search completed successfully"
+}
+        </pre>
+        
+        <h2>📊 Status:</h2>
+        <p>✅ API is running</p>
+        <p>🔗 Environment: Production</p>
+        <p>📅 Last updated: <span id="timestamp"></span></p>
+    </div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

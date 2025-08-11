@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../config/database';
 import { Hotel, HotelStatus, RoomType } from '../entities/Hotel.entity';
 import { Booking, BookingType, BookingStatus } from '../entities/Booking.entity';
 import { Payment, PaymentStatus, PaymentMethod } from '../entities/Payment.entity';

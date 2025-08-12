@@ -9,7 +9,6 @@ const sectionVariants = cva("", {
       default: "",
       hero: "relative",
       content: "py-16",
-      feature: "py-12",
       contact: "py-8",
     },
     background: {
@@ -24,7 +23,6 @@ const sectionVariants = cva("", {
       none: "py-0",
       sm: "py-4",
       md: "py-8",
-      lg: "py-12",
       xl: "py-16",
       "2xl": "py-20",
     },
@@ -32,7 +30,6 @@ const sectionVariants = cva("", {
   defaultVariants: {
     variant: "default",
     background: "default",
-    spacing: "lg",
   },
 });
 

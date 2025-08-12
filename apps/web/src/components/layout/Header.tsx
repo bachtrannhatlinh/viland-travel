@@ -24,10 +24,10 @@ import { Button } from '@/components/ui/button'
 export function Header() {
   const services = [
     { name: 'Vé máy bay', href: '/flights' },
-    { name: 'Tour du lịch', href: '' },
-    { name: 'Khách sạn', href: '' },
-    { name: 'Thuê xe', href: '' },
-    { name: 'Go_Safe Driver', href: '' },
+    { name: 'Tour du lịch', href: '/tours' },
+    { name: 'Khách sạn', href: '/hotels' },
+    { name: 'Thuê xe', href: '/car-rental' },
+    { name: 'Go_Safe Driver', href: '/driver-service' },
   ]
 
   return (
@@ -42,7 +42,7 @@ export function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden md:flex">
+          <NavigationMenu className="hidden md:flex relative z-[60]">
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link href="/" legacyBehavior passHref>
@@ -58,19 +58,15 @@ export function Header() {
                   Dịch vụ
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid gap-3 p-4 w-[400px] grid-cols-2">
+                  <div className="grid gap-3 p-4 w-[400px] grid-cols-2 bg-white">
                     {services.map((service) => (
-                      <Link
-                        key={service.name}
-                        href={service.href}
-                        prefetch={false}
-                        legacyBehavior
-                        passHref
-                      >
-                        <NavigationMenuLink className="block p-3 space-y-1 rounded-md hover:bg-accent">
-                          <Typography variant="small" className="text-sm font-medium leading-none">{service.name}</Typography>
-                        </NavigationMenuLink>
-                      </Link>
+                      <NavigationMenuLink key={service.name} asChild>
+                        <Link href={service.href} className="block p-3 space-y-1 rounded-md hover:bg-gray-50 transition-colors border border-gray-100">
+                          <Typography variant="small" className="text-sm font-medium leading-none text-gray-900">
+                            {service.name}
+                          </Typography>
+                        </Link>
+                      </NavigationMenuLink>
                     ))}
                   </div>
                 </NavigationMenuContent>

@@ -27,22 +27,22 @@ export const metadata: Metadata = {
 export default function DriverServicePage() {
   return (
     <Section className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
+      <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <Section className="text-center mb-12">
           <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-4">
             Dịch vụ lái xe Go_Safe
           </Typography>
           <Typography variant="large" className="text-xl text-gray-600">
             Tài xế chuyên nghiệp, an toàn cho mọi chuyến đi
           </Typography>
-        </div>
+        </Section>
 
         {/* Driver Service Form */}
         <Card className="mb-12">
           <CardContent className="p-8">
             <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-6">Đặt tài xế</Typography>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+            <Section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Section>
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Điểm đón
                 </Label>
@@ -50,8 +50,8 @@ export default function DriverServicePage() {
                   type="text"
                   placeholder="Địa chỉ đón"
                 />
-              </div>
-              <div>
+              </Section>
+              <Section>
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Điểm đến
                 </Label>
@@ -59,22 +59,22 @@ export default function DriverServicePage() {
                   type="text"
                   placeholder="Địa chỉ đến"
                 />
-              </div>
-              <div>
+              </Section>
+              <Section>
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Ngày sử dụng
                 </Label>
                 <DatePicker placeholder="Chọn ngày sử dụng" />
-              </div>
-              <div>
+              </Section>
+              <Section>
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Thời gian
                 </Label>
                 <Input
                   type="time"
                 />
-              </div>
-              <div className="md:col-span-2">
+              </Section>
+              <Section className="md:col-span-2">
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Loại dịch vụ
                 </Label>
@@ -89,8 +89,8 @@ export default function DriverServicePage() {
                     <SelectItem value="daily">Thuê theo ngày</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="md:col-span-2">
+              </Section>
+              <Section className="md:col-span-2">
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Ghi chú lịch trình
                 </Label>
@@ -98,18 +98,18 @@ export default function DriverServicePage() {
                   rows={4}
                   placeholder="Mô tả chi tiết lịch trình, yêu cầu đặc biệt..."
                 />
-              </div>
-              <div className="md:col-span-2">
+              </Section>
+              <Section className="md:col-span-2">
                 <Button className="w-full py-3" asChild>
                   <Link href="/driver-service/booking" prefetch={true}>Đặt tài xế ngay</Link>
                 </Button>
-              </div>
-            </div>
+              </Section>
+            </Section>
           </CardContent>
         </Card>
 
         {/* Service Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <Section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {[
             {
               icon: '🛡️',
@@ -144,13 +144,13 @@ export default function DriverServicePage() {
           ].map((feature, index) => (
             <Card key={index} className="text-center">
               <CardContent className="p-6">
-                <div className="text-4xl mb-4">{feature.icon}</div>
+                <Typography className="text-4xl mb-4">{feature.icon}</Typography>
                 <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</Typography>
                 <Typography variant="p" className="text-gray-600">{feature.description}</Typography>
               </CardContent>
             </Card>
           ))}
-        </div>
+        </Section>
 
         {/* Pricing */}
         <Card className="mb-12">
@@ -212,7 +212,7 @@ export default function DriverServicePage() {
             <Button variant="secondary">Quay về trang chủ</Button>
           </div>
         </div>
-      </div>
+      </Section>
     </Section>
   )
 }

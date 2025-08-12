@@ -26,15 +26,19 @@ ${originalConfig.replace('module.exports = nextConfig', 'module.exports = withBu
 fs.writeFileSync(path.join(__dirname, 'next.config.analyzer.js'), analyzerConfig);
 
 try {
-  // Run build with analyzer
+  // Run build with analyzer - Windows compatible
   console.log('🏗️ Building with bundle analyzer...');
-  execSync('ANALYZE=true npx next build', { 
+  execSync('npx next build', { 
     stdio: 'inherit',
-    env: { ...process.env, ANALYZE: 'true' }
+    env: { ...process.env, ANALYZE: 'true' },
+    shell: true // Important for Windows
   });
 } finally {
   // Clean up
-  fs.unlinkSync(path.join(__dirname, 'next.config.analyzer.js'));
+  if (fs.existsSync(path.join(__dirname, 'next.config.analyzer.js'))) {
+    fs.unlinkSync(path.join(__dirname, 'next.config.analyzer.js'));
+  }
 }
 
 console.log('✅ Bundle analysis complete! Check the opened browser tabs for results.');
+

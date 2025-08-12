@@ -7,6 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Typography } from '@/components/ui/typography'
+import { Section } from '@/components/ui/section'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { FlightClass, PassengerInfo, FlightBookingData } from '@/types/flight.types'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -186,69 +190,81 @@ export default function FlightBookingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-          <h2 className="text-xl font-bold text-gray-900">Đang tải thông tin đặt vé...</h2>
-        </div>
-      </div>
+      <Section className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="text-center p-8">
+          <CardContent>
+            <Typography className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4" />
+            <Typography variant="h2" className="text-xl font-bold text-gray-900">
+              Đang tải thông tin đặt vé...
+            </Typography>
+          </CardContent>
+        </Card>
+      </Section>
     )
   }
 
   if (!bookingData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Không tìm thấy thông tin chuyến bay</h2>
-          <Button asChild>
-            <Link href="/flights">Quay lại trang tìm kiếm</Link>
-          </Button>
-        </div>
-      </div>
+      <Section className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="text-center p-8">
+          <CardContent>
+            <Typography variant="h2" className="text-xl font-bold text-gray-900 mb-4">
+              Không tìm thấy thông tin chuyến bay
+            </Typography>
+            <Button asChild>
+              <Link href="/flights">Quay lại trang tìm kiếm</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </Section>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Section className="min-h-screen bg-gray-50">
+      <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Steps */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-green-600">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-green-600 text-white">
-                  ✓
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center">
+              <div className="flex items-center space-x-8">
+                <div className="flex items-center space-x-3 text-green-600">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-600 text-white font-semibold">
+                    ✓
+                  </div>
+                  <span className="font-medium">Chọn chuyến bay</span>
                 </div>
-                <span className="font-medium">Chọn chuyến bay</span>
-              </div>
-              
-              <div className="w-8 h-px bg-primary-600"></div>
-              
-              <div className="flex items-center space-x-2 text-primary-600">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary-600 text-white">
-                  2
+                
+                <div className="w-12 h-px bg-primary-600"></div>
+                
+                <div className="flex items-center space-x-3 text-primary-600">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-600 text-white font-semibold">
+                    2
+                  </div>
+                  <span className="font-medium">Thông tin hành khách</span>
                 </div>
-                <span className="font-medium">Thông tin hành khách</span>
-              </div>
-              
-              <div className="w-8 h-px bg-gray-300"></div>
-              
-              <div className="flex items-center space-x-2 text-gray-400">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 text-white">
-                  3
+                
+                <div className="w-12 h-px bg-gray-300"></div>
+                
+                <div className="flex items-center space-x-3 text-gray-400">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-300 text-white font-semibold">
+                    3
+                  </div>
+                  <span className="font-medium">Thanh toán</span>
                 </div>
-                <span className="font-medium">Thanh toán</span>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <Section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <Section className="lg:col-span-2 space-y-6">
             {/* Flight Information */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Thông tin chuyến bay</h2>
+            <Card className="bg-white rounded-lg shadow-md p-6">
+              <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-4">
+                Thông tin chuyến bay
+              </Typography>
               
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
@@ -291,11 +307,13 @@ export default function FlightBookingPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Contact Information */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Thông tin liên hệ</Typography>
+            <Card className="bg-white rounded-lg shadow-md p-6">
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">
+                Thông tin liên hệ
+              </Typography>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -345,11 +363,13 @@ export default function FlightBookingPage() {
                   />
                 </div>
               </div>
-            </div>
+            </Card>
 
             {/* Passenger Information */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Thông tin hành khách</Typography>
+            <Card className="bg-white rounded-lg shadow-md p-6">
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">
+                Thông tin hành khách
+              </Typography>
               
               <div className="space-y-6">
                 {passengers.map((passenger, index) => (
@@ -444,11 +464,13 @@ export default function FlightBookingPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
 
             {/* Special Requests */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">Yêu cầu đặc biệt</Typography>
+            <Card className="bg-white rounded-lg shadow-md p-6">
+              <Typography variant="h3" className="text-lg font-bold text-gray-900 mb-4">
+                Yêu cầu đặc biệt
+              </Typography>
 
               <Textarea
                 value={specialRequests}
@@ -456,12 +478,12 @@ export default function FlightBookingPage() {
                 placeholder="Ví dụ: Suất ăn chay, ghế gần lối đi, hỗ trợ người khuyết tật..."
                 rows={3}
               />
-            </div>
-          </div>
+            </Card>
+          </Section>
 
           {/* Booking Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+          <Section className="lg:col-span-1">
+            <Card className="bg-white rounded-lg shadow-md p-6 sticky top-4">
               <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-6">
                 Tóm tắt đặt vé
               </Typography>
@@ -537,10 +559,10 @@ export default function FlightBookingPage() {
                   Chính sách bảo mật
                 </Link>
               </Typography>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Card>
+          </Section>
+        </Section>
+      </Section>
+    </Section>
   )
 }

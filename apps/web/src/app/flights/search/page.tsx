@@ -43,7 +43,9 @@ export default function FlightSearchPage() {
       returnDate,
       passengers: { adults, children, infants },
       flightClass,
-      tripType
+      tripType,
+      class: flightClass,
+      adults: adults
     })
 
     // Call API to search flights

@@ -5,12 +5,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:fast": "cross-env SKIP_ENV_VALIDATION=1 next build",
-    "build:analyze": "ANALYZE=true next build",
+    "build:clean": "npm run clean && next build",
+    "build:production": "cross-env NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
+    "build:fast": "cross-env SKIP_ENV_VALIDATION=1 NEXT_TELEMETRY_DISABLED=1 next build",
+    "build:debug": "next build --experimental-debug-memory-usage",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next out dist"
+    "clean": "rimraf .next out dist",
+    "analyze": "cross-env ANALYZE=true next build",
+    "build:memory": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",
@@ -38,6 +42,7 @@
     "zustand": "^4.4.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

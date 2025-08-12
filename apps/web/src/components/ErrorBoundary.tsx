@@ -1,17 +1,21 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
 import { Typography } from '@/components/ui/typography'
+import { Section } from '@/components/ui/section'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode
+  fallback?: React.ComponentType<{ error: Error; resetError: () => void }>
+}
 
 interface ErrorBoundaryState {
   hasError: boolean
   error?: Error
-}
-
-interface ErrorBoundaryProps {
-  children: React.ReactNode
-  fallback?: React.ComponentType<{ error?: Error; resetError: () => void }>
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -42,39 +46,48 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     if (this.state.hasError) {
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback
-        return <FallbackComponent error={this.state.error} resetError={this.resetError} />
+        return <FallbackComponent error={this.state.error!} resetError={this.resetError} />
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6 text-center">
-            <div className="mb-4">
-              <Typography variant="h3" className="text-red-600 mb-2">
-                Oops! Something went wrong
+        <Section className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+          <Card className="max-w-md w-full">
+            <CardContent className="text-center p-8">
+              <AlertTriangle className="mx-auto h-16 w-16 text-red-500 mb-6" />
+              
+              <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-4">
+                Oops! Có lỗi xảy ra
               </Typography>
-              <Typography variant="p" className="text-gray-600">
-                {this.state.error?.message?.includes('Loading chunk') 
-                  ? 'There was an issue loading the page. Please refresh to continue.'
-                  : 'An unexpected error occurred. Please try again.'}
+              
+              <Typography className="text-gray-600 mb-6">
+                Ứng dụng đã gặp lỗi không mong muốn. Vui lòng thử lại.
               </Typography>
-            </div>
-            <div className="space-y-2">
-              <Button 
-                onClick={() => window.location.reload()} 
-                className="w-full"
-              >
-                Refresh Page
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={this.resetError}
-                className="w-full"
-              >
-                Try Again
-              </Button>
-            </div>
-          </div>
-        </div>
+
+              <Alert className="bg-red-50 border-red-200 mb-6 text-left">
+                <AlertDescription>
+                  <Typography className="text-sm text-red-700">
+                    <strong>Chi tiết lỗi:</strong><br />
+                    {this.state.error?.message || 'Unknown error'}
+                  </Typography>
+                </AlertDescription>
+              </Alert>
+
+              <Section className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button onClick={this.resetError} className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4" />
+                  Thử lại
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.location.reload()}
+                  className="flex items-center gap-2"
+                >
+                  Tải lại trang
+                </Button>
+              </Section>
+            </CardContent>
+          </Card>
+        </Section>
       )
     }
 
@@ -83,3 +96,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 export default ErrorBoundary
+

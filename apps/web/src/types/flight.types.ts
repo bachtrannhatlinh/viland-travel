@@ -95,6 +95,8 @@ export interface Flight {
 }
 
 export interface FlightSearchParams {
+  class: FlightClass;
+  adults: number;
   from: string;
   to: string;
   departureDate: string;

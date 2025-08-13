@@ -17,9 +17,7 @@ export const API_CONFIG = {
 // API Helper functions
 export const apiClient = {
   async get(endpoint: string, params?: Record<string, any>) {
-    console.log(API_CONFIG, "API_CONFIG");
     const url = new URL(`${API_CONFIG.FULL_URL}${endpoint}`);
-    console.log(url, "url");
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

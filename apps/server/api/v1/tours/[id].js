@@ -17,6 +17,8 @@ try {
       },
     });
     useSupabase = true;
+  } else {
+    console.error("Supabase credentials not found in environment variables.");
   }
 } catch (error) {
   console.log("❌ Supabase init error:", error.message);

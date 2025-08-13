@@ -114,7 +114,6 @@ export default function ToursPage() {
     );
   }
 
-  console.log(tours,'tours');
   return (
     <Section className="min-h-screen bg-gray-50">
       <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

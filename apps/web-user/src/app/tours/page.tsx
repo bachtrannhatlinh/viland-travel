@@ -225,7 +225,7 @@ export default function ToursPage() {
               <Button className="bg-white text-blue-600 hover:bg-gray-100">
                 Đăng ký nhận tin
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+              <Button className="bg-white text-blue-600 hover:bg-gray-100">
                 Liên hệ tư vấn
               </Button>
             </Section>

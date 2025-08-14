@@ -60,7 +60,6 @@ export default function FlightSearchPage() {
           ...(returnDate && { returnDate })
         }
 
-        console.log('🔍 Searching flights with params:', searchParams)
         const data = await apiClient.get('/flights/search', searchParams)
 
         if (data.success) {

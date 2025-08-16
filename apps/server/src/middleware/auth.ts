@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User.model';
+import { AppDataSource } from '../config/postgresql';
+import { User } from '../entities/User.entity';
 
 interface AuthenticatedRequest extends Request {
   user?: any;
@@ -36,11 +37,17 @@ const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunct
 
     try {
       // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
-      
-      // Get user from database
-      const user = await User.findById(decoded.id).select('-password');
-      
+      const jwtSecret = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+
+      const decoded = jwt.verify(token, jwtSecret) as { id: string };
+
+      // Get user from database using TypeORM
+      const userRepository = AppDataSource.getRepository(User);
+      const user = await userRepository.findOne({
+        where: { id: decoded.id },
+        select: ['id', 'firstName', 'lastName', 'email', 'role', 'status'] // Exclude password
+      });
+
       if (!user) {
         res.status(401).json({
           success: false,
@@ -52,7 +59,7 @@ const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunct
       }
 
       // Check if user is active
-      if (!user.isActive) {
+      if (user.status !== 'active') {
         res.status(401).json({
           success: false,
           error: {

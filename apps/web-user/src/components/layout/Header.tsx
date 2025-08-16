@@ -20,8 +20,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { UserAvatar } from './UserAvatar'
+import { useAuth } from '@/hooks/useAuth'
 
 export function Header() {
+  const { isAuthenticated } = useAuth()
+
   const services = [
     { name: 'Vé máy bay', href: '/flights' },
     { name: 'Tour du lịch', href: '/tours' },
@@ -53,7 +57,7 @@ export function Header() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              
+
               {/* Services Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-gray-700 hover:text-primary-600 transition-colors">
@@ -81,7 +85,7 @@ export function Header() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              
+
               <NavigationMenuItem>
                 <Link href="/blog" legacyBehavior passHref>
                   <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
@@ -89,7 +93,7 @@ export function Header() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              
+
               <NavigationMenuItem>
                 <Link href="/contact" legacyBehavior passHref>
                   <NavigationMenuLink className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-2">
@@ -100,54 +104,93 @@ export function Header() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>ViLand Travel Menu</SheetTitle>
-                  <SheetDescription>
-                    Điều hướng đến các trang và dịch vụ của ViLand Travel
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="py-4 space-y-4">
-                  <Link href="/" className="block text-gray-700 hover:text-primary-600">
-                    Trang chủ
-                  </Link>
-                  
-                  <div>
-                    <span className="block font-medium text-gray-900">Dịch vụ</span>
-                    <div className="ml-4 mt-2 space-y-2">
-                      {services.map((service) => (
-                        <Link
-                          key={service.name}
-                          href={service.href}
-                          prefetch={false}
-                          className="block text-gray-700 hover:text-primary-600"
-                        >
-                          {service.name}
+          {/* Right side - User Avatar or Login/Mobile menu */}
+          <div className="flex items-center space-x-4">
+            {/* User Avatar for authenticated users */}
+            {isAuthenticated && (
+              <div className="hidden md:block">
+                <UserAvatar />
+              </div>
+            )}
+
+            {/* Login button for non-authenticated users */}
+            {!isAuthenticated && (
+              <div className="hidden md:block">
+                <Link href="/login">
+                  <Button variant="outline" size="sm">
+                    Đăng nhập
+                  </Button>
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>ViLand Travel Menu</SheetTitle>
+                    <SheetDescription>
+                      Điều hướng đến các trang và dịch vụ của ViLand Travel
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="py-4 space-y-4">
+                    {/* User info for mobile */}
+                    {isAuthenticated && (
+                      <div className="pb-4 border-b border-gray-200">
+                        <UserAvatar />
+                      </div>
+                    )}
+
+                    {/* Login button for mobile */}
+                    {!isAuthenticated && (
+                      <div className="pb-4 border-b border-gray-200">
+                        <Link href="/login">
+                          <Button variant="outline" className="w-full">
+                            Đăng nhập
+                          </Button>
                         </Link>
-                      ))}
+                      </div>
+                    )}
+
+                    <Link href="/" className="block text-gray-700 hover:text-primary-600">
+                      Trang chủ
+                    </Link>
+
+                    <div>
+                      <span className="block font-medium text-gray-900">Dịch vụ</span>
+                      <div className="ml-4 mt-2 space-y-2">
+                        {services.map((service) => (
+                          <Link
+                            key={service.name}
+                            href={service.href}
+                            prefetch={false}
+                            className="block text-gray-700 hover:text-primary-600"
+                          >
+                            {service.name}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
+
+                    <Link href="/about" className="block text-gray-700 hover:text-primary-600">
+                      Giới thiệu
+                    </Link>
+                    <Link href="/blog" className="block text-gray-700 hover:text-primary-600">
+                      Tin tức
+                    </Link>
+                    <Link href="/contact" className="block text-gray-700 hover:text-primary-600">
+                      Liên hệ
+                    </Link>
                   </div>
-                  
-                  <Link href="/about" className="block text-gray-700 hover:text-primary-600">
-                    Giới thiệu
-                  </Link>
-                  <Link href="/blog" className="block text-gray-700 hover:text-primary-600">
-                    Tin tức
-                  </Link>
-                  <Link href="/contact" className="block text-gray-700 hover:text-primary-600">
-                    Liên hệ
-                  </Link>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>

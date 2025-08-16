@@ -4,36 +4,29 @@ import { useState } from 'react';
 import { Button } from "../../src/components/ui/button";
 import { Input } from "../../src/components/ui/input";
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/utils';
+import { useAuth } from '../../src/hooks/useAuth';
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
     try {
-      let sendFormData = {
-        email: formData.email,
-        password: formData.password
-      }
-
-      const result = await apiClient.post('/auth/login', sendFormData)
+      const result = await login(formData.email, formData.password);
 
       if (result.success) {
+        // Use router.push since we now have event system for auth state updates
         router.push('/');
       } else {
         setError(result.error?.message || 'Login failed');
       }
     } catch (err) {
       setError('Network error. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -58,8 +51,8 @@ export default function LoginForm() {
         />
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? 'Logging in...' : 'Login'}
+      <Button type="submit" disabled={isLoading} className="w-full">
+        {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
       </Button>
     </form>
   );

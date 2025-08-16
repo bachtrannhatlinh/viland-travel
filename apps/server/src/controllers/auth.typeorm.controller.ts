@@ -2,9 +2,16 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { AppDataSource } from '../config/postgresql';
 import { User, UserStatus } from '../entities/User.entity';
 import { AuthenticatedRequest } from '../middleware/auth';
+
+// Helper function to generate JWT token
+const generateToken = (userId: string): string => {
+  const secret = process.env.JWT_SECRET || 'your-secret-key';
+  return jwt.sign({ id: userId }, secret, { expiresIn: '7d' });
+};
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -145,13 +152,25 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     user.lastLogin = new Date();
     await userRepository.save(user);
 
+    // Generate JWT token
+    const token = generateToken(user.id);
+
     // Remove sensitive data from response
     const { password: _, ...userResponse } = user;
+
+    // Set token in cookie (optional, for additional security)
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
 
     res.status(200).json({
       success: true,
       data: {
-        user: userResponse
+        user: userResponse,
+        token: token
       },
       message: 'Login successful'
     });
@@ -258,7 +277,66 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
 };
 
 export const updateProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        error: {
+          message: 'User not authenticated'
+        }
+      });
+      return;
+    }
+
+    const { firstName, lastName, phone, address } = req.body;
+
+    const userRepository = AppDataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        error: {
+          message: 'User not found'
+        }
+      });
+      return;
+    }
+
+    // Update user fields
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (phone !== undefined) user.phone = phone;
+    if (address !== undefined) {
+      user.address = {
+        ...user.address,
+        ...address
+      };
+    }
+
+    await userRepository.save(user);
+
+    // Remove sensitive data from response
+    const { password, emailVerificationToken, passwordResetToken, ...userResponse } = user;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: userResponse
+      },
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Internal server error during profile update'
+      }
+    });
+  }
 };
 
 export const changePassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {

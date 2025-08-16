@@ -118,7 +118,7 @@ export default function FlightConfirmationPage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Đặt vé thành công!</h1>
           <p className="text-lg text-gray-600">
-            Cảm ơn bạn đã chọn GoSafe. Thông tin xác nhận đã được gửi đến email của bạn.
+            Cảm ơn bạn đã chọn ViLand Travel. Thông tin xác nhận đã được gửi đến email của bạn.
           </p>
         </div>
 

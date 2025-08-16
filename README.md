@@ -1,4 +1,4 @@
-# GoSafe Booking Tour
+# ViLand Travel Booking Tour
 
 Ứng dụng đặt booking tour du lịch với kiến trúc Micro Frontend hiện đại.
 
@@ -67,7 +67,6 @@ API Gateway (BFF Layer)
 npm install
 
 # Hoặc từ thư mục gốc
-cd d:/gosafe/gosafe-booking-tour
 npm install
 ```
 
@@ -99,7 +98,7 @@ npm run start
 ## 📁 Cấu trúc thư mục
 
 ```
-gosafe-booking-tour/
+vilandtravel-booking-tour/
 ├── apps/
 │   └── web/                    # Main customer app
 │       ├── src/
@@ -190,10 +189,10 @@ touch src/components/[category]/ComponentName.tsx
 
 ## 📞 Liên hệ
 
-- **Website**: https://gosafe.vn
-- **Email**: info@gosafe.vn
+- **Website**: https://vilandtravel.vn
+- **Email**: info@vilandtravel.vn
 - **Hotline**: 1900 1234
 
 ---
 
-© 2024 GoSafe. All rights reserved.
+© 2024 ViLand Travel. All rights reserved.

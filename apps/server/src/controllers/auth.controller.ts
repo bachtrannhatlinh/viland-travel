@@ -58,7 +58,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     try {
       await sendEmail({
         to: email,
-        subject: 'Xác thực tài khoản GoSafe',
+        subject: 'Xác thực tài khoản ViLand Travel',
         template: 'email-verification',
         context: {
           firstName,
@@ -314,7 +314,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     try {
       await sendEmail({
         to: email,
-        subject: 'Đặt lại mật khẩu GoSafe',
+        subject: 'Đặt lại mật khẩu ViLand Travel',
         template: 'password-reset',
         context: {
           firstName: user.firstName,
@@ -500,7 +500,7 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
     try {
       await sendEmail({
         to: email,
-        subject: 'Xác thực tài khoản GoSafe',
+        subject: 'Xác thực tài khoản ViLand Travel',
         template: 'email-verification',
         context: {
           firstName: user.firstName,

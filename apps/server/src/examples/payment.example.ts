@@ -32,7 +32,7 @@ async function examplePaymentFlow() {
         email: 'an.nguyen@example.com',
         phone: '0912345678'
       },
-      returnUrl: 'https://gosafe.com/payment/return',
+      returnUrl: 'https://vilandtravel.com/payment/return',
       bankCode: 'NCB' // For specific bank (optional)
     };
 
@@ -89,7 +89,7 @@ async function examplePaymentFlow() {
         vnp_OrderInfo: 'Thanh toan tour Ha Long',
         vnp_PayDate: '20231201120000',
         vnp_ResponseCode: '00',
-        vnp_TmnCode: 'GOSAFE01',
+        vnp_TmnCode: 'VILANDTRAVEL01',
         vnp_TransactionNo: '14379142',
         vnp_TransactionStatus: '00',
         vnp_TxnRef: 'BOOK_001_1701422400',

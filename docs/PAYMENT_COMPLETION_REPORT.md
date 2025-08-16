@@ -162,7 +162,7 @@ interface PaymentServiceConfig {
 
 #### VNPay
 ```bash
-VNPAY_TMN_CODE=GOSAFE01
+VNPAY_TMN_CODE=ViLandTravel01
 VNPAY_HASH_SECRET=your_secret_key
 VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
@@ -289,7 +289,7 @@ if (response.success) {
 
 ## 🎉 Kết luận
 
-Hệ thống tích hợp thanh toán GoSafe đã được implement hoàn chỉnh với:
+Hệ thống tích hợp thanh toán ViLand Travel đã được implement hoàn chỉnh với:
 
 - **4 cổng thanh toán nội địa Việt Nam**
 - **Production-ready architecture**
@@ -298,8 +298,8 @@ Hệ thống tích hợp thanh toán GoSafe đã được implement hoàn chỉn
 - **Full TypeScript support**
 - **Extensive documentation**
 
-System sẵn sàng để deploy và integrate với GoSafe booking system. Tất cả major Vietnamese payment gateways đã được support với đầy đủ tính năng như payment creation, callback handling, status query, và refund processing.
+System sẵn sàng để deploy và integrate với ViLand Travel booking system. Tất cả major Vietnamese payment gateways đã được support với đầy đủ tính năng như payment creation, callback handling, status query, và refund processing.
 
 ---
 
-**🚀 GoSafe Payment Integration - COMPLETED SUCCESSFULLY! 🚀**
+**🚀 ViLand Travel Payment Integration - COMPLETED SUCCESSFULLY! 🚀**

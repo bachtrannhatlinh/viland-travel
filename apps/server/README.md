@@ -1,6 +1,6 @@
-# GoSafe API Backend
+# ViLand Travel API Backend
 
-Backend API service cho ứng dụng GoSafe - nền tảng đặt tour du lịch an toàn và tin cậy.
+Backend API service cho ứng dụng ViLand Travel - nền tảng đặt tour du lịch an toàn và tin cậy.
 
 ## 🚀 Tính năng chính
 
@@ -203,7 +203,7 @@ npm run test:watch
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/gosafe` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/ViLand Travel` |
 | `JWT_SECRET` | JWT secret key | `your-super-secret-key` |
 | `EMAIL_HOST` | SMTP host | `smtp.gmail.com` |
 | `EMAIL_USER` | SMTP username | `your-email@gmail.com` |
@@ -233,8 +233,8 @@ npm run test:watch
 
 ### Docker (Coming Soon)
 ```bash
-docker build -t gosafe-api .
-docker run -p 8000:8000 gosafe-api
+docker build -t ViLand Travel-api .
+docker run -p 8000:8000 ViLand Travel-api
 ```
 
 ### Traditional Deployment
@@ -277,10 +277,10 @@ This project is licensed under the MIT License.
 
 ## 📞 Support
 
-- Email: support@gosafe.vn
-- Slack: #gosafe-backend
-- Documentation: [API Docs](https://api.gosafe.vn/docs)
+- Email: support@ViLand Travel.vn
+- Slack: #ViLand Travel-backend
+- Documentation: [API Docs](https://api.ViLand Travel.vn/docs)
 
 ---
 
-Made with ❤️ by GoSafe Team
+Made with ❤️ by ViLand Travel Team

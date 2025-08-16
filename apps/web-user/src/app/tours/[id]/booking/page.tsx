@@ -50,7 +50,7 @@ interface TourBookingPageProps {
 
 export async function generateMetadata({ params }: TourBookingPageProps): Promise<Metadata> {
   return {
-    title: `Đặt tour - ${mockTourData.title} - GoSafe`,
+    title: `Đặt tour - ${mockTourData.title} - ViLand Travel`,
     description: `Đặt tour ${mockTourData.title} với giá ưu đãi`,
   }
 }

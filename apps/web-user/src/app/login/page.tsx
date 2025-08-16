@@ -9,7 +9,7 @@ export default function LoginPage() {
             Đăng nhập
           </h2>
           <p className="mt-2 text-gray-600">
-            Đăng nhập vào tài khoản GoSafe của bạn
+            Đăng nhập vào tài khoản ViLand Travel của bạn
           </p>
         </div>
         <LoginForm />

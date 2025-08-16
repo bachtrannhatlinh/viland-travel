@@ -959,7 +959,7 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
                   <div className="bg-gray-50 rounded-lg p-6">
                     <Typography variant="h4" className="text-gray-900 mb-3">Điều khoản và điều kiện</Typography>
                     <div className="text-sm text-gray-600 space-y-2">
-                      <Typography as="p">• Bằng việc đặt xe, bạn đồng ý với các điều khoản sử dụng của GoSafe</Typography>
+                      <Typography as="p">• Bằng việc đặt xe, bạn đồng ý với các điều khoản sử dụng của chúng tôi</Typography>
                       <Typography as="p">• Hủy miễn phí trong vòng 24 giờ trước khi nhận xe</Typography>
                       <Typography as="p">• Phí hủy 50% nếu hủy trong vòng 12 giờ trước khi nhận xe</Typography>
                       <Typography as="p">• Tài xế phải mang theo bằng lái xe hợp lệ khi nhận xe</Typography>

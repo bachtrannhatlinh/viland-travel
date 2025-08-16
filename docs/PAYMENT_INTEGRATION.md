@@ -1,6 +1,6 @@
-# Hệ thống Tích hợp Thanh toán GoSafe
+# Hệ thống Tích hợp Thanh toán (PCI) là gì?
 
-Hệ thống tích hợp các cổng thanh toán nội địa Việt Nam cho GoSafe Booking Tour.
+Hệ thống tích hợp các cổng thanh toán nội địa Việt Nam cho ứng dụng Booking Tour.
 
 ## 🚀 Tính năng
 
@@ -35,7 +35,7 @@ Tạo file `.env.payment` hoặc thêm vào `.env`:
 
 ```bash
 # VNPay Configuration
-VNPAY_TMN_CODE=GOSAFE01
+VNPAY_TMN_CODE=VILANDTRAVEL01
 VNPAY_HASH_SECRET=your_vnpay_secret_key
 VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
@@ -82,7 +82,7 @@ const paymentService = PaymentService.fromEnv();
 // Hoặc khởi tạo với config tùy chỉnh
 const paymentService = new PaymentService({
   vnpay: {
-    tmnCode: 'GOSAFE01',
+    tmnCode: 'VILANDTRAVEL01',
     hashSecret: 'your_secret',
     url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
     // ... other configs
@@ -406,4 +406,4 @@ Nếu gặp vấn đề, vui lòng:
 
 ---
 
-**GoSafe Booking Tour** - Hệ thống thanh toán an toàn, nhanh chóng và đáng tin cậy 🚀
+**ViLand Travel Booking Tour** - Hệ thống thanh toán an toàn, nhanh chóng và đáng tin cậy 🚀

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'gosafe.vn'],
+    domains: ['localhost', 'vilandtravel.vn'],
     formats: ['image/webp', 'image/avif'],
   },
   env: {

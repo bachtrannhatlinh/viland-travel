@@ -28,12 +28,10 @@ export const apiClient = {
     }
 
     const response = await fetch(url.toString());
+    const responseData = await response.json();
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
+    // Always return the response data, let the caller handle success/error
+    return responseData;
   },
 
   async post(endpoint: string, data?: any) {
@@ -45,10 +43,9 @@ export const apiClient = {
       body: data ? JSON.stringify(data) : undefined,
     });
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
+    const responseData = await response.json();
 
-    return response.json();
+    // Always return the response data, let the caller handle success/error
+    return responseData;
   },
 };

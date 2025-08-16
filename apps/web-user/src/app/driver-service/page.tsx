@@ -20,7 +20,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
 
 export const metadata: Metadata = {
-  title: 'Dịch vụ lái xe Go_Safe - GoSafe',
+  title: 'Dịch vụ lái xe Go_Safe - ViLand Travel',
   description: 'Dịch vụ lái xe chuyên nghiệp, an toàn. Đặt tài xế kinh nghiệm cho chuyến đi của bạn.',
 }
 

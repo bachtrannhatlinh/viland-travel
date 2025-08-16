@@ -10,7 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <Typography variant="h3" className="text-xl font-bold mb-4 text-white">GoSafe</Typography>
+            <Typography variant="h3" className="text-xl font-bold mb-4 text-white">ViLand Travel</Typography>
             <Typography variant="p" className="text-gray-300 mb-4">
               Nền tảng booking tour du lịch hàng đầu Việt Nam. 
               Chúng tôi cam kết mang đến cho bạn những trải nghiệm du lịch tuyệt vời nhất.
@@ -62,7 +62,7 @@ export function Footer() {
               </div>
               <div className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
-                <Typography variant="small" className="text-gray-300">info@gosafe.vn</Typography>
+                <Typography variant="small" className="text-gray-300">info@vilandtravel.vn</Typography>
               </div>
               <div className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 mt-1" />
@@ -77,7 +77,7 @@ export function Footer() {
         <Separator className="mt-8 bg-gray-800" />
         <div className="mt-8 text-center">
           <Typography variant="small" className="text-gray-300">
-            © 2024 GoSafe. Tất cả quyền được bảo lưu.
+            © 2024 ViLand Travel. Tất cả quyền được bảo lưu.
           </Typography>
         </div>
       </div>

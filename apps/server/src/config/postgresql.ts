@@ -16,12 +16,13 @@ import { Partner } from '../entities/Partner.entity';
 export const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  username: process.env.DB_USERNAME || 'gosafe_user',
-  password: process.env.DB_PASSWORD || 'gosafe_password',
-  database: process.env.DB_NAME || 'gosafe_booking',
-  synchronize: process.env.NODE_ENV === 'development', // auto-create tables in dev
+  port: parseInt(process.env.DB_PORT || '7000'),
+  username: process.env.DB_USERNAME || 'linhbtn',
+  password: process.env.DB_PASSWORD || 'linhprono1',
+  database: process.env.DB_NAME || 'ViLandTravel',
+  synchronize: false, // Disable auto-sync to use migrations
   logging: process.env.NODE_ENV === 'development',
+  migrationsRun: false, // Don't auto-run migrations
   entities: [
     User,
     Tour,
@@ -36,7 +37,7 @@ export const AppDataSource = new DataSource({
     Review,
     Partner
   ],
-  migrations: ['src/migrations/*.ts'],
+  migrations: [__dirname + '/../migrations/*.ts'],
   subscribers: ['src/subscribers/*.ts'],
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   extra: {

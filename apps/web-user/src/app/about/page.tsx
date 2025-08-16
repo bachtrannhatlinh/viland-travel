@@ -7,8 +7,8 @@ import { Zap, Eye, Check } from 'lucide-react'
 
 
 export const metadata: Metadata = {
-  title: 'Về chúng tôi - GoSafe',
-  description: 'Tìm hiểu về GoSafe - nền tảng đặt tour du lịch an toàn và tin cậy hàng đầu Việt Nam.',
+  title: 'Về chúng tôi - ViLand Travel',
+  description: 'Tìm hiểu về ViLand Travel - nền tảng đặt tour du lịch an toàn và tin cậy hàng đầu Việt Nam.',
 }
 
 export default function AboutPage() {
@@ -18,7 +18,7 @@ export default function AboutPage() {
       <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Về GoSafe
+            Về ViLand Travel
           </Typography>
           <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto text-white">
             Nền tảng đặt tour du lịch an toàn và tin cậy hàng đầu Việt Nam
@@ -97,7 +97,7 @@ export default function AboutPage() {
 
         {/* Company Stats */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-16">
-          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">GoSafe trong con số</Typography>
+          <Typography variant="h2" className="text-3xl font-bold text-gray-900 text-center mb-12">ViLand Travel trong con số</Typography>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { number: '50,000+', label: 'Khách hàng hài lòng' },
@@ -190,7 +190,7 @@ export default function AboutPage() {
 
         {/* Contact CTA */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 text-center text-white">
-          <Typography variant="h2" className="text-3xl font-bold mb-4">Bắt đầu hành trình cùng GoSafe</Typography>
+          <Typography variant="h2" className="text-3xl font-bold mb-4">Bắt đầu hành trình cùng ViLand Travel</Typography>
           <Typography variant="large" className="text-xl opacity-90 mb-8">
             Khám phá thế giới với sự an toàn và tin cậy
           </Typography>

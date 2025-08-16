@@ -9,7 +9,7 @@ interface CarDetailsPageProps {
 export async function generateMetadata({ params }: CarDetailsPageProps): Promise<Metadata> {
   // In real app, fetch car data based on params.id
   return {
-    title: `Chi tiết xe - GoSafe`,
+    title: `Chi tiết xe - ViLand Travel`,
     description: 'Xem thông tin chi tiết về xe thuê, tính năng, giá cả và đặt xe ngay.',
   };
 }

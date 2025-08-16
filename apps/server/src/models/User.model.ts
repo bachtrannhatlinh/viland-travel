@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 export interface IUser extends Document {
   _id: string;
@@ -181,28 +181,30 @@ userSchema.methods.comparePassword = async function(candidatePassword: string): 
 
 // Instance method to generate access token
 userSchema.methods.generateAccessToken = function(): string {
-  const secret = process.env.JWT_SECRET || 'default-secret';
+  const secret: string = process.env.JWT_SECRET || 'default-secret';
+  
   return jwt.sign(
     {
-      id: this._id,
+      id: this._id.toString(),
       email: this.email,
       role: this.role
     },
     secret,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as jwt.SignOptions
   );
 };
 
 // Instance method to generate refresh token
 userSchema.methods.generateRefreshToken = function(): string {
-  const secret = process.env.JWT_REFRESH_SECRET || 'default-refresh-secret';
+  const secret: string = process.env.JWT_REFRESH_SECRET || 'default-refresh-secret';
+  
   return jwt.sign(
     {
-      id: this._id,
+      id: this._id.toString(),
       type: 'refresh'
     },
     secret,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d' }
+    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d' } as jwt.SignOptions
   );
 };
 

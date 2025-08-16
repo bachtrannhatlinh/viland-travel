@@ -25,7 +25,6 @@ export enum HotelCategory {
 
 @Entity('hotels')
 @Index(['name'])
-@Index(['city'])
 @Index(['status'])
 @Index(['starRating'])
 @Index(['rating'])

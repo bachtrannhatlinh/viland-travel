@@ -1,4 +1,4 @@
-// GoSafe API Client
+// ViLand Travel API Client
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://server666.vercel.app';
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v1';
 

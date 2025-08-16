@@ -27,8 +27,8 @@ const contactFormSchema = z.object({
 type ContactFormValues = z.infer<typeof contactFormSchema>
 
 // export const metadata: Metadata = {
-//   title: 'Liên hệ - GoSafe',
-//   description: 'Liên hệ với GoSafe để được tư vấn và hỗ trợ về các dịch vụ du lịch. Chúng tôi luôn sẵn sàng phục vụ bạn.',
+//   title: 'Liên hệ - ViLand Travel',
+//   description: 'Liên hệ với ViLand Travel để được tư vấn và hỗ trợ về các dịch vụ du lịch. Chúng tôi luôn sẵn sàng phục vụ bạn.',
 // }
 
 export default function ContactPage() {
@@ -56,7 +56,7 @@ export default function ContactPage() {
       <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Liên hệ với GoSafe
+            Liên hệ với ViLand Travel
           </Typography>
           <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto text-white">
             Chúng tôi luôn sẵn sàng hỗ trợ và tư vấn cho chuyến du lịch của bạn
@@ -190,7 +190,7 @@ export default function ContactPage() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>
-                            Tôi muốn nhận tin tức và ưu đãi từ GoSafe
+                            Tôi muốn nhận tin tức và ưu đãi từ ViLand Travel
                           </FormLabel>
                         </div>
                       </FormItem>
@@ -270,10 +270,10 @@ export default function ContactPage() {
                       </Typography>
                       <Typography variant="p" className="text-gray-600 mt-1">
                         <Typography variant="small" className="text-primary-600 hover:text-primary-700">
-                          info@gosafe.vn
+                          info@vilandtravel.vn
                         </Typography><br />
                         <Typography variant="small" className="text-primary-600 hover:text-primary-700">
-                          support@gosafe.vn
+                          support@vilandtravel.vn
                         </Typography>
                       </Typography>
                     </div>
@@ -379,7 +379,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
-                question: 'Làm thế nào để đặt tour trên GoSafe?',
+                question: 'Làm thế nào để đặt tour trên website?',
                 answer: 'Bạn có thể đặt tour trực tiếp trên website hoặc liên hệ hotline để được tư vấn chi tiết.'
               },
               {
@@ -387,8 +387,8 @@ export default function ContactPage() {
                 answer: 'Có thể hủy tour theo quy định. Phí hủy phụ thuộc vào thời gian hủy trước ngày khởi hành.'
               },
               {
-                question: 'GoSafe có văn phòng ở những tỉnh thành nào?',
-                answer: 'Hiện tại GoSafe có văn phòng chính tại TP.HCM và văn phòng đại diện tại Hà Nội, Đà Nẵng.'
+                question: 'ViLand Travel có văn phòng ở những tỉnh thành nào?',
+                answer: 'Hiện tại chúng tôi có văn phòng chính tại TP.HCM và văn phòng đại diện tại Hà Nội, Đà Nẵng.'
               },
               {
                 question: 'Có những hình thức thanh toán nào?',

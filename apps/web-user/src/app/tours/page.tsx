@@ -123,7 +123,7 @@ export default function ToursPage() {
             Tour du lịch
           </Typography>
           <Typography variant="large" className="text-xl text-gray-600">
-            Khám phá những điểm đến tuyệt vời cùng GoSafe
+            Khám phá những điểm đến tuyệt vời cùng ViLand Travel
           </Typography>
         </Section>
 

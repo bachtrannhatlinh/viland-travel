@@ -8,7 +8,7 @@ interface CarBookingPageProps {
 
 export async function generateMetadata({ params }: CarBookingPageProps): Promise<Metadata> {
   return {
-    title: `Đặt xe - GoSafe`,
+    title: `Đặt xe - ViLand Travel`,
     description: 'Hoàn tất đặt xe thuê với thông tin cá nhân và thanh toán an toàn.',
   };
 }

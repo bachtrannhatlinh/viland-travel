@@ -221,7 +221,7 @@ export default function HotelBookingClient() {
             Đặt phòng thành công!
           </Typography>
           <Typography variant="p" className="text-gray-600 mb-8">
-            Cảm ơn bạn đã sử dụng dịch vụ của GoSafe. Thông tin đặt phòng đã được gửi về email của bạn.
+            Cảm ơn bạn đã sử dụng dịch vụ của ViLand Travel. Thông tin đặt phòng đã được gửi về email của bạn.
           </Typography>
           <div className="flex justify-center space-x-4">
             <Button

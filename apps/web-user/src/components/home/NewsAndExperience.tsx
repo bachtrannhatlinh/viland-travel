@@ -14,7 +14,7 @@ export function NewsAndExperience() {
       excerpt: 'Khám phá những điểm đến tuyệt vời nhất mà bạn không thể bỏ lỡ trong năm 2024...',
       image: '/images/news/vietnam-destinations.jpg',
       date: '2024-01-15',
-      author: 'Admin GoSafe',
+      author: 'Admin ViLand Travel',
       category: 'Kiến thức du lịch'
     },
     {
@@ -50,7 +50,7 @@ export function NewsAndExperience() {
       name: 'Trần Thị B',
       location: 'Hà Nội',
       rating: 5,
-      comment: 'Đặt vé máy bay qua GoSafe rất tiện lợi, giá cả hợp lý. Sẽ tiếp tục sử dụng dịch vụ.',
+      comment: 'Đặt vé máy bay qua ViLand Travel rất tiện lợi, giá cả hợp lý. Sẽ tiếp tục sử dụng dịch vụ.',
       tour: 'Vé máy bay HN-SGN',
       avatar: '/images/avatars/user2.jpg'
     },
@@ -58,7 +58,7 @@ export function NewsAndExperience() {
       name: 'Lê Văn C',
       location: 'Đà Nẵng',
       rating: 5,
-      comment: 'Thuê xe từ GoSafe rất an toàn, xe mới, tài xế lái cẩn thận. Giá cả phải chăng.',
+      comment: 'Thuê xe từ ViLand Travel rất an toàn, xe mới, tài xế lái cẩn thận. Giá cả phải chăng.',
       tour: 'Thuê xe 7 chỗ',
       avatar: '/images/avatars/user3.jpg'
     }

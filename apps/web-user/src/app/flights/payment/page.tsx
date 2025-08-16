@@ -288,7 +288,7 @@ export default function FlightPaymentPage() {
                   <div className="space-y-2 text-sm">
                     <p><strong>Ngân hàng:</strong> Vietcombank - Chi nhánh TP.HCM</p>
                     <p><strong>Số tài khoản:</strong> 1234567890</p>
-                    <p><strong>Chủ tài khoản:</strong> CONG TY TNHH GOSAFE</p>
+                    <p><strong>Chủ tài khoản:</strong> CONG TY TNHH VIET NAM DU LICH</p>
                     <p><strong>Nội dung:</strong> FLIGHT {bookingData.flight.flightNumber} {bookingData.contactInfo.name}</p>
                     <p className="text-orange-600 font-medium">
                       Sau khi chuyển khoản, vui lòng gửi ảnh chụp biên lai để xác nhận.

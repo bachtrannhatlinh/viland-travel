@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import TourPaymentForm from './components/TourPaymentForm'
 
 export const metadata: Metadata = {
-  title: 'Thanh toán tour - GoSafe',
+  title: 'Thanh toán tour - ViLand Travel',
   description: 'Hoàn tất thanh toán đặt tour với các phương thức thanh toán an toàn',
 }
 

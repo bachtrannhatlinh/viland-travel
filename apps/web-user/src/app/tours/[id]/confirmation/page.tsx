@@ -107,7 +107,7 @@ export default function TourConfirmationPage() {
             Đặt tour thành công!
           </h1>
           <p className="text-lg text-gray-600 mb-4">
-            Cảm ơn bạn đã đặt tour với GoSafe. Chúng tôi đã gửi email xác nhận đến địa chỉ của bạn.
+            Cảm ơn bạn đã đặt tour với ViLand Travel. Chúng tôi đã gửi email xác nhận đến địa chỉ của bạn.
           </p>
           <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
             <span className="text-sm text-green-800">
@@ -335,7 +335,7 @@ export default function TourConfirmationPage() {
               </svg>
               <div className="text-sm">
                 <div className="font-semibold text-gray-900">Email</div>
-                <div className="text-gray-600">info@gosafe.vn</div>
+                <div className="text-gray-600">info@vilandtravel.vn</div>
               </div>
             </div>
             <div className="flex flex-col items-center">

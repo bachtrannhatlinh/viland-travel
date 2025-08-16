@@ -1,7 +1,7 @@
-# GoSafe Database Architecture
+# ViLand Travel Database Architecture
 
 ## Tổng quan
-Hệ thống GoSafe sử dụng kiến trúc multi-database với 3 hệ quản trị cơ sở dữ liệu chính:
+Hệ thống ViLand Travel sử dụng kiến trúc multi-database với 3 hệ quản trị cơ sở dữ liệu chính:
 
 - **PostgreSQL**: Cơ sở dữ liệu chính cho dữ liệu quan hệ
 - **Redis**: Cache và quản lý session
@@ -163,9 +163,9 @@ src/
 # PostgreSQL
 DB_HOST=localhost
 DB_PORT=5432
-DB_USERNAME=gosafe_user
-DB_PASSWORD=gosafe_password
-DB_NAME=gosafe_booking
+DB_USERNAME=ViLand Travel_user
+DB_PASSWORD=ViLand Travel_password
+DB_NAME=ViLand Travel_booking
 
 # Redis
 REDIS_HOST=localhost

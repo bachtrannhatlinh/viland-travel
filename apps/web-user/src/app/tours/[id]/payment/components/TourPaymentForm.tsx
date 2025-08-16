@@ -260,7 +260,7 @@ export default function TourPaymentForm() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Chủ tài khoản:</span>
-                  <span className="font-medium">CONG TY GOSAFE</span>
+                  <span className="font-medium">CONG TY TNHH VIET NAM DU LICH</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Số tiền:</span>

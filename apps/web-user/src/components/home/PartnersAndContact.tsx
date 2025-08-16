@@ -208,7 +208,7 @@ export function PartnersAndContact() {
                     </div>
                     <div className="flex items-center text-primary-700">
                       <Mail className="h-4 w-4 mr-2" />
-                      <Typography variant="small">Email: info@gosafe.vn</Typography>
+                      <Typography variant="small">Email: info@vilandtravel.vn</Typography>
                     </div>
                   </div>
                 </div>

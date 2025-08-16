@@ -1,4 +1,4 @@
-# GoSafe Booking Tour - Tóm tắt dự án
+# ViLand Travel Booking Tour - Tóm tắt dự án
 
 ## ✅ Đã hoàn thành
 
@@ -14,7 +14,7 @@
 - ✅ **Footer**: Thông tin công ty, links, social media
 - ✅ **HeroSection**: Banner chính với search form đa dịch vụ
 - ✅ **FeaturedServices**: 5 dịch vụ chính (Vé máy bay, Tour, Khách sạn, Thuê xe, Go_Safe)
-- ✅ **WhyChooseUs**: Lý do chọn GoSafe với statistics
+- ✅ **WhyChooseUs**: Lý do chọn ViLand Travel với statistics
 - ✅ **NewsAndExperience**: Tin tức và đánh giá khách hàng
 - ✅ **PartnersAndContact**: Đối tác và form liên hệ
 
@@ -34,7 +34,6 @@
 ## 🌐 URL và Truy cập
 
 - **Development Server**: http://localhost:3000
-- **Repository**: d:/gosafe/gosafe-booking-tour
 
 ## 🚀 Lệnh chạy dự án
 

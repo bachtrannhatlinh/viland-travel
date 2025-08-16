@@ -37,7 +37,9 @@ export function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <Typography variant="large" className="text-2xl font-bold text-primary-600">GoSafe</Typography>
+              <Typography variant="large" className="text-2xl font-bold text-primary-600">
+                ViLand Travel
+              </Typography>
             </Link>
           </div>
 
@@ -108,9 +110,9 @@ export function Header() {
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>GoSafe Menu</SheetTitle>
+                  <SheetTitle>ViLand Travel Menu</SheetTitle>
                   <SheetDescription>
-                    Điều hướng đến các trang và dịch vụ của GoSafe
+                    Điều hướng đến các trang và dịch vụ của ViLand Travel
                   </SheetDescription>
                 </SheetHeader>
                 <div className="py-4 space-y-4">

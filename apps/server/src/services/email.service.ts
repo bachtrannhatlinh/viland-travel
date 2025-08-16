@@ -50,13 +50,13 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
       html = loadTemplate(options.template, {
         ...options.context,
         baseUrl: process.env.FRONTEND_URL,
-        companyName: 'GoSafe',
+        companyName: 'ViLand Travel',
         supportEmail: process.env.EMAIL_FROM
       });
     }
 
     const mailOptions = {
-      from: `GoSafe <${process.env.EMAIL_FROM}>`,
+      from: `ViLand Travel <${process.env.EMAIL_FROM}>`,
       to: options.to,
       subject: options.subject,
       html: html,
@@ -75,7 +75,7 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
 export const sendWelcomeEmail = async (to: string, firstName: string): Promise<void> => {
   await sendEmail({
     to,
-    subject: 'Chào mừng bạn đến với GoSafe!',
+    subject: 'Chào mừng bạn đến với ViLand Travel!',
     template: 'welcome',
     context: {
       firstName

@@ -7,8 +7,8 @@ import { Section } from '@/components/ui/section'
 import { Input } from '@/components/ui/input'
 
 export const metadata: Metadata = {
-  title: 'Blog - Tin tức & Kiến thức Du lịch - GoSafe',
-  description: 'Cập nhật tin tức du lịch mới nhất, kiến thức hữu ích và kinh nghiệm từ cộng đồng GoSafe.',
+  title: 'Blog - Tin tức & Kiến thức Du lịch - ViLand Travel',
+  description: 'Cập nhật tin tức du lịch mới nhất, kiến thức hữu ích và kinh nghiệm từ cộng đồng ViLand Travel.',
 }
 
 export default function BlogPage() {
@@ -111,10 +111,10 @@ export default function BlogPage() {
       <Section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Typography variant="h1" className="text-4xl md:text-5xl font-bold mb-6">
-            Blog Du lịch GoSafe
+            Blog Du lịch ViLand Travel
           </Typography>
           <Typography variant="large" className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto mb-8">
-            Khám phá thế giới qua những câu chuyện, kinh nghiệm và mẹo hay từ cộng đồng GoSafe
+            Khám phá thế giới qua những câu chuyện, kinh nghiệm và mẹo hay từ cộng đồng ViLand Travel
           </Typography>
           <div className="max-w-md mx-auto">
             <div className="relative">
@@ -223,7 +223,7 @@ export default function BlogPage() {
             </Typography>
             <Typography variant="p" className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Nhận những bài viết mới nhất, ưu đãi độc quyền và mẹo du lịch hữu ích 
-              từ GoSafe ngay trong hộp thư của bạn.
+              từ ViLand Travel ngay trong hộp thư của bạn.
             </Typography>
             <div className="max-w-md mx-auto flex gap-3">
               <Input

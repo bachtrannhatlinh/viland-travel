@@ -6,7 +6,7 @@ import { Section } from '@/components/ui/section'
 import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'Vé máy bay giá rẻ - GoSafe',
+  title: 'Vé máy bay giá rẻ - ViLand Travel',
   description: 'Tìm kiếm và đặt vé máy bay đến mọi điểm đến trên thế giới với giá tốt nhất.',
 }
 

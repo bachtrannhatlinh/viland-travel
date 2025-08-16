@@ -30,7 +30,9 @@ export function HeroSection() {
         <div className="text-center mb-12">
           <Typography variant="h1" className="text-4xl md:text-6xl font-bold mb-6">
             Khám phá thế giới cùng
-            <Typography variant="small" className="block text-secondary-400">GoSafe</Typography>
+            <Typography variant="small" className="block text-secondary-400">
+              ViLand Travel
+            </Typography>
           </Typography>
           <Typography variant="large" className="text-xl md:text-2xl mb-8 text-gray-200">
             Đặt tour, vé máy bay, khách sạn và thuê xe một cách dễ dàng

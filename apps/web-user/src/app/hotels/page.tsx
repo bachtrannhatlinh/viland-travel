@@ -5,8 +5,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import HotelBookingClient from './components/HotelBookingClient'
 
 export const metadata: Metadata = {
-  title: 'Booking khách sạn - GoSafe',
-  description: 'Tìm kiếm và đặt phòng khách sạn với giá tốt nhất tại GoSafe.',
+  title: 'Booking khách sạn - ViLand Travel',
+  description: 'Tìm kiếm và đặt phòng khách sạn với giá tốt nhất tại ViLand Travel.',
 }
 
 export default function HotelsPage() {

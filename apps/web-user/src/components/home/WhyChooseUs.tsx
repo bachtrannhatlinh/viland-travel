@@ -44,7 +44,7 @@ export function WhyChooseUs() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <Typography variant="h2" className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Tại sao chọn GoSafe?
+            Tại sao chọn ViLand Travel?
           </Typography>
           <Typography variant="large" className="text-xl text-gray-600 max-w-2xl mx-auto">
             Chúng tôi cam kết mang đến cho bạn những trải nghiệm du lịch tuyệt vời nhất

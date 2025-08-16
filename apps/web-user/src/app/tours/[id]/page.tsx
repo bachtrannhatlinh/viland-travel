@@ -12,7 +12,7 @@ interface TourDetailPageProps {
 export async function generateMetadata({ params }: TourDetailPageProps): Promise<Metadata> {
   // Trong thực tế sẽ fetch data từ API
   return {
-    title: `Chi tiết tour - GoSafe`,
+    title: `Chi tiết tour - ${params.id} - ViLand Travel`,
     description: 'Xem thông tin chi tiết về chuyến đi, tính năng, giá cả và đặt chuyến đi ngay.',
   };
 }

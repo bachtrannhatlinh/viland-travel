@@ -12,7 +12,7 @@ import {
   getProfile,
   updateProfile,
   changePassword
-} from '../controllers/auth.controller';
+} from '../controllers/auth.typeorm.controller';
 import { protect } from '../middleware/auth';
 
 const router = express.Router();

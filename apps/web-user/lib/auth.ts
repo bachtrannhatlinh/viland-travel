@@ -12,18 +12,18 @@ interface User {
 }
 
 class AuthService {
-  async register(email: string, password: string) {
+  async register(firstName: string, lastName: string, email: string, password: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ firstName, lastName, email, password }),
     });
     const data = await response.json();
     return data;
   }
-  private readonly ACCESS_TOKEN_KEY = 'gosafe_access_token';
-  private readonly REFRESH_TOKEN_KEY = 'gosafe_refresh_token';
-  private readonly USER_KEY = 'gosafe_user';
+  private readonly ACCESS_TOKEN_KEY = 'vilandtravel_access_token';
+  private readonly REFRESH_TOKEN_KEY = 'vilandtravel_refresh_token';
+  private readonly USER_KEY = 'vilandtravel_user';
 
   // Token management
   setTokens(tokens: AuthTokens): void {

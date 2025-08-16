@@ -12,8 +12,8 @@ import { ChunkErrorHandler } from '@/components/ChunkErrorHandler'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'GoSafe - Booking Tour Du Lịch',
-  description: 'Đặt vé máy bay, tour du lịch, khách sạn và thuê xe với GoSafe - Nền tảng booking tour hàng đầu Việt Nam',
+  title: 'ViLand Travel - Booking Tour Du Lịch',
+  description: 'Đặt vé máy bay, tour du lịch, khách sạn và thuê xe với ViLand Travel - Nền tảng booking tour hàng đầu Việt Nam',
   keywords: 'booking tour, vé máy bay, khách sạn, thuê xe, du lịch việt nam',
 }
 

@@ -2,13 +2,6 @@ import { Router } from 'express';
 import { PaymentController } from '../controllers/PaymentController';
 import { PaymentService } from '../services/payment/PaymentService';
 import { protect } from '../middleware/auth';
-import {
-  createPayment,
-  queryPaymentStatus,
-  handlePaymentCallback,
-  getAvailableGateways,
-  healthCheck
-} from '../controllers/payment.controller';
 
 // Initialize payment service from environment
 const paymentService = PaymentService.fromEnv();
@@ -31,7 +24,7 @@ const router = Router();
  *   gateway?: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * }
  */
-router.post('/create', createPayment);
+router.post('/create', paymentController.createPayment);
 
 /**
  * @route POST /api/payments/callback/:gateway
@@ -40,7 +33,7 @@ router.post('/create', createPayment);
  * @params gateway: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * @body Gateway-specific callback data
  */
-router.post('/callback/:gateway', handlePaymentCallback);
+router.post('/callback/:gateway', paymentController.handleCallback);
 
 /**
  * @route GET /api/payments/return/:gateway
@@ -58,7 +51,7 @@ router.get('/return/:gateway', paymentController.handleReturn);
  * @params gateway: 'vnpay' | 'zalopay' | 'momo' | 'onepay'
  * @params transactionId: string
  */
-router.get('/status/:gateway/:transactionId', protect, queryPaymentStatus);
+router.get('/status/:gateway/:transactionId', protect, paymentController.queryPaymentStatus);
 
 /**
  * @route POST /api/payments/refund/:gateway
@@ -91,14 +84,14 @@ router.post('/verify/:gateway', protect, paymentController.verifySignature);
  * @desc Get available payment gateways
  * @access Public
  */
-router.get('/gateways', getAvailableGateways);
+router.get('/gateways', paymentController.getGateways);
 
 /**
  * @route GET /api/payments/health
  * @desc Health check for payment service
  * @access Public
  */
-router.get('/health', healthCheck);
+router.get('/health', paymentController.healthCheck);
 
 // Webhook handlers for payment gateways
 const vnpayWebhook = (req: any, res: any) => {

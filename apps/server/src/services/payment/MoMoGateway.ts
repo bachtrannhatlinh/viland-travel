@@ -51,7 +51,7 @@ export class MoMoGateway extends PaymentGateway {
       
       const momoRequest: Omit<MoMoRequest, 'signature'> = {
         partnerCode: this.momoConfig.partnerCode,
-        partnerName: 'GoSafe Tour',
+        partnerName: 'ViLand Travel Tour',
         storeId: 'MomoTestStore',
         requestId,
         amount,

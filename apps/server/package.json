@@ -1,7 +1,7 @@
 {
-  "name": "@gosafe/api",
+  "name": "@vilandtravel/api",
   "version": "1.0.0",
-  "description": "GoSafe Backend API Services",
+  "description": "ViLand Travel Backend API Services",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
@@ -11,7 +11,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "migration:run": "ts-node src/scripts/run-migrations.ts",
+    "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d src/config/postgresql.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^9.1.0",
@@ -51,7 +53,7 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.4",
-    "@types/jsonwebtoken": "^9.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.4",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.19.9",
@@ -67,12 +69,12 @@
     "typescript": "^5.1.6"
   },
   "keywords": [
-    "gosafe",
+    "vilandtravel",
     "booking",
     "travel",
     "api",
     "microservices"
   ],
-  "author": "GoSafe Team",
+  "author": "ViLand Travel Team",
   "license": "MIT"
 }

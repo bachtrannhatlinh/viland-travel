@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "GoSafe Web - Development",
+			"label": "ViLand Travel Web - Development",
 			"type": "shell",
 			"command": "npm",
 			"args": [

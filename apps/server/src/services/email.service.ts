@@ -56,7 +56,7 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
     }
 
     const mailOptions = {
-      from: `ViLand Travel <${process.env.EMAIL_FROM}>`,
+      from: `${process.env.EMAIL_FROM_NAME || 'ViLand Travel'} <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
       to: options.to,
       subject: options.subject,
       html: html,

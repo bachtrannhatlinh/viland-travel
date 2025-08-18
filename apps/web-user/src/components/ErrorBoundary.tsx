@@ -30,11 +30,22 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo)
-    
+
     // Check if it's a ChunkLoadError
     if (error.name === 'ChunkLoadError' || error.message.includes('Loading chunk')) {
-      // Reload the page to fix chunk loading issues
-      window.location.reload()
+      console.warn('ChunkLoadError caught by ErrorBoundary, redirecting to offline page...')
+      // Instead of immediate reload, redirect to offline page for better UX
+      window.location.href = '/offline'
+      return
+    }
+
+    // Log error details for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🐛 Error Boundary Details')
+      console.error('Error:', error)
+      console.error('Error Info:', errorInfo)
+      console.error('Component Stack:', errorInfo.componentStack)
+      console.groupEnd()
     }
   }
 

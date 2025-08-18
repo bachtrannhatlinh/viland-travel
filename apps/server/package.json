@@ -10,6 +10,8 @@
     "vercel-build": "mkdir -p public && echo 'Build completed'",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:email": "node scripts/test-email.js",
+    "check:config": "node scripts/check-config.js",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "migration:run": "ts-node src/scripts/run-migrations.ts",

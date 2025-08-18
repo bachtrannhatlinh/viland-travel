@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from "../../src/components/ui/button";
-import { Input } from "../../src/components/ui/input";
-import { ErrorMessage } from "../../src/components/ui/error-message";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/utils';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 interface ValidationError {
   type: string;
@@ -26,7 +28,6 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
-  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,10 +35,18 @@ export default function RegisterForm() {
     setLoading(true);
     setError('');
     setFieldErrors({});
-    setSuccess('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      const errorMsg = 'Passwords do not match';
+      setError(errorMsg);
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       setLoading(false);
       return;
     }
@@ -53,7 +62,14 @@ export default function RegisterForm() {
       const result = await apiClient.post('/auth/register', sendFormData)
 
       if (result.success) {
-        setSuccess('Registration successful! Redirecting to login...');
+        toast.success('Registration successful! Redirecting to login...', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         setTimeout(() => router.push('/login'), 1500);
       } else {
         // Handle validation errors - check both result.error.details and result.details
@@ -69,12 +85,30 @@ export default function RegisterForm() {
           });
           setFieldErrors(errors);
         } else {
-          setError(result.error?.message || result.message || 'Registration failed');
+          const errorMsg = result.error?.message || result.message || 'Registration failed';
+          setError(errorMsg);
+          toast.error(errorMsg, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       }
     } catch (err: any) {
       // True network error (fetch failed)
-      setError('Network error. Please try again.');
+      const errorMsg = 'Network error. Please try again.';
+      setError(errorMsg);
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -141,11 +175,23 @@ export default function RegisterForm() {
       </div>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      {success && <p className="text-green-600 text-sm">{success}</p>}
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? 'Registering...' : 'Register'}
+        {loading ? 'Đang đăng ký...' : 'Đăng ký'}
       </Button>
+
+      {/* Đăng nhập */}
+      <div className="text-center mt-6">
+        <p className="text-sm text-gray-600">
+          Đã có tài khoản?{' '}
+          <Link
+            href="/login"
+            className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+          >
+            Đăng nhập
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }

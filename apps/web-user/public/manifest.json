@@ -1,0 +1,53 @@
+{
+  "name": "ViLand Travel - Đặt tour du lịch",
+  "short_name": "ViLand Travel",
+  "description": "Ứng dụng đặt tour du lịch, vé máy bay và dịch vụ du lịch",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "vi",
+  "categories": ["travel", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tìm tour",
+      "short_name": "Tours",
+      "description": "Tìm kiếm tour du lịch",
+      "url": "/tours",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Đặt vé máy bay",
+      "short_name": "Flights",
+      "description": "Đặt vé máy bay",
+      "url": "/flights",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

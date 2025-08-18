@@ -4,6 +4,7 @@ import { useState, lazy, Suspense } from 'react'
 import { Typography } from '@/components/ui/typography'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { apiClient } from '@/lib/utils'
 
 // Lazy load heavy components
 const HotelSearch = lazy(() => import('../../../components/hotels/HotelSearch'))
@@ -35,59 +36,54 @@ export default function HotelBookingClient() {
   const handleSearch = async (data: SearchData) => {
     setLoading(true)
     setSearchData(data)
-    
     try {
-      // Simulate API call with shorter delay
-      await new Promise(resolve => setTimeout(resolve, 800))
-      
-      // Mock results - in real app this would come from API
-      const results = [
-        {
-          id: '1',
-          name: 'The Grand Hotel Saigon',
-          description: 'Khách sạn cao cấp 5 sao với view thành phố tuyệt đẹp',
-          starRating: 5,
-          rating: 9.2,
-          reviewCount: 1250,
-          location: {
-            address: '8 Đồng Khởi, Bến Nghé, Quận 1',
-            city: 'TP. Hồ Chí Minh',
-            country: 'Việt Nam'
-          },
-          startingPrice: 2500000
-        },
-        {
-          id: '2', 
-          name: 'Liberty Central Saigon Centre',
-          description: 'Khách sạn boutique 4 sao với thiết kế hiện đại',
-          starRating: 4,
-          rating: 8.8,
-          reviewCount: 890,
-          location: {
-            address: '179 Nguyễn Thị Minh Khai, Phường 6, Quận 3',
-            city: 'TP. Hồ Chí Minh',
-            country: 'Việt Nam'
-          },
-          startingPrice: 1800000
-        }
-      ]
-      
-      setSearchResults(results)
-      setCurrentStep('results')
+      const params = {
+        destination: data.destination || '',
+        checkIn: data.checkIn,
+        checkOut: data.checkOut,
+        rooms: data.rooms?.toString() || '1',
+        adults: data.adults?.toString() || '1',
+        children: data.children?.toString() || '0',
+      };
+      const json = await apiClient.get('/hotels/search', params);
+      if (json.success && Array.isArray(json.data)) {
+        setSearchResults(json.data);
+        setCurrentStep('results');
+      } else {
+        setSearchResults([]);
+        setCurrentStep('results');
+      }
     } catch (error) {
-      console.error('Search error:', error)
+      console.error('Search error:', error);
+      setSearchResults([]);
+      setCurrentStep('results');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  const handleSelectHotel = (hotel: any) => {
-    setSelectedHotel(hotel)
-    setCurrentStep('rooms')
+  const handleSelectHotel = async (hotel: any) => {
+    setLoading(true);
+    try {
+      // Fetch hotel details (with rooms)
+      const json = await apiClient.get(`/hotels/${hotel.id}`);
+      if (json.success && json.data) {
+        setSelectedHotel(json.data);
+      } else {
+        setSelectedHotel(hotel); // fallback
+      }
+      setCurrentStep('rooms');
+    } catch (error) {
+      setSelectedHotel(hotel);
+      setCurrentStep('rooms');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const handleSelectRoom = (room: any, quantity: number) => {
+  const handleSelectRoom = (room: any, quantity: number, hotel: any) => {
     setSelectedRoom({ room, quantity })
+    setSelectedHotel(hotel);
     setCurrentStep('booking')
   }
 
@@ -148,15 +144,6 @@ export default function HotelBookingClient() {
             {searchResults.length} khách sạn được tìm thấy tại {searchData.destination || 'tất cả điểm đến'}
           </Typography>
         </div>
-
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <Suspense fallback={<LoadingSpinner />}>
-              <HotelSearch onSearch={handleSearch} loading={loading} />
-            </Suspense>
-          </CardContent>
-        </Card>
-        
         <Suspense fallback={<LoadingSpinner />}>
           <HotelList
             hotels={searchResults}

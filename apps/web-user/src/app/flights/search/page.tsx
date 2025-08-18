@@ -63,7 +63,6 @@ export default function FlightSearchPage() {
         const data = await apiClient.get('/flights/search', searchParams)
 
         if (data.success) {
-          console.log(`✅ Found ${data.data.totalCount} flights from ${data.data.dataSource}`)
           setFlights(data.data.flights)
           setFilteredFlights(data.data.flights)
         } else {

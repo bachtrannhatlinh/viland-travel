@@ -78,7 +78,7 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Destination */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <FormField
                 control={form.control}
                 name="destination"

@@ -21,7 +21,7 @@ interface RoomSelectionProps {
     children: number;
   };
   onBack: () => void;
-  onSelectRoom: (room: Room, quantity: number) => void;
+  onSelectRoom: (room: Room, quantity: number, hotel: Hotel) => void;
 }
 
 interface SelectedRoom {
@@ -201,7 +201,7 @@ export default function RoomSelection({ hotel, searchData, onBack, onSelectRoom 
     if (selectedRoomsList.length > 0) {
       // Pass the first selected room for now - in a real app, you'd handle multiple rooms
       const firstSelection = selectedRoomsList[0];
-      onSelectRoom(firstSelection.room, firstSelection.quantity);
+      onSelectRoom(firstSelection.room, firstSelection.quantity, hotel);
     }
   };
 
@@ -251,7 +251,8 @@ export default function RoomSelection({ hotel, searchData, onBack, onSelectRoom 
                   </Typography>
                 </div>
                 <Typography variant="p" className="text-gray-600">
-                  {hotel.location.address}, {hotel.location.city}
+                  {hotel.location && hotel.location.address ? hotel.location.address : ''}
+                  {hotel.location && hotel.location.city ? `, ${hotel.location.city}` : ''}
                 </Typography>
               </div>
               
@@ -276,16 +277,19 @@ export default function RoomSelection({ hotel, searchData, onBack, onSelectRoom 
         <Typography variant="h2" className="text-xl font-semibold text-gray-900 mb-4">
           Chọn phòng
         </Typography>
-        
-        {hotel.rooms.map((room, index) => (
-          <RoomCard
-            key={index}
-            room={room}
-            nights={nights}
-            selectedQuantity={selectedRooms[index] || 0}
-            onQuantityChange={(quantity) => handleQuantityChange(index, quantity)}
-          />
-        ))}
+        {Array.isArray(hotel.rooms) && hotel.rooms.length > 0 ? (
+          hotel.rooms.map((room, index) => (
+            <RoomCard
+              key={index}
+              room={room}
+              nights={nights}
+              selectedQuantity={selectedRooms[index] || 0}
+              onQuantityChange={(quantity) => handleQuantityChange(index, quantity)}
+            />
+          ))
+        ) : (
+          <Typography variant="p" className="text-gray-600">Không có phòng nào khả dụng cho khách sạn này.</Typography>
+        )}
       </div>
 
       {/* Booking Summary */}

@@ -29,10 +29,6 @@ export const API_CONFIG = {
   },
 };
 
-console.log("Environment:", process.env.NODE_ENV);
-console.log("Vercel Env:", process.env.VERCEL_ENV);
-console.log("API_CONFIG:", API_CONFIG);
-
 // API Helper functions
 export const apiClient = {
   async get(

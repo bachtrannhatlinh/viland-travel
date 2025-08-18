@@ -32,12 +32,9 @@ export default function FlightsPage() {
               <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-4">
                 Tìm chuyến bay
               </Typography>
-              <Typography className="text-gray-600 mb-8">
-                Form tìm kiếm chuyến bay đang được phát triển
-              </Typography>
               <Button asChild size="lg">
-                <Link href="/flights/search?demo=true" prefetch={true}>
-                  Xem demo kết quả tìm kiếm
+                <Link href="/flights/search" prefetch={true}>
+                  Tìm kiếm chuyến bay 
                 </Link>
               </Button>
             </Section>

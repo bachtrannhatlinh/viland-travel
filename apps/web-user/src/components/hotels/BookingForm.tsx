@@ -327,7 +327,7 @@ export default function BookingForm({
             {/* Hotel Info */}
             <div className="mb-4 pb-4 border-b border-gray-200">
               <Typography variant="h3" className="font-medium text-gray-900">{hotel.name}</Typography>
-              <Typography variant="small" className="text-sm text-gray-600">{hotel.location.city}</Typography>
+              <Typography variant="small" className="text-sm text-gray-600">{hotel.location?.city || ''}</Typography>
             </div>
 
             {/* Room Info */}

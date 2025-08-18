@@ -99,6 +99,12 @@ function HotelCard({ hotel, onSelect }: { hotel: Hotel; onSelect: (hotel: Hotel)
     }).format(price);
   };
 
+  // Fallbacks for missing data
+  const images = Array.isArray(hotel.images) ? hotel.images : [];
+  const amenities = hotel.amenities && Array.isArray(hotel.amenities.general) ? hotel.amenities.general : [];
+  const address = hotel.location?.address || '';
+  const city = hotel.location?.city || '';
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="md:flex">
@@ -106,7 +112,7 @@ function HotelCard({ hotel, onSelect }: { hotel: Hotel; onSelect: (hotel: Hotel)
         <div className="md:w-1/3">
           <div className="relative h-48 md:h-full">
             <Image
-              src={hotel.images[0] || '/images/hotel-placeholder.jpg'}
+              src={images.length > 0 ? images[0] : '/images/hotel-placeholder.jpg'}
               alt={hotel.name}
               fill
               className="object-cover"
@@ -141,7 +147,7 @@ function HotelCard({ hotel, onSelect }: { hotel: Hotel; onSelect: (hotel: Hotel)
           {/* Location */}
           <div className="flex items-center text-gray-600 mb-3">
             <MapPin className="w-4 h-4 mr-1" />
-            <Typography variant="small" className="text-sm">{hotel.location.address}, {hotel.location.city}</Typography>
+            <Typography variant="small" className="text-sm">{address}, {city}</Typography>
           </div>
 
           {/* Rating */}
@@ -150,37 +156,23 @@ function HotelCard({ hotel, onSelect }: { hotel: Hotel; onSelect: (hotel: Hotel)
               {hotel.rating}
             </div>
             <Typography variant="small" className="ml-2 text-sm text-gray-600">
-              Tuyệt vời ({hotel.reviewCount} đánh giá)
+              ({hotel.reviewCount} đánh giá)
             </Typography>
           </div>
 
           {/* Amenities */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {hotel.amenities.general.slice(0, 4).map((amenity, index) => (
-              <div key={index} className="flex items-center text-xs text-gray-600">
+            {amenities.slice(0, 4).map((amenity) => (
+              <div key={amenity} className="flex items-center bg-gray-100 rounded px-2 py-1 text-xs">
                 <AmenityIcon amenity={amenity} />
-                <Typography variant="small" className="ml-1 text-xs">{amenity}</Typography>
+                <span className="ml-1">{amenity}</span>
               </div>
             ))}
           </div>
 
-          {/* Description */}
-          <Typography variant="p" className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {hotel.description}
-          </Typography>
-
-          {/* Available rooms */}
-          <div className="flex justify-between items-center">
-            <Typography variant="small" className="text-sm text-green-600 font-medium">
-              {hotel.rooms.reduce((sum, room) => sum + room.availability.available, 0)} phòng còn trống
-            </Typography>
-            <Button
-              onClick={() => onSelect(hotel)}
-              className="px-6 py-2"
-            >
-              Chọn phòng
-            </Button>
-          </div>
+          <Button onClick={() => onSelect(hotel)} className="mt-2">
+            Xem phòng
+          </Button>
         </div>
       </div>
     </Card>

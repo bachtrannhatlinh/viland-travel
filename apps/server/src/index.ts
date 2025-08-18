@@ -34,8 +34,6 @@ app.use(helmet());
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log('CORS Origin:', origin); // Debug log
-      
       if (process.env.NODE_ENV === "production") {
         const allowedOrigins = [
           "https://gosafe-booking-tour.vercel.app",
@@ -50,7 +48,7 @@ app.use(
         );
         
         if (!origin || allowedOrigins.includes(origin) || isVercelApp) {
-          callback(null, true);
+          callback(null, origin);
         } else {
           console.log('CORS blocked origin:', origin);
           callback(new Error('Not allowed by CORS'));
@@ -62,7 +60,7 @@ app.use(
           "http://127.0.0.1:3000"
         ];
         if (!origin || devOrigins.includes(origin)) {
-          callback(null, true);
+          callback(null, origin);
         } else {
           callback(new Error('Not allowed by CORS'));
         }
@@ -100,7 +98,8 @@ import { Request, Response } from "express";
 app.get("/health", async (req: Request, res: Response) => {
   try {
     if (process.env.NODE_ENV === "development") {
-      await connectPostgreSQL();
+      // await connectPostgreSQL();
+      await supabaseService.initializeDatabase();
     } else {
       // Initialize Supabase database
       await supabaseService.initializeDatabase();
@@ -152,7 +151,8 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     if (process.env.NODE_ENV === "development") {
-      await connectPostgreSQL();
+      // await connectPostgreSQL();
+      await supabaseService.initializeDatabase();
     } else {
       await supabaseService.initializeDatabase();
     }

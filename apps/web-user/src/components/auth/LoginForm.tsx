@@ -44,12 +44,12 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {showEmailVerification && (
+      {/* {showEmailVerification && (
         <EmailVerificationAlert
           email={userEmail}
           onClose={() => setShowEmailVerification(false)}
         />
-      )}
+      )} */}
 
       <div>
         <Input

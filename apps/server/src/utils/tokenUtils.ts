@@ -1,5 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { IUser } from '../models/User.model';
+
 
 interface TokenPayload {
   id: string;
@@ -12,7 +12,8 @@ interface RefreshTokenPayload {
   type: string;
 }
 
-export const generateTokens = (user: IUser) => {
+// Thay IUser thành any hoặc interface khác nếu cần
+export const generateTokens = (user: any) => {
   const payload: TokenPayload = {
     id: user._id,
     email: user.email,

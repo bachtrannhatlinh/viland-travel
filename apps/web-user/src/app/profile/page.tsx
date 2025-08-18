@@ -90,7 +90,8 @@ export default function ProfilePage() {
   }
 
   const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
+    if (!firstName || !lastName) return '';
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,8 +133,6 @@ export default function ProfilePage() {
         phone: formData.phone,
         address: formData.address
       })
-
-      console.log('Update profile result:', success)
 
       if (success) {
         setIsEditing(false)
@@ -225,7 +224,7 @@ export default function ProfilePage() {
                     alt={`${user.firstName} ${user.lastName}`}
                   />
                   <AvatarFallback className="bg-primary-100 text-primary-700 text-xl font-medium">
-                    {getInitials(user.firstName, user.lastName)}
+                    {getInitials(user.firstName || user.first_name, user.lastName || user.last_name)}
                   </AvatarFallback>
                 </Avatar>
                 <div>

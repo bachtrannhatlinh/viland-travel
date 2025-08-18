@@ -1,5 +1,6 @@
 // Vercel API route: /api/v1/auth/register
 import { createClient } from "@supabase/supabase-js";
+import { handleCors } from "../../../../src/middleware/cors";
 
 // Initialize Supabase
 let supabase = null;
@@ -26,17 +27,8 @@ try {
 }
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+  // Set CORS headers using shared helper
+  if (handleCors(req, res)) return;
 
   // Handle preflight requests
   if (req.method === "OPTIONS") {
@@ -60,13 +52,23 @@ export default async function handler(req, res) {
           .select();
         if (error) {
           console.log("❌ User registration failed:", error);
-          res.status(500).json({ error: error.message || "User registration failed", details: error.details || error });
+          res
+            .status(500)
+            .json({
+              error: error.message || "User registration failed",
+              details: error.details || error,
+            });
           return;
         }
         console.log("✅ User registered:", data);
       } catch (error) {
         console.log("❌ User registration failed (catch):", error);
-        res.status(500).json({ error: error.message || "User registration failed", details: error });
+        res
+          .status(500)
+          .json({
+            error: error.message || "User registration failed",
+            details: error,
+          });
         return;
       }
     } else {

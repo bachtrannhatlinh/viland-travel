@@ -1,5 +1,7 @@
 // Vercel API route: /api/health
+
 import { createClient } from '@supabase/supabase-js';
+import { handleCors } from '../src/middleware/cors';
 
 // Initialize Supabase
 let supabase = null;
@@ -22,19 +24,10 @@ try {
   console.log('❌ Supabase init error:', error.message);
 }
 
-export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400');
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
+export default async function handler(req, res) {
+  // Set CORS headers using shared helper
+  if (handleCors(req, res)) return;
 
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -49,7 +42,6 @@ export default async function handler(req, res) {
       try {
         // Test Supabase connection
         const { data, error } = await supabase.from('flights').select('count').limit(1);
-        
         if (error) {
           databaseStatus = 'error';
           databaseMessage = error.message;

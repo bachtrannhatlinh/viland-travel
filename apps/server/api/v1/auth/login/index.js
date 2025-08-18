@@ -1,5 +1,6 @@
 // Vercel API route: /api/v1/auth/login
 import { createClient } from "@supabase/supabase-js";
+import { handleCors } from "../../../../src/middleware/cors";
 
 // Initialize Supabase
 let supabase = null;
@@ -26,19 +27,9 @@ try {
 }
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+  // Set CORS headers using shared helper
+  if (handleCors(req, res)) return;
 
-  // Handle preflight requests
   if (req.method === "OPTIONS") {
     res.status(200).end();
     return;

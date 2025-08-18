@@ -50,14 +50,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Generate email verification token
     const emailVerificationToken = crypto.randomBytes(32).toString('hex');
-    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    // Create user
+    // Create user with TypeORM
     const user = userRepository.create({
       firstName,
       lastName,
@@ -65,16 +64,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password: hashedPassword,
       phone,
       emailVerificationToken,
-      emailVerificationExpires
+      emailVerificationExpires,
+      isEmailVerified: true,
+      status: UserStatus.PENDING
     });
 
     await userRepository.save(user);
 
     // Send verification email
     try {
-      // Import email service dynamically to avoid circular dependency
       const { sendEmail } = await import('../services/email.service');
-
       await sendEmail({
         to: email,
         subject: 'Xác thực tài khoản ViLand Travel',
@@ -84,21 +83,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
           verificationUrl: `${process.env.FRONTEND_URL}/verify-email/${emailVerificationToken}`
         }
       });
-
-      console.log(`✅ Verification email sent to ${email}`);
     } catch (emailError) {
       console.error('❌ Failed to send verification email:', emailError);
-      // Don't fail the registration if email sending fails
     }
 
-    // Remove sensitive data from response
+    // Remove sensitive data
     const { password: _, emailVerificationToken: __, ...userResponse } = user;
 
     res.status(201).json({
       success: true,
-      data: {
-        user: userResponse
-      },
+      data: { user: userResponse },
       message: 'User registered successfully. Please check your email to verify your account.'
     });
   } catch (error) {
@@ -170,18 +164,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Check if email is verified
-    if (!user.isEmailVerified) {
-      res.status(403).json({
-        success: false,
-        error: {
-          message: 'Account is not active. Please check your email and verify your account.',
-          code: 'EMAIL_NOT_VERIFIED',
-          email: user.email
-        }
-      });
-      return;
-    }
+    // Check if email is verified (tạm thời bỏ qua)
+    // if (!user.isEmailVerified) {
+    //   res.status(403).json({
+    //     success: false,
+    //     error: {
+    //       message: 'Account is not active. Please check your email and verify your account.',
+    //       code: 'EMAIL_NOT_VERIFIED',
+    //       email: user.email
+    //     }
+    //   });
+    //   return;
+    // }
 
     // Update last login
     user.lastLogin = new Date();

@@ -1,8 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 
 // CORS Middleware
-export const setCorsHeaders = (res: Response): void => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+export const setCorsHeaders = (req: Request, res: Response): void => {
+  const allowedOrigins = [
+    'https://gosafe-booking-tour.vercel.app',
+    'https://www.gosafe-booking-tour.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000'
+  ];
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigins[0]); // fallback
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -10,7 +22,7 @@ export const setCorsHeaders = (res: Response): void => {
 };
 
 export const handleCors = (req: Request, res: Response, next?: NextFunction): void => {
-  setCorsHeaders(res);
+  setCorsHeaders(req, res);
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {

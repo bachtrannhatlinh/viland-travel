@@ -20,24 +20,7 @@ const errorHandler = (
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Internal Server Error';
 
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    message = 'Resource not found';
-    statusCode = 404;
-  }
-
-  // Mongoose duplicate key
-  if (err.name === 'MongoError' && (err as any).code === 11000) {
-    message = 'Duplicate field value entered';
-    statusCode = 400;
-  }
-
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const errors = Object.values((err as any).errors).map((val: any) => val.message);
-    message = `Invalid input data: ${errors.join(', ')}`;
-    statusCode = 400;
-  }
+  // ...existing code...
 
   // JWT errors
   if (err.name === 'JsonWebTokenError') {

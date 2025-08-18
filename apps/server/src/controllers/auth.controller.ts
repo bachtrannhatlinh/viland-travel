@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User.model';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { sendEmail } from '../services/email.service';

@@ -39,7 +39,6 @@ export function useAuth(): UseAuthReturn {
 
     // Listen for auth state changes
     const handleAuthStateChange = (event: CustomEvent) => {
-      console.log('Auth state changed:', event.detail);
       const { user, isAuthenticated } = event.detail;
       setUser(isAuthenticated ? user : null);
     };

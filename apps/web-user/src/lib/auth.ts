@@ -94,15 +94,6 @@ class AuthService {
       typeof window !== "undefined" &&
       localStorage.getItem("vilandtravel_authenticated") === "true";
     const hasUserData = !!this.getUser();
-
-    // Debug logging (comment out in production)
-    // console.log("Auth check:", {
-    //   hasAccessToken,
-    //   hasAuthFlag,
-    //   hasUserData,
-    //   user: this.getUser(),
-    // });
-
     // Check for access token, authentication flag, or user data
     return hasAccessToken || hasAuthFlag || hasUserData;
   }
@@ -134,10 +125,6 @@ class AuthService {
         email,
         password,
       });
-
-      console.log("Login response:", data);
-      console.log("Cookies after login:", document.cookie);
-
       // Handle different response structures
       if (data.success || data.user) {
         // Case 1: Response with success flag and nested data
@@ -151,7 +138,6 @@ class AuthService {
               refreshToken: token, // Use same token for refresh for now
             };
             this.setTokens(tokens);
-            console.log("JWT tokens saved:", tokens);
           }
 
           if (userData) {
@@ -172,15 +158,12 @@ class AuthService {
               refreshToken: data.refreshToken || data.token || data.accessToken
             };
             this.setTokens(tokens);
-            console.log("Tokens saved:", tokens);
           } else {
             // Try to get token from a separate endpoint
-            console.log("No token in login response, trying to get token...");
             const tokenObtained = await this.tryGetToken();
 
             if (!tokenObtained) {
               // Create a session-based token for API calls
-              console.log("Creating session-based token...");
               this.createSessionToken(data.user);
             }
           }
@@ -205,7 +188,6 @@ class AuthService {
       refreshToken: sessionToken
     };
     this.setTokens(tokens);
-    console.log("Session token created:", sessionToken);
   }
 
   // Try to get token from server (for servers that don't return token in login response)
@@ -217,7 +199,6 @@ class AuthService {
       for (const endpoint of endpoints) {
         try {
           const response = await apiClient.get(endpoint);
-          console.log(`Response from ${endpoint}:`, response);
 
           if (response.token || response.accessToken) {
             const tokens = {
@@ -225,7 +206,6 @@ class AuthService {
               refreshToken: response.refreshToken || response.token || response.accessToken
             };
             this.setTokens(tokens);
-            console.log("Token obtained from", endpoint, tokens);
             return true;
           }
         } catch (error) {
@@ -234,10 +214,8 @@ class AuthService {
         }
       }
 
-      console.log("No token endpoints available, using session-based auth");
       return false;
     } catch (error) {
-      console.error("Error trying to get token:", error);
       return false;
     }
   }
@@ -302,15 +280,10 @@ class AuthService {
     };
 
     try {
-      console.log(`Making authenticated ${config.method} request to:`, fullUrl);
-
       const response = await fetch(fullUrl, config);
 
       // Handle different response status codes
       if (response.status === 401) {
-        console.log("Got 401 error, but not auto-logging out for debugging");
-        console.log("Response:", await response.text());
-
         // For debugging: don't auto-logout, just throw error
         throw new Error(`Authentication failed: ${response.status} ${response.statusText}`);
 
@@ -342,7 +315,6 @@ class AuthService {
 
       return await this.handleResponse(response);
     } catch (error) {
-      console.error("Authenticated request failed:", error);
       throw error;
     }
   }
@@ -371,7 +343,6 @@ class AuthService {
         return text;
       }
     } catch (error) {
-      console.error("Response handling failed:", error);
       throw error;
     }
   }
@@ -430,7 +401,6 @@ class AuthService {
 
       return null;
     } catch (error) {
-      console.error("Get profile failed:", error);
       return null;
     }
   }
@@ -438,27 +408,15 @@ class AuthService {
   // Update user profile
   async updateProfile(profileData: Partial<User>): Promise<boolean> {
     try {
-      console.log("Updating profile with data:", profileData);
-
-      const currentUser = this.getUser();
       const token = this.getAccessToken();
-      console.log("Current user:", currentUser);
-      console.log("Has token:", !!token);
 
       let data;
 
       if (token) {
         // Use authenticated request with JWT token
-        console.log("Using authenticated request with JWT token");
-        console.log("Token (first 20 chars):", token.substring(0, 20) + '...');
-        console.log("Token length:", token.length);
         data = await this.authenticatedPut("/auth/profile", profileData);
-        console.log("Update profile response (authenticated):", data);
       } else {
-        // Fallback to session-based authentication
-        console.log("No token found, using session-based auth");
         data = await apiClient.put("/auth/profile", profileData);
-        console.log("Update profile response (session):", data);
       }
 
       if (data.success && data.data?.user) {

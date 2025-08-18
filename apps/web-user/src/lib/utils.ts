@@ -6,17 +6,40 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // API Configuration
+const getBaseUrl = () => {
+  // Force production URL in production environment
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV) {
+    return process.env.NEXT_PUBLIC_API_URL || "https://server666.vercel.app";
+  }
+  
+  // Development environment
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return "http://localhost:5000";
+  }
+  
+  // Fallback to production
+  return process.env.NEXT_PUBLIC_API_URL || "https://server666.vercel.app";
+};
+
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "https://server666.vercel.app",
+  BASE_URL: getBaseUrl(),
   VERSION: "v1",
   get FULL_URL() {
     return `${this.BASE_URL}/api/${this.VERSION}`;
   },
 };
 
+console.log("Environment:", process.env.NODE_ENV);
+console.log("Vercel Env:", process.env.VERCEL_ENV);
+console.log("API_CONFIG:", API_CONFIG);
+
 // API Helper functions
 export const apiClient = {
-  async get(endpoint: string, params?: Record<string, any>, options?: RequestInit) {
+  async get(
+    endpoint: string,
+    params?: Record<string, any>,
+    options?: RequestInit
+  ) {
     const url = new URL(`${API_CONFIG.FULL_URL}${endpoint}`);
 
     if (params) {
@@ -34,14 +57,14 @@ export const apiClient = {
           "Content-Type": "application/json",
           ...options?.headers,
         },
-        credentials: 'include', // Always include cookies for session-based auth
+        credentials: "include", // Always include cookies for session-based auth
         ...options,
       });
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error('API GET request failed:', error);
+      console.error("API GET request failed:", error);
       throw error;
     }
   },
@@ -55,14 +78,14 @@ export const apiClient = {
           ...options?.headers,
         },
         body: data ? JSON.stringify(data) : undefined,
-        credentials: 'include', // Always include cookies for session-based auth
+        credentials: "include", // Always include cookies for session-based auth
         ...options,
       });
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error('API POST request failed:', error);
+      console.error("API POST request failed:", error);
       throw error;
     }
   },
@@ -76,14 +99,14 @@ export const apiClient = {
           ...options?.headers,
         },
         body: data ? JSON.stringify(data) : undefined,
-        credentials: 'include', // Always include cookies for session-based auth
+        credentials: "include", // Always include cookies for session-based auth
         ...options,
       });
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error('API PUT request failed:', error);
+      console.error("API PUT request failed:", error);
       throw error;
     }
   },
@@ -96,14 +119,14 @@ export const apiClient = {
           "Content-Type": "application/json",
           ...options?.headers,
         },
-        credentials: 'include', // Always include cookies for session-based auth
+        credentials: "include", // Always include cookies for session-based auth
         ...options,
       });
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error('API DELETE request failed:', error);
+      console.error("API DELETE request failed:", error);
       throw error;
     }
   },

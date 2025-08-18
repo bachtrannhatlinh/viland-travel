@@ -6,7 +6,7 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 
-// import { supabaseService } from './config/supabase';
+import { supabaseService } from "./config/supabase";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFoundHandler } from "./middleware/notFoundHandler";
 
@@ -33,14 +33,41 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://vilandtravel.vn", "https://www.vilandtravel.vn"]
-        : [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://127.0.0.1:3000",
-          ],
+    origin: (origin, callback) => {
+      console.log('CORS Origin:', origin); // Debug log
+      
+      if (process.env.NODE_ENV === "production") {
+        const allowedOrigins = [
+          "https://gosafe-booking-tour.vercel.app",
+          "https://www.gosafe-booking-tour.vercel.app",
+          "https://server666.vercel.app",
+        ];
+        
+        // Allow any vercel.app subdomain and gosafe-booking-tour variations
+        const isVercelApp = origin && (
+          origin.endsWith('.vercel.app') || 
+          origin.includes('gosafe-booking-tour')
+        );
+        
+        if (!origin || allowedOrigins.includes(origin) || isVercelApp) {
+          callback(null, true);
+        } else {
+          console.log('CORS blocked origin:', origin);
+          callback(new Error('Not allowed by CORS'));
+        }
+      } else {
+        const devOrigins = [
+          "http://localhost:3000",
+          "http://localhost:3001", 
+          "http://127.0.0.1:3000"
+        ];
+        if (!origin || devOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
@@ -68,11 +95,16 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 // Health check endpoint
-app.get("/health", async (req, res) => {
+import { Request, Response } from "express";
+
+app.get("/health", async (req: Request, res: Response) => {
   try {
-    // Test Supabase connection
-    // await supabaseService.initializeDatabase();
-    await connectPostgreSQL();
+    if (process.env.NODE_ENV === "development") {
+      await connectPostgreSQL();
+    } else {
+      // Initialize Supabase database
+      await supabaseService.initializeDatabase();
+    }
 
     res.status(200).json({
       status: "OK",
@@ -80,9 +112,13 @@ app.get("/health", async (req, res) => {
       uptime: process.uptime(),
       environment: process.env.NODE_ENV,
       version: process.env.npm_package_version || "1.0.0",
-      database: "Supabase connected",
+      database:
+        typeof supabaseService !== "undefined"
+          ? "Supabase connected"
+          : "PostgreSQL connected",
       services: {
-        supabase: "connected",
+        supabase:
+          typeof supabaseService !== "undefined" ? "connected" : "not-used",
         payment: "available",
       },
     });
@@ -115,10 +151,11 @@ app.use(errorHandler);
 // Database connection and server startup
 const startServer = async () => {
   try {
-    // Initialize Supabase
-    // console.log('🔄 Initializing Supabase...');
-    // await supabaseService.initializeDatabase();
-    await connectPostgreSQL();
+    if (process.env.NODE_ENV === "development") {
+      await connectPostgreSQL();
+    } else {
+      await supabaseService.initializeDatabase();
+    }
 
     app.listen(PORT, () => {
       console.log(`🚀ViLand Travel API Server is running on port ${PORT}`);

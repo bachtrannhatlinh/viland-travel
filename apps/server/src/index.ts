@@ -29,40 +29,54 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 /* ------------------ CORS ------------------ */
+
+
+// Allow both HTTP and HTTPS for local and production
+const allowedOriginsProd = [
+  "https://gosafe-booking-tour.vercel.app",
+  "http://gosafe-booking-tour.vercel.app",
+  "https://www.gosafe-booking-tour.vercel.app",
+  "http://www.gosafe-booking-tour.vercel.app",
+  "https://server666.vercel.app",
+  "http://server666.vercel.app",
+  "https://viland-travel-server.vercel.app",
+  "http://viland-travel-server.vercel.app",
+  "https://viland-travel-production.up.railway.app",
+  "http://viland-travel-production.up.railway.app",
+  "http://localhost:3000"
+];
+const allowedOriginsDev = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://127.0.0.1:3000",
+  "https://localhost:3000",
+  "https://localhost:3001",
+  "https://127.0.0.1:3000",
+];
+
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    if (process.env.NODE_ENV === "production") {
-      const allowedOrigins = [
-        "https://gosafe-booking-tour.vercel.app",
-        "https://www.gosafe-booking-tour.vercel.app",
-        "https://server666.vercel.app",
-      ];
-
-      const isVercelApp =
-        origin && (origin.endsWith(".vercel.app") || origin.includes("gosafe-booking-tour"));
-
-      if (!origin) {
-        // Cho phép preflight không có origin hoặc server-to-server
-        return callback(null, "*");
+    const env = process.env.NODE_ENV;
+    if (!origin) {
+      // Preflight or server-to-server: allow first allowed origin (never '*')
+      if (env === "production") {
+        return callback(null, allowedOriginsProd[0]);
+      } else {
+        return callback(null, allowedOriginsDev[0]);
       }
-
-      if (allowedOrigins.includes(origin) || isVercelApp) {
+    }
+    if (env === "production") {
+      const isVercelApp = origin.endsWith(".vercel.app") || origin.includes("gosafe-booking-tour") || origin.includes("viland-travel-server");
+      if (allowedOriginsProd.includes(origin) || isVercelApp) {
         return callback(null, origin);
       }
-
-      console.log("CORS blocked origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
     } else {
-      const devOrigins = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-      ];
-      if (!origin || devOrigins.includes(origin)) {
-        return callback(null, origin || "*");
+      if (allowedOriginsDev.includes(origin)) {
+        return callback(null, origin);
       }
-      return callback(new Error("Not allowed by CORS"));
     }
+    console.log("CORS blocked origin:", origin);
+    return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -71,7 +85,15 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+// Đảm bảo mọi OPTIONS trả về 200 và header CORS, không redirect
+app.options("*", cors(corsOptions), (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || allowedOriginsProd[0]);
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  res.sendStatus(200);
+});
 
 /* ------------------ Security & Utils ------------------ */
 app.use(helmet());
@@ -131,6 +153,33 @@ app.use("/api/v1/payments", paymentRoutes);
 app.use("/api/v1/upload", uploadRoutes);
 
 /* ------------------ Error Handling ------------------ */
+
+// Fallback CORS header cho mọi response (kể cả lỗi, 404)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const env = process.env.NODE_ENV;
+  let allowOrigin = '';
+  if (env === 'production') {
+    if (origin && (allowedOriginsProd.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('gosafe-booking-tour') || origin.includes('viland-travel-server'))) {
+      allowOrigin = origin;
+    } else {
+      allowOrigin = allowedOriginsProd[0];
+    }
+  } else {
+    if (origin && allowedOriginsDev.includes(origin)) {
+      allowOrigin = origin;
+    } else {
+      allowOrigin = allowedOriginsDev[0];
+    }
+  }
+  res.header('Access-Control-Allow-Origin', allowOrigin);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  next();
+});
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 

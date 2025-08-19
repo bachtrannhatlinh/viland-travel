@@ -6,13 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // API Configuration
+
 const getBaseUrl = () => {
   // Force localhost in development
   if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
-    return 'http://localhost:5000';
+    // Nếu muốn test local, đổi sang http://localhost:xxxx
+  return 'https://viland-travel-production.up.railway.app';
   }
   // Production
-  return process.env.NEXT_PUBLIC_API_URL || 'https://server666.vercel.app';
+  return process.env.NEXT_PUBLIC_API_URL || 'https://viland-travel-production.up.railway.app';
 };
 
 export const API_CONFIG = {

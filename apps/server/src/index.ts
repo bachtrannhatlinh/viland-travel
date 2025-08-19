@@ -140,6 +140,7 @@ const startServer = async () => {
     await supabaseService.initializeDatabase();
 
     app.listen(PORT, () => {
+      console.log('test port')
       console.log(`🚀 ViLand Travel API Server is running on port ${PORT}`);
     });
   } catch (error) {

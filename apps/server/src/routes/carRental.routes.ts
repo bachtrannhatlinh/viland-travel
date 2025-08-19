@@ -1,12 +1,13 @@
 import express from 'express';
 import { protect } from '../middleware/auth';
-import {
-  searchCars,
-  getCarDetails,
-  bookCar,
-  getCarBookings,
-  cancelCarBooking
-} from '../controllers/carRental.controller';
+// import {
+//   searchCars,
+//   getCarDetails,
+//   bookCar,
+//   getCarBookings,
+//   cancelCarBooking
+// } from '../controllers/carRental.controller';
+import {bookCar, searchCars, getCarDetails, getCarBookings, cancelCarBooking } from '../controllers/carRental.supabase.controller';
 
 const router = express.Router();
 

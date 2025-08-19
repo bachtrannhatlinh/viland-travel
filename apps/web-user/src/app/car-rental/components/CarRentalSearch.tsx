@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { apiClient } from '@/lib/utils';
 
 // Shadcn/UI components
 import { Button } from '@/components/ui/button';
@@ -103,24 +104,52 @@ export default function CarRentalSearch() {
   const handleSearch = useCallback(async () => {
     setLoading(true);
     setSearched(true);
-    
     try {
-      const queryParams = new URLSearchParams({
+      const params = {
         location: searchCriteria.location,
         pickupDate: searchCriteria.pickupDate,
         returnDate: searchCriteria.returnDate,
         carType: searchCriteria.carType,
         seats: searchCriteria.seats,
         priceMin: filters.priceMin,
-        priceMax: filters.priceMax
-      });
-
-      const response = await fetch(`/api/car-rental/search?${queryParams}`);
-      const data = await response.json();
-      
+        priceMax: filters.priceMax,
+        transmission: filters.transmission
+      };
+      const data = await apiClient.get('/car-rental/search', params);
       if (data.success) {
-        let sortedCars = data.data;
-        
+        const rentalDays = calculateRentalDays();
+        const normalizedCars: Car[] = data.data.map((raw: any) => {
+          const pricePerDayRaw = raw.price_per_day ?? raw.pricePerDay ?? 0;
+          const pricePerDay = Number(pricePerDayRaw) || 0;
+          return {
+            id: raw.id,
+            make: raw.make,
+            model: raw.model,
+            year: raw.year,
+            type: raw.type || 'economy',
+            seats: raw.seats ?? 4,
+            transmission: raw.transmission || raw.transmission_type || 'automatic',
+            fuelType: raw.fuel_type || raw.fuelType || 'gasoline',
+            pricePerDay,
+            totalPrice: pricePerDay * (rentalDays || 1),
+            rentalDays: rentalDays || 1,
+            currency: raw.currency || 'VND',
+            images: Array.isArray(raw.images) && raw.images.length ? raw.images : ['/images/car-placeholder.jpg'],
+            features: Array.isArray(raw.features) && raw.features.length ? raw.features : ['Điều hòa', 'Bluetooth', 'Camera lùi'],
+            rating: raw.rating || 4.6,
+            reviewCount: raw.review_count || raw.reviewCount || 0,
+            fullName: `${raw.year} ${raw.make} ${raw.model}`,
+            location: {
+              address: raw.location?.address || 'Trung tâm thành phố',
+              city: raw.location?.city || 'TP. Hồ Chí Minh',
+              pickupPoints: (raw.location?.pickupPoints || []).map((p: any, idx: number) => ({
+                name: p?.name || `Điểm ${idx + 1}`,
+                address: p?.address || raw.location?.address || 'Địa điểm',
+              }))
+            }
+          };
+        });
+        let sortedCars = normalizedCars;
         // Apply sorting
         if (filters.sortBy === 'price') {
           sortedCars = sortedCars.sort((a: Car, b: Car) => a.pricePerDay - b.pricePerDay);
@@ -129,9 +158,7 @@ export default function CarRentalSearch() {
         } else if (filters.sortBy === 'seats') {
           sortedCars = sortedCars.sort((a: Car, b: Car) => a.seats - b.seats);
         }
-        
         setCars(sortedCars);
-        
         // Update URL with search params
         const url = new URL(window.location.href);
         Object.entries(searchCriteria).forEach(([key, value]) => {
@@ -169,12 +196,10 @@ export default function CarRentalSearch() {
   };
 
   const handleBookCar = (carId: string) => {
-    const params = new URLSearchParams({
-      pickupDate: searchCriteria.pickupDate,
-      returnDate: searchCriteria.returnDate,
-      pickupLocation: searchCriteria.location
-    });
-    router.push(`/car-rental/${carId}/booking?${params}`);
+    const params = new URLSearchParams();
+    if (searchCriteria.pickupDate) params.set('pickupDate', searchCriteria.pickupDate);
+    if (searchCriteria.returnDate) params.set('returnDate', searchCriteria.returnDate);
+    router.push(`/car-rental/${carId}/booking?${params.toString()}`);
   };
 
   const calculateRentalDays = () => {
@@ -436,7 +461,12 @@ export default function CarRentalSearch() {
                             </div>
                             <div className="space-x-2">
                               <Button 
-                                onClick={() => router.push(`/car-rental/${car.id}`)}
+                                onClick={() => {
+                                  const params = new URLSearchParams();
+                                  if (searchCriteria.pickupDate) params.set('pickupDate', searchCriteria.pickupDate);
+                                  if (searchCriteria.returnDate) params.set('returnDate', searchCriteria.returnDate);
+                                  router.push(`/car-rental/${car.id}?${params.toString()}`);
+                                }}
                                 variant="secondary"
                                 size="sm"
                               >

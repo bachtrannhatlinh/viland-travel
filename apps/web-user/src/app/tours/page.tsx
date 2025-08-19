@@ -40,11 +40,20 @@ export default function ToursPage() {
       try {
         setLoading(true);
         // Gọi Next.js API route thay vì apiClient
-        const response = await apiClient.get('/tours/get');
+        const response = await apiClient.get('/tours');
 
         if (response.success) {
-          setTours(response.data.tours);
+          // Đảm bảo response.data.tours là mảng, nếu không thì setTours([])
+          const toursData = response.data?.tours;
+          if (Array.isArray(toursData)) {
+            setTours(toursData);
+          } else if (Array.isArray(response.data)) {
+            setTours(response.data);
+          } else {
+            setTours([]);
+          }
         } else {
+          setTours([]);
           setError(response.message || 'Không thể tải danh sách tours');
         }
       } catch (err: any) {
@@ -129,7 +138,7 @@ export default function ToursPage() {
 
         {/* Tours Grid */}
         <Section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {tours.map((tour) => {
+          {(Array.isArray(tours) ? tours : []).map((tour) => {
             const currentPrice = tour.discount_adult || tour.price_adult;
             const hasDiscount = tour.discount_adult && tour.discount_adult < tour.price_adult;
 
@@ -203,7 +212,7 @@ export default function ToursPage() {
           })}
         </Section>
 
-        {tours.length === 0 && !loading && (
+        {Array.isArray(tours) && tours.length === 0 && !loading && (
           <Section className="text-center py-12">
             <Typography variant="large" className="text-gray-500 mb-4">
               Chưa có tour nào được tạo

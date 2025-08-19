@@ -159,16 +159,6 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`🚀ViLand Travel API Server is running on port ${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/health`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
-      console.log(
-        `✈️ Flight API: http://localhost:${PORT}/api/v1/flights/search`
-      );
-      console.log(
-        `💳 Payment API: http://localhost:${PORT}/api/v1/payments/create`
-      );
-      console.log("\n🎯 Ready for flight booking:");
-      console.log("   Vé máy bay ──> Tìm chuyến ──> Đặt vé ──> Thanh toán");
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);

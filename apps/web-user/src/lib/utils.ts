@@ -7,18 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 
 // API Configuration
 const getBaseUrl = () => {
-  // Force production URL in production environment
-  if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV) {
-    return process.env.NEXT_PUBLIC_API_URL || "https://server666.vercel.app";
+  // Force localhost in development
+  if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
+    return 'http://localhost:5000';
   }
-  
-  // Development environment
-  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    return "http://localhost:5000";
-  }
-  
-  // Fallback to production
-  return process.env.NEXT_PUBLIC_API_URL || "https://server666.vercel.app";
+  // Production
+  return process.env.NEXT_PUBLIC_API_URL || 'https://server666.vercel.app';
 };
 
 export const API_CONFIG = {

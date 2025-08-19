@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 interface TourBookingData {
   tourId: string
@@ -121,8 +127,11 @@ export default function TourPaymentForm() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Payment Form */}
       <div className="lg:col-span-2">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Thông tin thanh toán</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Thông tin thanh toán</CardTitle>
+          </CardHeader>
+          <CardContent>
 
           {/* Payment Method Selection */}
           <div className="mb-8">
@@ -191,55 +200,47 @@ export default function TourPaymentForm() {
           {paymentMethod === 'card' && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Số thẻ
-                </label>
-                <input
+                <Label htmlFor="cardNumber" className="mb-2 block">Số thẻ</Label>
+                <Input
+                  id="cardNumber"
                   type="text"
                   value={cardInfo.number}
-                  onChange={(e) => setCardInfo({...cardInfo, number: e.target.value})}
+                  onChange={(e) => setCardInfo({ ...cardInfo, number: e.target.value })}
                   placeholder="1234 5678 9012 3456"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày hết hạn
-                  </label>
-                  <input
+                  <Label htmlFor="cardExpiry" className="mb-2 block">Ngày hết hạn</Label>
+                  <Input
+                    id="cardExpiry"
                     type="text"
                     value={cardInfo.expiry}
-                    onChange={(e) => setCardInfo({...cardInfo, expiry: e.target.value})}
+                    onChange={(e) => setCardInfo({ ...cardInfo, expiry: e.target.value })}
                     placeholder="MM/YY"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CVV
-                  </label>
-                  <input
+                  <Label htmlFor="cardCvv" className="mb-2 block">CVV</Label>
+                  <Input
+                    id="cardCvv"
                     type="text"
                     value={cardInfo.cvv}
-                    onChange={(e) => setCardInfo({...cardInfo, cvv: e.target.value})}
+                    onChange={(e) => setCardInfo({ ...cardInfo, cvv: e.target.value })}
                     placeholder="123"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tên chủ thẻ
-                </label>
-                <input
+                <Label htmlFor="cardName" className="mb-2 block">Tên chủ thẻ</Label>
+                <Input
+                  id="cardName"
                   type="text"
                   value={cardInfo.name}
-                  onChange={(e) => setCardInfo({...cardInfo, name: e.target.value})}
+                  onChange={(e) => setCardInfo({ ...cardInfo, name: e.target.value })}
                   placeholder="NGUYEN VAN A"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -247,38 +248,40 @@ export default function TourPaymentForm() {
 
           {/* Bank Transfer Info */}
           {paymentMethod === 'bank' && (
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h4 className="font-semibold text-gray-900 mb-4">Thông tin chuyển khoản</h4>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Ngân hàng:</span>
-                  <span className="font-medium">Vietcombank</span>
+            <Alert>
+              <AlertTitle>Thông tin chuyển khoản</AlertTitle>
+              <AlertDescription>
+                <div className="space-y-3 text-sm mt-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Ngân hàng:</span>
+                    <span className="font-medium">Vietcombank</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Số tài khoản:</span>
+                    <span className="font-medium">1234567890</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Chủ tài khoản:</span>
+                    <span className="font-medium">CONG TY TNHH VIET NAM DU LICH</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Số tiền:</span>
+                    <span className="font-medium text-primary-600">
+                      {formatPrice(bookingData.totalAmount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Nội dung:</span>
+                    <span className="font-medium">TOUR {bookingData.tourId} {bookingData.contactInfo.fullName}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Số tài khoản:</span>
-                  <span className="font-medium">1234567890</span>
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg rounded-md">
+                  <p className="text-sm text-blue-800">
+                    💡 Vui lòng chuyển khoản đúng số tiền và nội dung để đơn hàng được xử lý nhanh chóng.
+                  </p>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Chủ tài khoản:</span>
-                  <span className="font-medium">CONG TY TNHH VIET NAM DU LICH</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Số tiền:</span>
-                  <span className="font-medium text-primary-600">
-                    {formatPrice(bookingData.totalAmount)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Nội dung:</span>
-                  <span className="font-medium">TOUR {bookingData.tourId} {bookingData.contactInfo.fullName}</span>
-                </div>
-              </div>
-              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  💡 Vui lòng chuyển khoản đúng số tiền và nội dung để đơn hàng được xử lý nhanh chóng.
-                </p>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
           )}
 
           {/* E-wallet Info */}
@@ -307,18 +310,10 @@ export default function TourPaymentForm() {
               </div>
             </div>
           )}
-
-          {/* Payment Button */}
-          <div className="mt-8">
-            <button
-              onClick={handlePayment}
-              disabled={isProcessing}
-              className={`w-full py-4 px-6 rounded-lg font-semibold text-white text-lg transition-colors ${
-                isProcessing 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-primary-600 hover:bg-primary-700'
-                }`}
-            >
+          </CardContent>
+          <CardFooter className="flex-col items-stretch">
+            {/* Payment Button */}
+            <Button onClick={handlePayment} disabled={isProcessing} className="w-full h-12 text-lg">
               {isProcessing ? (
                 <div className="flex items-center justify-center">
                   <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -330,120 +325,125 @@ export default function TourPaymentForm() {
               ) : (
                 `Thanh toán ${formatPrice(bookingData.totalAmount)}`
               )}
-            </button>
-          </div>
+            </Button>
 
-          {/* Security Notice */}
-          <div className="mt-4 text-center text-xs text-gray-500">
-            <div className="flex items-center justify-center mb-1">
-              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-              Thanh toán an toàn với SSL
+            {/* Security Notice */}
+            <div className="mt-4 text-center text-xs text-gray-500">
+              <div className="flex items-center justify-center mb-1">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                Thanh toán an toàn với SSL
+              </div>
+              <p>Thông tin thanh toán của bạn được mã hóa và bảo mật</p>
             </div>
-            <p>Thông tin thanh toán của bạn được mã hóa và bảo mật</p>
-          </div>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
 
       {/* Booking Summary Sidebar */}
       <div className="lg:col-span-1">
-        <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">
-            Chi tiết đặt tour
-          </h3>
-
-          {/* Tour Information */}
-          <div className="mb-6 pb-6 border-b border-gray-200">
-            <h4 className="font-semibold text-gray-900 mb-3">{bookingData.tourTitle}</h4>
-            <div className="space-y-2 text-sm text-gray-600">
-              <div className="flex justify-between">
-                <span>Ngày khởi hành:</span>
-                <span className="font-medium text-gray-900">
-                  {formatDate(bookingData.selectedDate)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Số khách:</span>
-                <span className="font-medium text-gray-900">
-                  {getTotalParticipants()} người
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div className="mb-6 pb-6 border-b border-gray-200">
-            <h4 className="font-semibold text-gray-900 mb-3">Thông tin liên hệ</h4>
-            <div className="space-y-2 text-sm text-gray-600">
-              <div>
-                <span className="font-medium text-gray-900">{bookingData.contactInfo.fullName}</span>
-              </div>
-              <div>{bookingData.contactInfo.email}</div>
-              <div>{bookingData.contactInfo.phone}</div>
-            </div>
-          </div>
-
-          {/* Participants */}
-          <div className="mb-6 pb-6 border-b border-gray-200">
-            <h4 className="font-semibold text-gray-900 mb-3">Hành khách</h4>
-            <div className="space-y-2 text-sm">
-              {bookingData.participants.adults > 0 && (
+        <Card className="sticky top-4">
+          <CardHeader>
+            <CardTitle className="text-xl">Chi tiết đặt tour</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Tour Information */}
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-3">{bookingData.tourTitle}</h4>
+              <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Người lớn x {bookingData.participants.adults}</span>
-                  <span className="text-gray-900">Người lớn</span>
+                  <span>Ngày khởi hành:</span>
+                  <span className="font-medium text-gray-900">
+                    {formatDate(bookingData.selectedDate)}
+                  </span>
                 </div>
-              )}
-              {bookingData.participants.children > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Trẻ em x {bookingData.participants.children}</span>
-                  <span className="text-gray-900">Trẻ em</span>
+                  <span>Số khách:</span>
+                  <span className="font-medium text-gray-900">
+                    {getTotalParticipants()} người
+                  </span>
                 </div>
-              )}
-              {bookingData.participants.infants > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Em bé x {bookingData.participants.infants}</span>
-                  <span className="text-gray-900">Em bé</span>
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* Contact Information */}
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-3">Thông tin liên hệ</h4>
+              <div className="space-y-2 text-sm text-gray-600">
+                <div>
+                  <span className="font-medium text-gray-900">{bookingData.contactInfo.fullName}</span>
                 </div>
-              )}
+                <div>{bookingData.contactInfo.email}</div>
+                <div>{bookingData.contactInfo.phone}</div>
+              </div>
             </div>
-          </div>
 
-          {/* Special Requests */}
-          {bookingData.specialRequests && (
-            <div className="mb-6 pb-6 border-b border-gray-200">
-              <h4 className="font-semibold text-gray-900 mb-3">Yêu cầu đặc biệt</h4>
-              <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                {bookingData.specialRequests}
-              </p>
+            <Separator className="my-6" />
+
+            {/* Participants */}
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-3">Hành khách</h4>
+              <div className="space-y-2 text-sm">
+                {bookingData.participants.adults > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Người lớn x {bookingData.participants.adults}</span>
+                    <span className="text-gray-900">Người lớn</span>
+                  </div>
+                )}
+                {bookingData.participants.children > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Trẻ em x {bookingData.participants.children}</span>
+                    <span className="text-gray-900">Trẻ em</span>
+                  </div>
+                )}
+                {bookingData.participants.infants > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Em bé x {bookingData.participants.infants}</span>
+                    <span className="text-gray-900">Em bé</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
 
-          {/* Total */}
-          <div className="flex justify-between items-center">
-            <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
-            <span className="text-xl font-bold text-primary-600">
-              {formatPrice(bookingData.totalAmount)}
-            </span>
-          </div>
+            {bookingData.specialRequests && (
+              <>
+                <Separator className="my-6" />
+                {/* Special Requests */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Yêu cầu đặc biệt</h4>
+                  <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                    {bookingData.specialRequests}
+                  </p>
+                </div>
+              </>
+            )}
 
-          {/* Important Notes */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex">
-              <svg className="w-5 h-5 text-blue-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-              <div className="text-sm text-blue-800">
-                <p className="font-medium mb-1">Lưu ý quan trọng:</p>
-                <ul className="list-disc list-inside space-y-1">
+            <Separator className="my-6" />
+
+            {/* Total */}
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
+              <span className="text-xl font-bold text-primary-600">
+                {formatPrice(bookingData.totalAmount)}
+              </span>
+            </div>
+
+            {/* Important Notes */}
+            <Alert className="mt-6">
+              <AlertTitle>Lưu ý quan trọng</AlertTitle>
+              <AlertDescription>
+                <ul className="list-disc list-inside space-y-1 mt-2">
                   <li>Kiểm tra thông tin thẻ trước khi thanh toán</li>
                   <li>Bạn sẽ nhận email xác nhận sau khi thanh toán</li>
                   <li>Liên hệ hotline 1900 1234 nếu cần hỗ trợ</li>
                 </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

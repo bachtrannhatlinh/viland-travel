@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import CarBookingForm from './components/CarBookingForm';
+import { apiClient } from '@/lib/utils';
 
 interface CarBookingPageProps {
   params: { id: string };
@@ -13,74 +14,71 @@ export async function generateMetadata({ params }: CarBookingPageProps): Promise
   };
 }
 
-// Mock function to get car data - in real app, fetch from API
 async function getCarData(id: string) {
-  // For demo purposes, return mock data
-  return {
-    id,
-    make: 'Toyota',
-    model: 'Vios',
-    year: 2023,
-    fullName: '2023 Toyota Vios',
-    pricePerDay: 800000,
-    currency: 'VND',
-    seats: 4,
-    transmission: 'automatic',
-    fuelType: 'gasoline',
-    images: ['/images/car-vios-1.jpg'],
-    location: {
-      city: 'TP. Hồ Chí Minh',
-      pickupPoints: [
-        {
-          id: 'tansonnhat',
-          name: 'Sân bay Tân Sơn Nhất',
-          address: 'Sân bay Tân Sơn Nhất, Tân Bình',
-          available24h: true,
-          fee: 0
-        },
-        {
-          id: 'district1',
-          name: 'Trung tâm Quận 1',
-          address: '123 Đồng Khởi, Quận 1',
-          available24h: false,
-          fee: 0,
-          openHours: '06:00 - 22:00'
-        }
-      ]
-    },
-    rentalTerms: {
-      minAge: 22,
-      maxAge: 70,
-      additionalFees: {
-        youngDriver: { age: '22-24', fee: 200000, description: 'Phụ phí cho tài xế dưới 25 tuổi' },
-        additionalDriver: { fee: 100000, description: 'Phụ phí cho mỗi tài xế phụ' },
-        gps: { fee: 50000, description: 'Thiết bị định vị GPS' },
-        childSeat: { fee: 100000, description: 'Ghế an toàn cho trẻ em' },
-        delivery: { feePerKm: 10000, freeWithinKm: 10, description: 'Giao xe tận nơi' }
+  try {
+    const data = await apiClient.get(`/car-rental/${id}`, undefined, { cache: 'no-store' });
+    if (!data?.success || !data.data) return null;
+    const raw = data.data;
+    const toArray = (v: any) => (Array.isArray(v) ? v : []);
+    const ensurePickupPoints = (pts: any[]) => {
+      const arr = toArray(pts).map((p: any, idx: number) => ({
+        id: p?.id || `${idx}`,
+        name: p?.name || `Điểm ${idx + 1}`,
+        address: p?.address || raw?.location?.address || 'Địa điểm nhận xe',
+        available24h: p?.available24h ?? true,
+        fee: p?.fee ?? 0,
+        openHours: p?.openHours || '08:00-20:00',
+      }));
+      if (arr.length === 0) {
+        arr.push({ id: 'default', name: 'Văn phòng', address: raw?.location?.address || 'Trung tâm', available24h: true, fee: 0, openHours: '08:00-20:00' });
       }
-    },
-    insurance: {
-      basic: {
-        included: true,
-        coverage: 'Bảo hiểm cơ bản (100 triệu VNĐ)',
-        description: 'Bao gồm bảo hiểm bắt buộc dân sự và bảo hiểm xe cơ bản'
+      return arr;
+    };
+    const normalized = {
+      id: raw.id,
+      make: raw.make,
+      model: raw.model,
+      year: raw.year,
+      fullName: `${raw.year} ${raw.make} ${raw.model}`,
+      pricePerDay: raw.price_per_day || raw.pricePerDay || 0,
+      currency: raw.currency || 'VND',
+      seats: raw.seats ?? 4,
+      transmission: raw.transmission || raw.transmission_type || 'automatic',
+      fuelType: raw.fuel_type || raw.fuelType || 'gasoline',
+      images: toArray(raw.images)?.length ? raw.images : ['/images/car-placeholder.jpg'],
+      location: {
+        city: raw.location?.city || 'TP. Hồ Chí Minh',
+        pickupPoints: ensurePickupPoints(raw.location?.pickupPoints),
       },
-      comprehensive: {
-        available: true,
-        pricePerDay: 150000,
-        coverage: 'Bảo hiểm toàn diện (500 triệu VNĐ)',
-        description: 'Bảo hiểm toàn diện cho xe và người ngồi trên xe'
-      }
-    }
-  };
+      rentalTerms: {
+        additionalFees: {
+          youngDriver: { age: '22-24', fee: raw.rental_terms?.additionalFees?.youngDriver || 200000, description: 'Áp dụng cho tài xế trẻ' },
+          additionalDriver: { fee: raw.rental_terms?.additionalFees?.additionalDriver || 100000, description: 'Phụ phí tài xế phụ' },
+          gps: { fee: raw.rental_terms?.additionalFees?.gps || 50000, description: 'Thuê thiết bị GPS' },
+          childSeat: { fee: raw.rental_terms?.additionalFees?.childSeat || 100000, description: 'Ghế an toàn trẻ em' },
+          delivery: { feePerKm: 10000, freeWithinKm: 5, description: 'Giao nhận xe tận nơi' },
+        },
+      },
+      insurance: {
+        comprehensive: {
+          available: true,
+          pricePerDay: raw.insurance?.comprehensive?.pricePerDay || 150000,
+          coverage: 'Bảo hiểm toàn diện',
+          description: 'Mở rộng phạm vi bảo vệ',
+        },
+      },
+    };
+    return normalized;
+  } catch (error) {
+    console.error('Error fetching car details:', error);
+    return null;
+  }
 }
 
 export default async function CarBookingPage({ params }: CarBookingPageProps) {
   const car = await getCarData(params.id);
-  
   if (!car) {
-    notFound();
+    redirect(`/car-rental/${params.id}`);
   }
-
   return <CarBookingForm car={car} />;
 }

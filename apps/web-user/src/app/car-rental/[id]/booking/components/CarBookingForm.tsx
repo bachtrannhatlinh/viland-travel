@@ -14,6 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { DatePicker } from '@/components/ui/date-picker';
 
+import { apiClient } from '@/lib/utils';
+import { authService } from '@/lib/auth';
+import { LoginRequiredDialog } from '@/components/ui/LoginRequiredDialog';
+
 interface CarBookingFormProps {
   car: {
     id: string;
@@ -98,6 +102,7 @@ interface AdditionalServices {
 }
 
 export default function CarBookingForm({ car }: CarBookingFormProps) {
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -240,15 +245,6 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
 
   const validateStep1 = () => {
     const isValid = pickupDate && returnDate && pickupLocation && returnLocation && pickupTime && returnTime;
-    console.log('validateStep1:', {
-      pickupDate,
-      returnDate,
-      pickupLocation,
-      returnLocation,
-      pickupTime,
-      returnTime,
-      isValid
-    });
     return isValid;
   };
 
@@ -266,7 +262,6 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
   };
 
   const handleNextStep = () => {
-    console.log('handleNextStep called, currentStep:', currentStep);
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
@@ -279,8 +274,11 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
   };
 
   const handleBookingSubmit = async () => {
+    if (!authService.isAuthenticated()) {
+      setShowLoginDialog(true);
+      return;
+    }
     setIsProcessing(true);
-    
     try {
       const bookingData = {
         carId: car.id,
@@ -295,28 +293,15 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
         totalAmount: calculateTotalPrice(),
         paymentMethod
       };
-
-      const response = await fetch('/api/car-rental/book', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
+      const result = await apiClient.post('/car-rental/book', bookingData);
+      if (result?.success) {
         if (result.redirectUrl) {
-          // Redirect to payment gateway
           window.location.href = result.redirectUrl;
-        } else {
-          // Show success message and redirect
-          alert(`Đặt xe thành công! Mã đặt xe: ${result.bookingNumber}`);
-          router.push('/car-rental');
+          return;
         }
+        router.push(`/car-rental/${car.id}`);
       } else {
-        alert(result.message || 'Có lỗi xảy ra khi đặt xe');
+        alert(result?.message || 'Có lỗi xảy ra khi đặt xe');
       }
     } catch (error) {
       console.error('Booking error:', error);
@@ -335,7 +320,9 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
   };
 
   return (
-    <Section as="section" className="min-h-screen bg-gray-50">
+    <>
+      <LoginRequiredDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+      <Section as="section" className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Steps */}
         <Card className="mb-8">
@@ -1142,5 +1129,6 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
         </div>
       </div>
     </Section>
+    </>
   );
 }

@@ -284,25 +284,29 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                         {formatPrice(tour.discountPrice?.adult || tour.price.adult)}
                       </Typography>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Button
-                        onClick={() => handleParticipantChange('adults', Math.max(0, participants.adults - 1))}
-                        variant="outline"
-                        size="icon"
-                        disabled={participants.adults <= 1}
-                      >
-                        -
-                      </Button>
-                      <Typography as="span" className="w-8 text-center font-medium">{participants.adults}</Typography>
-                      <Button
-                        onClick={() => handleParticipantChange('adults', participants.adults + 1)}
-                        variant="outline"
-                        size="icon"
-                        disabled={getTotalParticipants() >= tour.maxGroupSize}
-                      >
-                        +
-                      </Button>
-                    </div>
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          onClick={() => handleParticipantChange('adults', Math.max(0, participants.adults - 1))}
+                          variant="outline"
+                          size="icon"
+                          disabled={participants.adults <= 1}
+                          aria-label="Giảm số người lớn"
+                        >
+                          -
+                        </Button>
+                        <span className="inline-flex items-center justify-center font-medium text-base w-8 h-8 select-none">
+                          {participants.adults}
+                        </span>
+                        <Button
+                          onClick={() => handleParticipantChange('adults', participants.adults + 1)}
+                          variant="outline"
+                          size="icon"
+                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          aria-label="Tăng số người lớn"
+                        >
+                          +
+                        </Button>
+                      </div>
                   </div>
 
                   <div className="flex items-center justify-between py-4 border-b border-gray-200">
@@ -313,24 +317,28 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                         {formatPrice(tour.discountPrice?.child || tour.price.child)}
                       </Typography>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Button
-                        onClick={() => handleParticipantChange('children', Math.max(0, participants.children - 1))}
-                        variant="outline"
-                        size="icon"
-                      >
-                        -
-                      </Button>
-                      <Typography as="span" className="w-8 text-center font-medium">{participants.children}</Typography>
-                      <Button
-                        onClick={() => handleParticipantChange('children', participants.children + 1)}
-                        variant="outline"
-                        size="icon"
-                        disabled={getTotalParticipants() >= tour.maxGroupSize}
-                      >
-                        +
-                      </Button>
-                    </div>
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          onClick={() => handleParticipantChange('children', Math.max(0, participants.children - 1))}
+                          variant="outline"
+                          size="icon"
+                          aria-label="Giảm số trẻ em"
+                        >
+                          -
+                        </Button>
+                        <span className="inline-flex items-center justify-center font-medium text-base w-8 h-8 select-none">
+                          {participants.children}
+                        </span>
+                        <Button
+                          onClick={() => handleParticipantChange('children', participants.children + 1)}
+                          variant="outline"
+                          size="icon"
+                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          aria-label="Tăng số trẻ em"
+                        >
+                          +
+                        </Button>
+                      </div>
                   </div>
 
                   <div className="flex items-center justify-between py-4">
@@ -341,24 +349,28 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
                         {formatPrice(tour.discountPrice?.infant || tour.price.infant)}
                       </Typography>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Button
-                        onClick={() => handleParticipantChange('infants', Math.max(0, participants.infants - 1))}
-                        variant="outline"
-                        size="icon"
-                      >
-                        -
-                      </Button>
-                      <Typography as="span" className="w-8 text-center font-medium">{participants.infants}</Typography>
-                      <Button
-                        onClick={() => handleParticipantChange('infants', participants.infants + 1)}
-                        variant="outline"
-                        size="icon"
-                        disabled={getTotalParticipants() >= tour.maxGroupSize}
-                      >
-                        +
-                      </Button>
-                    </div>
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          onClick={() => handleParticipantChange('infants', Math.max(0, participants.infants - 1))}
+                          variant="outline"
+                          size="icon"
+                          aria-label="Giảm số em bé"
+                        >
+                          -
+                        </Button>
+                        <span className="inline-flex items-center justify-center font-medium text-base w-8 h-8 select-none">
+                          {participants.infants}
+                        </span>
+                        <Button
+                          onClick={() => handleParticipantChange('infants', participants.infants + 1)}
+                          variant="outline"
+                          size="icon"
+                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          aria-label="Tăng số em bé"
+                        >
+                          +
+                        </Button>
+                      </div>
                   </div>
                 </div>
 
@@ -640,33 +652,32 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
               <Typography variant="h5" className="text-gray-900 mb-2">Chi tiết giá</Typography>
               
               {participants.adults > 0 && (
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center mb-1">
                   <Typography as="span" className="text-gray-600">Người lớn x {participants.adults}</Typography>
-                  <Typography as="span" className="text-gray-900">
+                  <Typography as="span" className="text-gray-900 font-medium">
                     {formatPrice((tour.discountPrice?.adult || tour.price.adult) * participants.adults)}
                   </Typography>
                 </div>
               )}
               
               {participants.children > 0 && (
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center mb-1">
                   <Typography as="span" className="text-gray-600">Trẻ em x {participants.children}</Typography>
-                  <Typography as="span" className="text-gray-900">
+                  <Typography as="span" className="text-gray-900 font-medium">
                     {formatPrice((tour.discountPrice?.child || tour.price.child) * participants.children)}
                   </Typography>
                 </div>
               )}
               
               {participants.infants > 0 && (
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center mb-1">
                   <Typography as="span" className="text-gray-600">Em bé x {participants.infants}</Typography>
-                  <Typography as="span" className="text-gray-900">
+                  <Typography as="span" className="text-gray-900 font-medium">
                     {formatPrice((tour.discountPrice?.infant || tour.price.infant) * participants.infants)}
                   </Typography>
                 </div>
               )}
             </div>
-
             <div className="pt-3 border-t border-gray-200">
               <div className="flex justify-between items-center">
                 <Typography as="span" className="text-lg font-bold text-gray-900">Tổng cộng</Typography>

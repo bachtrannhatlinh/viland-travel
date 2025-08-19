@@ -34,7 +34,8 @@
       "@/utils/*": ["src/utils/*"],
       "@/types/*": ["src/types/*"]
     },
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
   },
   "include": [
     "src/**/*"

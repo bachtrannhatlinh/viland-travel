@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ContactController } from '../controllers/contact.controller';
+import { ContactController } from '../controllers/postgresql/contact.controller';
 
 const router = Router();
 

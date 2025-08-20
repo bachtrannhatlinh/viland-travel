@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PaymentController } from '../controllers/PaymentController';
+import { PaymentController } from '../controllers/postgresql/PaymentController';
 import { PaymentService } from '../services/payment/PaymentService';
 import { protect } from '../middleware/auth';
 

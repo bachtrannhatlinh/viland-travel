@@ -135,16 +135,20 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
-      return res.status(400).json({ success: false, message: 'Missing refresh token' });
+      res.status(400).json({ success: false, message: 'Missing refresh token' });
+      return;
     }
     const user = await verifyRefreshToken(refreshToken);
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid refresh token' });
+      res.status(401).json({ success: false, message: 'Invalid refresh token' });
+      return;
     }
     const tokens = generateTokens(user);
     res.status(200).json({ success: true, ...tokens });
+    return;
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error', error });
+    return;
   }
 };
 

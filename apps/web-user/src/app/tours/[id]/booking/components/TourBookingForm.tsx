@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { LoginRequiredDialog } from '@/components/ui/LoginRequiredDialog'
 import { useMultiStepFormStore } from '@/store/multiStepFormStore'
 import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
@@ -68,11 +69,18 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
     reset: resetMultiStep
   } = useMultiStepFormStore()
   const [selectedDate, setSelectedDate] = useState(stepData[1]?.selectedDate || '')
-  const [participants, setParticipants] = useState(stepData[1]?.participants || { adults: 2, children: 0, infants: 0 })
+  const [participants, setParticipants] = useState(stepData[1]?.participants || { adults: 0, children: 0, infants: 0 })
   const [contactInfo, setContactInfo] = useState<ContactInfo>(stepData[2]?.contactInfo || { fullName: '', email: '', phone: '', address: '' })
   const [participantDetails, setParticipantDetails] = useState<ParticipantInfo[]>(stepData[3]?.participantDetails || [])
   const [specialRequests, setSpecialRequests] = useState(stepData[3]?.specialRequests || '')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showLoginDialog, setShowLoginDialog] = useState(false)
+  // Lắng nghe sự kiện để mở dialog đăng nhập khi cần
+  useEffect(() => {
+    const handler = () => setShowLoginDialog(true)
+    window.addEventListener('show-login-required-dialog', handler)
+    return () => window.removeEventListener('show-login-required-dialog', handler)
+  }, [])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -206,9 +214,6 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   const handleBookingSubmit = async () => {
     setIsProcessing(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
       const bookingData = {
         tourId: tour.id,
         tourTitle: tour.title,
@@ -222,19 +227,42 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
         status: 'pending'
       }
 
-      // Lưu vào Zustand store
-      clear() // Xoá các booking cũ nếu cần, chỉ giữ 1 booking tour
-      addItem({
-        id: tour.id,
-        type: 'tour',
-        name: tour.title,
-        details: bookingData,
-        quantity: getTotalParticipants(),
-        price: bookingData.totalAmount
+      // Gọi API backend để tạo booking, lấy cả status code
+      const res = await fetch((await import('@/lib/utils')).API_CONFIG.FULL_URL + '/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(typeof window !== 'undefined' && localStorage.getItem('vilandtravel_access_token')
+            ? { Authorization: `Bearer ${localStorage.getItem('vilandtravel_access_token')}` }
+            : {})
+        },
+        body: JSON.stringify(bookingData),
+        credentials: 'include',
       })
-
-      // Navigate to payment page
-      router.push(`/tours/${tour.id}/payment`)
+      if (res.status === 401) {
+        // Hiển thị dialog yêu cầu đăng nhập
+        if (window && window.dispatchEvent) {
+          window.dispatchEvent(new CustomEvent('show-login-required-dialog'))
+        } else {
+          alert('Bạn cần đăng nhập để đặt tour!')
+        }
+        return
+      }
+      const response = await res.json()
+      if (res.ok && (response.success || response.id || response.bookingNumber)) {
+        clear()
+        addItem({
+          id: tour.id,
+          type: 'tour',
+          name: tour.title,
+          details: response,
+          quantity: getTotalParticipants(),
+          price: bookingData.totalAmount
+        })
+        router.push(`/tours/${tour.id}/payment`)
+      } else {
+        throw new Error(response?.message || 'Không thể đặt tour. Vui lòng thử lại.')
+      }
     } catch (error) {
       console.error('Booking error:', error)
       alert('Có lỗi xảy ra khi đặt tour. Vui lòng thử lại.')
@@ -244,7 +272,9 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <>
+      <LoginRequiredDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Main Form */}
       <div className="lg:col-span-2">
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -717,7 +747,8 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 

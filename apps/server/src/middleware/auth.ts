@@ -7,7 +7,7 @@ interface AuthenticatedRequest extends Request {
   user?: any;
 }
 
-const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     let token: string | undefined;
 
@@ -26,13 +26,7 @@ const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunct
     }
 
     if (!token) {
-      res.status(401).json({
-        success: false,
-        error: {
-          message: 'Access denied. No token provided.'
-        }
-      });
-      return;
+      return res.status(401).json({ message: "Access denied. No token provided." });
     }
 
     try {

@@ -88,29 +88,36 @@ export default function TourPaymentForm() {
 
     setIsProcessing(true)
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000))
-
-      // Generate booking confirmation
-      const confirmationNumber = 'GS' + Math.random().toString(36).substr(2, 8).toUpperCase()
-
-      const paymentData = {
-        ...bookingData,
-        confirmationNumber,
-        paymentMethod,
-        paymentStatus: 'completed',
-        paymentDate: new Date().toISOString()
+      // Chuẩn bị dữ liệu gửi lên backend
+      const paymentPayload = {
+        bookingId: bookingData.tourId, // hoặc bookingNumber nếu backend trả về
+        amount: bookingData.totalAmount,
+        currency: 'VND',
+        description: `Thanh toán tour ${bookingData.tourTitle}`,
+        customerInfo: {
+          name: bookingData.contactInfo.fullName,
+          email: bookingData.contactInfo.email,
+          phone: bookingData.contactInfo.phone
+        },
+        gateway: paymentMethod === 'bank' ? 'vnpay' : paymentMethod === 'wallet' ? 'momo' : 'onepay',
+        returnUrl: typeof window !== 'undefined' ? window.location.origin + `/tours/${bookingData.tourId}/confirmation` : undefined
       }
 
-      // Lưu dữ liệu xác nhận vào Zustand store (cập nhật lại booking tour)
-      if (bookingItem) {
-        updateItem(bookingItem.id, { details: paymentData })
-      }
-      // Xoá booking tour khỏi store sau khi xác nhận (nếu muốn clear cart)
-      removeItem(bookingItem?.id || '')
+      const response = await (await import('@/lib/utils')).apiClient.post('/payments/create', paymentPayload)
 
-      // Navigate to success page
-      router.push(`/tours/${bookingData.tourId}/confirmation`)
+      if (response && response.paymentUrl) {
+        // Nếu là redirect sang cổng thanh toán (VNPay, MoMo, ...)
+        window.location.href = response.paymentUrl
+      } else if (response && response.success) {
+        // Nếu thanh toán thành công ngay (ví dụ: onepay test)
+        if (bookingItem) {
+          updateItem(bookingItem.id, { details: { ...bookingData, paymentStatus: 'completed', paymentMethod } })
+        }
+        removeItem(bookingItem?.id || '')
+        router.push(`/tours/${bookingData.tourId}/confirmation`)
+      } else {
+        throw new Error(response?.message || 'Không thể thanh toán. Vui lòng thử lại.')
+      }
     } catch (error) {
       console.error('Payment error:', error)
       alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.')

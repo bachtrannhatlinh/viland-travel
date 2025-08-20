@@ -1,5 +1,7 @@
+
 import express from 'express';
 import { protect, authorize } from '../middleware/auth';
+import { BookingSupabaseController } from '../controllers/supabase/booking.supabase.controller';
 
 const router = express.Router();
 
@@ -69,6 +71,7 @@ const getBookingStats = (req: any, res: any) => {
   });
 };
 
+
 // Protected routes - all booking routes require authentication
 router.use(protect);
 
@@ -77,6 +80,7 @@ router.get('/my-bookings', getUserBookings);
 router.get('/:bookingId', getBookingById);
 router.put('/:bookingId/cancel', cancelBooking);
 router.put('/:bookingId/modify', modifyBooking);
+router.post('/', BookingSupabaseController.createBooking); // Thêm route tạo booking mới
 
 // Admin routes
 router.get('/', authorize('admin', 'staff'), getAllBookings);

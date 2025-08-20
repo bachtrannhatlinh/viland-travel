@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useListFilterStore } from '@/store/listFilterStore'
 import { FlightSearchParams, FlightClass } from '@/types/flight.types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,22 +36,32 @@ interface FlightSearchFormProps {
 }
 
 export default function FlightSearchForm({ onSearch, isLoading = false }: FlightSearchFormProps) {
+  const { search, filters, setSearch, setFilter, reset } = useListFilterStore()
   const form = useForm<FlightSearchFormValues>({
     resolver: zodResolver(flightSearchSchema),
     defaultValues: {
-      from: '',
-      to: '',
-      departureDate: '',
-      returnDate: '',
-      tripType: 'one-way',
-      flightClass: FlightClass.ECONOMY,
-      passengers: {
-        adults: 1,
-        children: 0,
-        infants: 0
-      }
+      from: filters.from || '',
+      to: filters.to || '',
+      departureDate: filters.departureDate || '',
+      returnDate: filters.returnDate || '',
+      tripType: filters.tripType || 'one-way',
+      flightClass: filters.flightClass || FlightClass.ECONOMY,
+      passengers: filters.passengers || { adults: 1, children: 0, infants: 0 }
     }
   })
+
+  // Đồng bộ form state với Zustand khi mount
+  useEffect(() => {
+    form.reset({
+      from: filters.from || '',
+      to: filters.to || '',
+      departureDate: filters.departureDate || '',
+      returnDate: filters.returnDate || '',
+      tripType: filters.tripType || 'one-way',
+      flightClass: filters.flightClass || FlightClass.ECONOMY,
+      passengers: filters.passengers || { adults: 1, children: 0, infants: 0 }
+    })
+  }, [])
 
   const tripType = form.watch('tripType')
 
@@ -63,6 +74,15 @@ export default function FlightSearchForm({ onSearch, isLoading = false }: Flight
   }
 
   const onSubmit = (values: FlightSearchFormValues) => {
+    // Lưu filter vào Zustand
+    setFilter('from', values.from)
+    setFilter('to', values.to)
+    setFilter('departureDate', values.departureDate)
+    setFilter('returnDate', values.returnDate)
+    setFilter('tripType', values.tripType)
+    setFilter('flightClass', values.flightClass)
+    setFilter('passengers', values.passengers)
+    setSearch(values.from + '-' + values.to)
     onSearch({
       ...values,
       passengers: values.passengers

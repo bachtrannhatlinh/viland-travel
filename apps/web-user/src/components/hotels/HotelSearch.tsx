@@ -2,6 +2,8 @@
 
 import { Search, Calendar, Users, MapPin } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useListFilterStore } from '@/store/listFilterStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -56,19 +58,39 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
   const today = new Date().toISOString().split('T')[0];
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
+  const { search, filters, setSearch, setFilter, reset } = useListFilterStore();
   const form = useForm<SearchFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      destination: '',
-      checkIn: '',
-      checkOut: '',
-      rooms: 1,
-      adults: 2,
-      children: 0,
+      destination: filters.destination || '',
+      checkIn: filters.checkIn || '',
+      checkOut: filters.checkOut || '',
+      rooms: filters.rooms || 1,
+      adults: filters.adults || 2,
+      children: filters.children || 0,
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      destination: filters.destination || '',
+      checkIn: filters.checkIn || '',
+      checkOut: filters.checkOut || '',
+      rooms: filters.rooms || 1,
+      adults: filters.adults || 2,
+      children: filters.children || 0,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = (data: SearchFormData) => {
+    setFilter('destination', data.destination);
+    setFilter('checkIn', data.checkIn);
+    setFilter('checkOut', data.checkOut);
+    setFilter('rooms', data.rooms);
+    setFilter('adults', data.adults);
+    setFilter('children', data.children);
+    setSearch(data.destination);
     onSearch(data);
   };
 

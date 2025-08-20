@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -36,16 +37,17 @@ interface TourConfirmationData {
 
 export default function TourConfirmationPage() {
   const router = useRouter()
+  // Lấy dữ liệu xác nhận từ store (booking tour đã xác nhận)
+  const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))
   const [confirmationData, setConfirmationData] = useState<TourConfirmationData | null>(null)
 
   useEffect(() => {
-    const storedConfirmationData = sessionStorage.getItem('tourConfirmation')
-    if (storedConfirmationData) {
-      setConfirmationData(JSON.parse(storedConfirmationData))
+    if (bookingItem && bookingItem.details) {
+      setConfirmationData(bookingItem.details)
     } else {
       router.push('/tours')
     }
-  }, [router])
+  }, [bookingItem, router])
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {

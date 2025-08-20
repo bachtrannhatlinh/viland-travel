@@ -8,8 +8,10 @@ import DriverList, { Driver } from '@/components/driver-service/DriverList';
 import DriverPaymentProcess, { DriverBookingPayload, PaymentResult } from '@/components/driver-service/PaymentProcess';
 import BookingConfirmation from '@/components/driver-service/BookingConfirmation';
 import { Button } from '@/components/ui/button';
+import { apiClient } from '@/lib/utils';
+import { LoginRequiredDialog } from '@/components/ui/LoginRequiredDialog';
 
- type Step = 'itinerary' | 'select-driver' | 'payment' | 'done';
+type Step = 'itinerary' | 'select-driver' | 'payment' | 'done';
 
 export default function DriverServiceBookingPage() {
   const [step, setStep] = useState<Step>('itinerary');
@@ -18,15 +20,16 @@ export default function DriverServiceBookingPage() {
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [paymentPayload, setPaymentPayload] = useState<DriverBookingPayload | null>(null);
   const [paymentResult, setPaymentResult] = useState<PaymentResult | null>(null);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleSubmitItinerary = async (data: ItineraryData) => {
-    // Mock create itinerary on server
-    const res = await fetch('/api/driver-service/itinerary', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    const json = await res.json();
+    // Gọi API tạo itinerary qua apiClient
+    const json = await apiClient.post('/drivers/itinerary', data);
+    if (json?.success === false || json?.error) {
+      setLoginDialogOpen(true);
+      console.error('API error:', json?.error || json);
+      return;
+    }
     setItineraryId(json.itineraryId);
     setItinerary(data);
     setStep('select-driver');
@@ -60,6 +63,7 @@ export default function DriverServiceBookingPage() {
 
   return (
     <Section className="min-h-screen bg-gray-50">
+      <LoginRequiredDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center mb-8">
           <Typography variant="h1" className="text-3xl font-bold">Dịch vụ lái xe Go_Safe</Typography>

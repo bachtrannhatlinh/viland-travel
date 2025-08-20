@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { User, LogOut } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,20 +14,23 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/useAuth'
 
-export function UserAvatar() {
-  const { user, logout } = useAuth()
 
+export function UserAvatar({ user }: { user: any }) {
+  const { logout } = useAuth();
   if (!user) {
     return null
   }
 
   // Generate initials from user's name
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase()
+  const getInitials = (name: string) => {
+    if (!name) return ''
+    const parts = name.split(' ')
+    if (parts.length === 1) return parts[0][0].toUpperCase()
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
   }
 
   const handleLogout = async () => {
-    await logout()
+    await logout();
   }
 
   return (
@@ -35,11 +39,11 @@ export function UserAvatar() {
         <button className="relative h-8 w-8 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
           <Avatar className="h-8 w-8">
             <AvatarImage 
-              src={user.avatar} 
-              alt={`${user.firstName} ${user.lastName}`}
+              src={user.avatarUrl || user.avatar || ''} 
+              alt={user.name || user.firstName || user.first_name || ''}
             />
             <AvatarFallback className="bg-primary-100 text-primary-700 text-sm font-medium">
-              {getInitials(user.firstName, user.lastName)}
+              {getInitials(user.name || user.firstName || user.first_name || '')}
             </AvatarFallback>
           </Avatar>
         </button>
@@ -48,7 +52,7 @@ export function UserAvatar() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {user.firstName} {user.lastName}
+              {user.name || user.firstName || user.first_name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}

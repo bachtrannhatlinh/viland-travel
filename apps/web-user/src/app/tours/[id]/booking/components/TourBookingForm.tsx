@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useMultiStepFormStore } from '@/store/multiStepFormStore'
+import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -55,23 +57,19 @@ interface ParticipantInfo {
   type: 'adult' | 'child' | 'infant'
 }
 
-export default function TourBookingForm({ tour }: TourBookingFormProps) {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(1)
-  const [selectedDate, setSelectedDate] = useState('')
-  const [participants, setParticipants] = useState({
-    adults: 2,
-    children: 0,
-    infants: 0
-  })
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: ''
-  })
-  const [participantDetails, setParticipantDetails] = useState<ParticipantInfo[]>([])
-  const [specialRequests, setSpecialRequests] = useState('')
+  const {
+    stepData,
+    currentStep,
+    setStepData,
+    setCurrentStep,
+    reset: resetMultiStep
+  } = useMultiStepFormStore()
+  const [selectedDate, setSelectedDate] = useState(stepData[1]?.selectedDate || '')
+  const [participants, setParticipants] = useState(stepData[1]?.participants || { adults: 2, children: 0, infants: 0 })
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(stepData[2]?.contactInfo || { fullName: '', email: '', phone: '', address: '' })
+  const [participantDetails, setParticipantDetails] = useState<ParticipantInfo[]>(stepData[3]?.participantDetails || [])
+  const [specialRequests, setSpecialRequests] = useState(stepData[3]?.specialRequests || '')
   const [isProcessing, setIsProcessing] = useState(false)
 
   const formatPrice = (price: number) => {
@@ -178,20 +176,19 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
   }
 
   const handleNextStep = () => {
-    console.log('Button clicked! Current step:', currentStep)
-    
+    // Lưu dữ liệu từng bước vào store
     if (currentStep === 1 && validateStep1()) {
-      console.log('Moving to step 2')
+      setStepData(1, { selectedDate, participants })
       initializeParticipantDetails()
       setCurrentStep(2)
     } else if (currentStep === 2 && validateStep2()) {
-      console.log('Moving to step 3')
+      setStepData(2, { contactInfo })
       setCurrentStep(3)
     } else if (currentStep === 3 && validateStep3()) {
-      console.log('Moving to step 4')
+      setStepData(3, { participantDetails, specialRequests })
       setCurrentStep(4)
     } else {
-      console.log('Validation failed for step:', currentStep)
+      // Không chuyển bước nếu validate fail
     }
   }
 
@@ -201,13 +198,15 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
     }
   }
 
+  const addItem = useBookingStore((state) => state.addItem)
+  const clear = useBookingStore((state) => state.clear)
+
   const handleBookingSubmit = async () => {
     setIsProcessing(true)
-    
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000))
-      
+
       const bookingData = {
         tourId: tour.id,
         tourTitle: tour.title,
@@ -220,10 +219,18 @@ export default function TourBookingForm({ tour }: TourBookingFormProps) {
         bookingDate: new Date().toISOString(),
         status: 'pending'
       }
-      
-      // Store booking data for payment page
-      sessionStorage.setItem('tourBookingData', JSON.stringify(bookingData))
-      
+
+      // Lưu vào Zustand store
+      clear() // Xoá các booking cũ nếu cần, chỉ giữ 1 booking tour
+      addItem({
+        id: tour.id,
+        type: 'tour',
+        name: tour.title,
+        details: bookingData,
+        quantity: getTotalParticipants(),
+        price: bookingData.totalAmount
+      })
+
       // Navigate to payment page
       router.push(`/tours/${tour.id}/payment`)
     } catch (error) {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
 import { FlightBookingData } from '@/types/flight.types'
 
@@ -9,6 +10,8 @@ export const dynamic = 'force-dynamic'
 
 export default function FlightPaymentPage() {
   const router = useRouter()
+  // Lấy booking flight từ store
+  const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'flight'))
   const [bookingData, setBookingData] = useState<FlightBookingData | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'wallet'>('card')
   const [cardInfo, setCardInfo] = useState({
@@ -21,13 +24,12 @@ export default function FlightPaymentPage() {
   const [currentStep, setCurrentStep] = useState(3)
 
   useEffect(() => {
-    const storedBookingData = sessionStorage.getItem('flightBookingData')
-    if (storedBookingData) {
-      setBookingData(JSON.parse(storedBookingData))
+    if (bookingItem && bookingItem.details) {
+      setBookingData(bookingItem.details)
     } else {
       router.push('/flights')
     }
-  }, [router])
+  }, [bookingItem, router])
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -75,8 +77,14 @@ export default function FlightPaymentPage() {
         status: 'confirmed'
       }
       
-      sessionStorage.setItem('flightConfirmation', JSON.stringify(confirmationData))
-      sessionStorage.removeItem('flightBookingData')
+      // Lưu dữ liệu xác nhận vào Zustand store (cập nhật lại booking flight)
+      const updateItem = useBookingStore.getState().updateItem
+      const removeItem = useBookingStore.getState().removeItem
+      if (bookingItem) {
+        updateItem(bookingItem.id, { details: confirmationData })
+      }
+      // Xoá booking flight khỏi store sau khi xác nhận (nếu muốn clear cart)
+      removeItem(bookingItem?.id || '')
       
       // Redirect to confirmation page
       router.push(`/flights/confirmation?code=${confirmationCode}`)

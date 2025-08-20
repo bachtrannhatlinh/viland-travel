@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useBookingStore } from '@/store/bookingStore'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -20,21 +21,17 @@ export default function FlightConfirmationPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const confirmationCode = searchParams.get('code')
+  // Lấy dữ liệu xác nhận từ store (booking flight đã xác nhận)
+  const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'flight'))
   const [confirmationData, setConfirmationData] = useState<ConfirmationData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (confirmationCode) {
-      const storedConfirmation = sessionStorage.getItem('flightConfirmation')
-      if (storedConfirmation) {
-        const data = JSON.parse(storedConfirmation)
-        if (data.confirmationCode === confirmationCode) {
-          setConfirmationData(data)
-        }
-      }
+    if (bookingItem && bookingItem.details && bookingItem.details.confirmationCode === confirmationCode) {
+      setConfirmationData(bookingItem.details)
     }
     setIsLoading(false)
-  }, [confirmationCode])
+  }, [bookingItem, confirmationCode])
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {

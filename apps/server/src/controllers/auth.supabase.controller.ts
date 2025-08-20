@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { supabaseAuthService } from '../services/supabase.service';
 import { sendEmail } from '../services/email.service';
+import jwt, { Secret } from 'jsonwebtoken';
 
 // Register user
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -59,10 +60,17 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    // Có thể set cookie nếu cần
+    // Tạo access token
+    const secret: Secret = process.env.JWT_SECRET || 'your_jwt_secret';
+    const expiresIn: string | number | undefined = process.env.JWT_EXPIRES_IN || '7d';
+    const token = jwt.sign(
+      { id: user?.id, email: user?.email },
+      secret,
+      { expiresIn: expiresIn as any }
+    );
     res.status(200).json({
       success: true,
-      data: { user },
+      data: { user, token },
       message: 'Login successful'
     });
   } catch (error) {

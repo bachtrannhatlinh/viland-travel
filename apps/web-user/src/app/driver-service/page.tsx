@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
+import { TimePicker } from '@/components/ui/time-picker'
 
 export const metadata: Metadata = {
   title: 'Dịch vụ lái xe Go_Safe - ViLand Travel',
@@ -70,9 +71,7 @@ export default function DriverServicePage() {
                 <Label className="block text-sm font-medium text-gray-700 mb-2">
                   Thời gian
                 </Label>
-                <Input
-                  type="time"
-                />
+                <TimePicker placeholder="Chọn thời gian" />
               </Section>
               <Section className="md:col-span-2">
                 <Label className="block text-sm font-medium text-gray-700 mb-2">

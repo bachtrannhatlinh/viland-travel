@@ -24,7 +24,7 @@ import { UserAvatar } from './UserAvatar'
 import { useAuth } from '@/hooks/useAuth'
 
 export function Header() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
 
   const services = [
     { name: 'Vé máy bay', href: '/flights' },
@@ -107,9 +107,9 @@ export function Header() {
           {/* Right side - User Avatar or Login/Mobile menu */}
           <div className="flex items-center space-x-4">
             {/* User Avatar for authenticated users */}
-            {isAuthenticated && (
+            {isAuthenticated && user && (
               <div className="hidden md:block">
-                <UserAvatar />
+                <UserAvatar user={user} />
               </div>
             )}
 
@@ -140,12 +140,12 @@ export function Header() {
                     </SheetDescription>
                   </SheetHeader>
                   <div className="py-4 space-y-4">
-                    {/* User info for mobile */}
-                    {isAuthenticated && (
-                      <div className="pb-4 border-b border-gray-200">
-                        <UserAvatar />
-                      </div>
-                    )}
+            {/* User info for mobile */}
+            {isAuthenticated && user && (
+              <div className="pb-4 border-b border-gray-200">
+                <UserAvatar user={user} />
+              </div>
+            )}
 
                     {/* Login button for mobile */}
                     {!isAuthenticated && (

@@ -1,5 +1,8 @@
+
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+// Import AuthService để lấy token
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,7 +13,6 @@ export function cn(...inputs: ClassValue[]) {
 const getBaseUrl = () => {
   // Force localhost in development
   if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
-    // Nếu muốn test local, đổi sang http://localhost:xxxx
   return 'https://viland-travel-production.up.railway.app';
   }
   // Production
@@ -26,6 +28,16 @@ export const API_CONFIG = {
 };
 
 // API Helper functions
+const getAuthHeader = (): Record<string, string> => {
+  if (typeof window !== 'undefined') {
+    const accessToken = localStorage.getItem('vilandtravel_access_token');
+    if (accessToken) {
+      return { Authorization: `Bearer ${accessToken}` };
+    }
+  }
+  return {};
+};
+
 export const apiClient = {
   async get(
     endpoint: string,
@@ -47,6 +59,7 @@ export const apiClient = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeader(),
           ...options?.headers,
         },
         credentials: "include", // Always include cookies for session-based auth
@@ -67,6 +80,7 @@ export const apiClient = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeader(),
           ...options?.headers,
         },
         body: data ? JSON.stringify(data) : undefined,
@@ -88,6 +102,7 @@ export const apiClient = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeader(),
           ...options?.headers,
         },
         body: data ? JSON.stringify(data) : undefined,
@@ -109,6 +124,7 @@ export const apiClient = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeader(),
           ...options?.headers,
         },
         credentials: "include", // Always include cookies for session-based auth

@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Button } from "@/components/ui/button";
+import { Section } from "../ui/section";
+import { TimePicker } from "../ui/time-picker";
 
 export type ServiceType = "one-way" | "round-trip" | "hourly" | "daily";
 
@@ -59,10 +61,17 @@ export default function ItineraryForm({ onSubmit }: Props) {
             <Label className="mb-2 block">Ngày sử dụng</Label>
             <DatePicker placeholder="Chọn ngày" value={date} onChange={(v: any) => setDate(v)} />
           </div>
-          <div>
-            <Label className="mb-2 block">Thời gian</Label>
-            <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-          </div>
+
+          <Section>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Thời gian
+            </Label>
+            <TimePicker
+              placeholder="Chọn thời gian"
+              value={time}
+              onChange={setTime}
+            />
+          </Section>
           <div className="md:col-span-2">
             <Label className="mb-2 block">Loại dịch vụ</Label>
             <Select value={serviceType} onValueChange={(v) => setServiceType(v as ServiceType)}>

@@ -8,7 +8,6 @@
     "build:clean": "npm run clean && next build",
     "build:production": "cross-env NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
     "build:fast": "cross-env SKIP_ENV_VALIDATION=1 NEXT_TELEMETRY_DISABLED=1 GENERATE_SOURCEMAP=false next build",
-    "build:turbo": "cross-env SKIP_ENV_VALIDATION=1 NEXT_TELEMETRY_DISABLED=1 GENERATE_SOURCEMAP=false NODE_OPTIONS=\"--max-old-space-size=4096\" next build",
     "build:minimal": "cross-env SKIP_ENV_VALIDATION=1 NEXT_TELEMETRY_DISABLED=1 GENERATE_SOURCEMAP=false next build --no-lint",
     "build:debug": "next build --experimental-debug-memory-usage",
     "start": "next start",

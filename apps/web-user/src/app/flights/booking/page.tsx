@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -142,9 +143,12 @@ export default function FlightBookingPage() {
     return true
   }
 
+  const addItem = useBookingStore((state) => state.addItem)
+  const clear = useBookingStore((state) => state.clear)
+
   const handleConfirmBooking = () => {
     if (!validateBooking()) return
-    
+
     const finalBookingData: FlightBookingData = {
       flight: bookingData.flight,
       passengers,
@@ -155,11 +159,18 @@ export default function FlightBookingPage() {
       bookingDate: new Date().toISOString(),
       status: 'pending'
     }
-    
-    // Store booking data for payment page
-    sessionStorage.setItem('flightBookingData', JSON.stringify(finalBookingData))
-    sessionStorage.removeItem('selectedFlight')
-    
+
+    // Lưu vào Zustand store
+    clear() // Xoá các booking cũ nếu cần, chỉ giữ 1 booking flight
+    addItem({
+      id: bookingData.flight.id,
+      type: 'flight',
+      name: bookingData.flight.name || bookingData.flight.code || 'Chuyến bay',
+      details: finalBookingData,
+      quantity: passengers.length,
+      price: finalBookingData.totalAmount
+    })
+
     // Navigate to payment page
     router.push('/flights/payment')
   }

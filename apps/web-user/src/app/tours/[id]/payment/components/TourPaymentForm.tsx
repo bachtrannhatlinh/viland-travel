@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,6 +40,8 @@ interface TourBookingData {
 
 export default function TourPaymentForm() {
   const router = useRouter()
+  // Lấy booking item từ store (giả sử chỉ lấy booking tour đầu tiên)
+  // bookingItem đã được khai báo ở trên, không cần lặp lại
   const [bookingData, setBookingData] = useState<TourBookingData | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'wallet'>('card')
   const [cardInfo, setCardInfo] = useState({
@@ -49,14 +52,16 @@ export default function TourPaymentForm() {
   })
   const [isProcessing, setIsProcessing] = useState(false)
 
+
+  // bookingItem phải được khai báo trước khi dùng trong useEffect
+  const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))
   useEffect(() => {
-    const storedBookingData = sessionStorage.getItem('tourBookingData')
-    if (storedBookingData) {
-      setBookingData(JSON.parse(storedBookingData))
+    if (bookingItem && bookingItem.details) {
+      setBookingData(bookingItem.details)
     } else {
       router.push('/tours')
     }
-  }, [router])
+  }, [bookingItem, router])
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -75,6 +80,9 @@ export default function TourPaymentForm() {
     })
   }
 
+  const updateItem = useBookingStore((state) => state.updateItem)
+  const removeItem = useBookingStore((state) => state.removeItem)
+
   const handlePayment = async () => {
     if (!bookingData) return
 
@@ -85,7 +93,7 @@ export default function TourPaymentForm() {
 
       // Generate booking confirmation
       const confirmationNumber = 'GS' + Math.random().toString(36).substr(2, 8).toUpperCase()
-      
+
       const paymentData = {
         ...bookingData,
         confirmationNumber,
@@ -94,9 +102,12 @@ export default function TourPaymentForm() {
         paymentDate: new Date().toISOString()
       }
 
-      // Store confirmation data
-      sessionStorage.setItem('tourConfirmation', JSON.stringify(paymentData))
-      sessionStorage.removeItem('tourBookingData')
+      // Lưu dữ liệu xác nhận vào Zustand store (cập nhật lại booking tour)
+      if (bookingItem) {
+        updateItem(bookingItem.id, { details: paymentData })
+      }
+      // Xoá booking tour khỏi store sau khi xác nhận (nếu muốn clear cart)
+      removeItem(bookingItem?.id || '')
 
       // Navigate to success page
       router.push(`/tours/${bookingData.tourId}/confirmation`)
@@ -275,7 +286,7 @@ export default function TourPaymentForm() {
                     <span className="font-medium">TOUR {bookingData.tourId} {bookingData.contactInfo.fullName}</span>
                   </div>
                 </div>
-                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg rounded-md">
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
                   <p className="text-sm text-blue-800">
                     💡 Vui lòng chuyển khoản đúng số tiền và nội dung để đơn hàng được xử lý nhanh chóng.
                   </p>

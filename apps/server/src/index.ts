@@ -31,16 +31,8 @@ const PORT = process.env.PORT || 5000;
 /* ------------------ CORS ------------------ */
 
 
-// Allow both HTTP and HTTPS for local and production
+// Allow only Railway and localhost origins
 const allowedOriginsProd = [
-  "https://gosafe-booking-tour.vercel.app",
-  "http://gosafe-booking-tour.vercel.app",
-  "https://www.gosafe-booking-tour.vercel.app",
-  "http://www.gosafe-booking-tour.vercel.app",
-  "https://server666.vercel.app",
-  "http://server666.vercel.app",
-  "https://viland-travel-server.vercel.app",
-  "http://viland-travel-server.vercel.app",
   "https://viland-travel-production.up.railway.app",
   "http://viland-travel-production.up.railway.app",
   "http://localhost:3000"
@@ -66,8 +58,7 @@ const corsOptions: cors.CorsOptions = {
       }
     }
     if (env === "production") {
-      const isVercelApp = origin.endsWith(".vercel.app") || origin.includes("gosafe-booking-tour") || origin.includes("viland-travel-server");
-      if (allowedOriginsProd.includes(origin) || isVercelApp) {
+      if (allowedOriginsProd.includes(origin)) {
         return callback(null, origin);
       }
     } else {
@@ -160,7 +151,7 @@ app.use((req, res, next) => {
   const env = process.env.NODE_ENV;
   let allowOrigin = '';
   if (env === 'production') {
-    if (origin && (allowedOriginsProd.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('gosafe-booking-tour') || origin.includes('viland-travel-server'))) {
+    if (origin && allowedOriginsProd.includes(origin)) {
       allowOrigin = origin;
     } else {
       allowOrigin = allowedOriginsProd[0];

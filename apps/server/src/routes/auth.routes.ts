@@ -1,18 +1,5 @@
 import express from "express";
 import { body } from "express-validator";
-// import {
-//   register,
-//   login,
-//   logout,
-//   refreshToken,
-//   forgotPassword,
-//   resetPassword,
-//   verifyEmail,
-//   resendVerificationEmail,
-//   getProfile,
-//   updateProfile,
-//   changePassword
-// } from '../controllers/auth.typeorm.controller';
 
 import {
   register,
@@ -26,7 +13,7 @@ import {
   getProfile,
   updateProfile,
   changePassword,
-} from "../controllers/auth.supabase.controller";
+} from "../controllers/supabase/auth.supabase.controller";
 import { protect } from "../middleware/auth";
 
 const router = express.Router();

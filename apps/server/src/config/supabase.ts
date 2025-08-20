@@ -147,106 +147,43 @@ export interface TourItinerary {
 
 // Supabase service class
 export class SupabaseService {
-  
-  // Flight operations
-  async searchFlights(params: {
-    from?: string;
-    to?: string;
-    departureDate?: string;
-    limit?: number;
-  }) {
-    let query = supabase
-      .from(TABLES.FLIGHTS)
-      .select('*')
-      .eq('status', 'scheduled');
-
-    if (params.from) {
-      query = query.ilike('departure_city', `%${params.from}%`);
-    }
-
-    if (params.to) {
-      query = query.ilike('arrival_city', `%${params.to}%`);
-    }
-
-    if (params.departureDate) {
-      query = query.eq('departure_date', params.departureDate);
-    }
-
-    if (params.limit) {
-      query = query.limit(params.limit);
-    }
-
-    const { data, error } = await query.order('departure_time', { ascending: true });
-
-    if (error) {
-      throw new Error(`Error searching flights: ${error.message}`);
-    }
-
-    return data as Flight[];
-  }
-
+  // Lấy chi tiết chuyến bay theo id
   async getFlightById(flightId: string) {
     const { data, error } = await supabase
       .from(TABLES.FLIGHTS)
       .select('*')
       .eq('id', flightId)
       .single();
-
-    if (error) {
-      throw new Error(`Error getting flight: ${error.message}`);
-    }
-
-    return data as Flight;
-  }
-
-  // Booking operations
-  async createBooking(bookingData: Omit<Booking, 'id' | 'created_at' | 'updated_at'>) {
-    const { data, error } = await supabase
-      .from(TABLES.BOOKINGS)
-      .insert(bookingData)
-      .select()
-      .single();
-
-    if (error) {
-      throw new Error(`Error creating booking: ${error.message}`);
-    }
-
-    return data as Booking;
-  }
-
-  async getBookingByNumber(bookingNumber: string) {
-    const { data, error } = await supabase
-      .from(TABLES.BOOKINGS)
-      .select(`
-        *,
-        flight:flights(*),
-        passengers(*),
-        payment:payments(*)
-      `)
-      .eq('booking_number', bookingNumber)
-      .single();
-
-    if (error) {
-      throw new Error(`Error getting booking: ${error.message}`);
-    }
-
+    if (error) throw new Error(`Error getting flight: ${error.message}`);
     return data;
   }
 
-  async updateBookingStatus(bookingId: string, status: Booking['status']) {
+  // Tạo booking chuyến bay
+  async createBooking(bookingData: any) {
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
-      .update({ status, updated_at: new Date().toISOString() })
+      .insert([bookingData])
+      .select()
+      .single();
+    if (error) throw new Error(`Error creating booking: ${error.message}`);
+    return data;
+  }
+
+  // Cập nhật trạng thái booking
+  async updateBookingStatus(bookingId: string, status: string) {
+    const { data, error } = await supabase
+      .from(TABLES.BOOKINGS)
+      .update({ status })
       .eq('id', bookingId)
       .select()
       .single();
-
-    if (error) {
-      throw new Error(`Error updating booking status: ${error.message}`);
-    }
-
-    return data as Booking;
+    if (error) throw new Error(`Error updating booking status: ${error.message}`);
+    return data;
   }
+  
+  // ...existing code...
+
+  // ...existing code...
 
   // Passenger operations
   async createPassengers(passengers: Omit<Passenger, 'id' | 'created_at'>[]) {

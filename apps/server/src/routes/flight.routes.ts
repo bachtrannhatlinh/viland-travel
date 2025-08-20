@@ -6,7 +6,7 @@ import {
   bookFlight,
   getBookingHistory,
   cancelBooking
-} from '../controllers/flight.controller';
+} from '../controllers/supabase/flight.supabase.controller';
 
 const router = express.Router();
 

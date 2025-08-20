@@ -1,13 +1,5 @@
 import express from "express";
 import { protect } from "../middleware/auth";
-// import {
-//   searchHotels,
-//   getHotelDetails,
-//   bookHotel,
-//   getHotelBookings,
-//   cancelHotelBooking,
-//   addHotelReview
-// } from '../controllers/hotel.controller';
 
 import {
   searchHotels,
@@ -16,7 +8,7 @@ import {
   getHotelBookings,
   cancelHotelBooking,
   addHotelReview,
-} from "../controllers/hotel.supabase.controller";
+} from "../controllers/supabase/hotel.supabase.controller";
 
 const router = express.Router();
 

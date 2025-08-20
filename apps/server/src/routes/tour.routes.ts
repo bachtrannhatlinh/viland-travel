@@ -1,6 +1,6 @@
 import express from 'express';
 // import { getTours, getTourById, searchTours } from '../controllers/tour.controller';
-import {getTourById, getTours, searchTours } from '../controllers/tour.supabase.controller'
+import {getTourById, getTours, searchTours } from '../controllers/postgresql/tour.controller';
 import { protect, authorize } from '../middleware/auth';
 
 const router = express.Router();

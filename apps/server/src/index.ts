@@ -21,6 +21,8 @@ import driverRoutes from "./routes/driver.routes";
 import bookingRoutes from "./routes/booking.routes";
 import paymentRoutes from "./routes/payment.routes";
 import uploadRoutes from "./routes/upload.routes";
+import newsRoutes from "./routes/news.routes";
+import contactRoutes from "./routes/contact.routes";
 
 // Load environment variables
 dotenv.config({ path: __dirname + "/../.env" });
@@ -31,40 +33,37 @@ const PORT = process.env.PORT || 5000;
 /* ------------------ CORS ------------------ */
 
 
-// Allow only Railway and localhost origins
-const allowedOriginsProd = [
-  "https://viland-travel-production.up.railway.app",
-  "http://viland-travel-production.up.railway.app",
-  "http://localhost:3000"
-];
-const allowedOriginsDev = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "http://127.0.0.1:3000",
-  "https://localhost:3000",
-  "https://localhost:3001",
-  "https://127.0.0.1:3000",
-];
+// --- CORS config refactor ---
+const allowedOrigins = {
+  production: [
+    "https://viland-travel-production.up.railway.app",
+    "http://viland-travel-production.up.railway.app",
+    "http://localhost:3000"
+  ],
+  development: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "https://localhost:3000",
+    "https://localhost:3001",
+    "https://127.0.0.1:3000",
+  ]
+};
+
+function getAllowedOrigins() {
+  const env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+  return allowedOrigins[env];
+}
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    const env = process.env.NODE_ENV;
+    const allowed = getAllowedOrigins();
     if (!origin) {
       // Preflight or server-to-server: allow first allowed origin (never '*')
-      if (env === "production") {
-        return callback(null, allowedOriginsProd[0]);
-      } else {
-        return callback(null, allowedOriginsDev[0]);
-      }
+      return callback(null, allowed[0]);
     }
-    if (env === "production") {
-      if (allowedOriginsProd.includes(origin)) {
-        return callback(null, origin);
-      }
-    } else {
-      if (allowedOriginsDev.includes(origin)) {
-        return callback(null, origin);
-      }
+    if (allowed.includes(origin)) {
+      return callback(null, origin);
     }
     console.log("CORS blocked origin:", origin);
     return callback(new Error("Not allowed by CORS"));
@@ -78,7 +77,8 @@ const corsOptions: cors.CorsOptions = {
 app.use(cors(corsOptions));
 // Đảm bảo mọi OPTIONS trả về 200 và header CORS, không redirect
 app.options("*", cors(corsOptions), (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || allowedOriginsProd[0]);
+  const allowed = getAllowedOrigins();
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin && allowed.includes(req.headers.origin) ? req.headers.origin : allowed[0]);
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -141,28 +141,18 @@ app.use("/api/v1/car-rental", carRentalRoutes);
 app.use("/api/v1/drivers", driverRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/payments", paymentRoutes);
+
 app.use("/api/v1/upload", uploadRoutes);
+app.use("/api/v1/news", newsRoutes);
+app.use("/api/v1/contact", contactRoutes);
 
 /* ------------------ Error Handling ------------------ */
 
 // Fallback CORS header cho mọi response (kể cả lỗi, 404)
 app.use((req, res, next) => {
+  const allowed = getAllowedOrigins();
   const origin = req.headers.origin;
-  const env = process.env.NODE_ENV;
-  let allowOrigin = '';
-  if (env === 'production') {
-    if (origin && allowedOriginsProd.includes(origin)) {
-      allowOrigin = origin;
-    } else {
-      allowOrigin = allowedOriginsProd[0];
-    }
-  } else {
-    if (origin && allowedOriginsDev.includes(origin)) {
-      allowOrigin = origin;
-    } else {
-      allowOrigin = allowedOriginsDev[0];
-    }
-  }
+  const allowOrigin = origin && allowed.includes(origin) ? origin : allowed[0];
   res.header('Access-Control-Allow-Origin', allowOrigin);
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');

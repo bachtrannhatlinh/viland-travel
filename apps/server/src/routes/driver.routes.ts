@@ -15,7 +15,7 @@ import {
   getDriverProfile,
   updateDriverProfile,
   getDriverEarnings
-} from '../controllers/driver.supabase.controller';
+} from '../controllers/supabase/driver.supabase.controller';
 
 
 // Itinerary route (public)

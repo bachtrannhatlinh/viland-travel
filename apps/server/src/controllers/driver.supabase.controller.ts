@@ -9,12 +9,12 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Tạo mới itinerary
 export const createItinerary = async (req: Request, res: Response) => {
   try {
-    const { startLocation, endLocation, startTime, endTime, notes, userId } = req.body;
+    const { start_location, end_location, start_time, end_time, notes, user_id, service_type } = req.body;
     // Tùy chỉnh các trường theo schema thực tế của bạn
     const { data, error } = await supabase
       .from('itineraries')
       .insert([
-        { start_location: startLocation, end_location: endLocation, start_time: startTime, end_time: endTime, notes, user_id: userId }
+        { start_location, end_location, start_time, end_time, notes, user_id, service_type }
       ])
       .select('id')
       .single();

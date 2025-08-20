@@ -143,3 +143,5 @@ CREATE POLICY "Users can view payments for their bookings" ON payments FOR SELEC
 );
 CREATE POLICY "Users can create payments" ON payments FOR INSERT WITH CHECK (true);
 CREATE POLICY "Users can update payments" ON payments FOR UPDATE WITH CHECK (true);
+\ n - -   A d d   r e f r e s h _ t o k e n s   c o l u m n   t o   u s e r s   t a b l e \ n A L T E R   T A B L E   u s e r s   A D D   C O L U M N   I F   N O T   E X I S T S   r e f r e s h _ t o k e n s   t e x t [ ]   D E F A U L T   ' { } ' ;  
+ 

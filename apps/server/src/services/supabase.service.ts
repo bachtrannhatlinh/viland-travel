@@ -13,6 +13,14 @@ export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 export class SupabaseAuthService {
+  async updateUserRefreshTokens(userId: string, refreshTokens: string[]) {
+    // Cập nhật mảng refresh_tokens trên Supabase
+    return await supabase
+      .from('users')
+      .update({ refresh_tokens: refreshTokens })
+      .eq('id', userId);
+  }
+  
   async createUser(userData: {
     firstName: string;
     lastName: string;

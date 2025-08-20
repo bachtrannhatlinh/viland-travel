@@ -132,8 +132,60 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Refresh token (placeholder)
-export const refreshToken = async (req: Request, res: Response): Promise<void> => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
+import { verifyRefreshToken, generateTokens } from '../utils/tokenUtils';
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    // Lấy refresh token từ body hoặc header
+    const refreshToken = req.body.refreshToken || req.headers['x-refresh-token'] || req.headers['authorization']?.replace('Bearer ', '');
+    if (!refreshToken) {
+      res.status(400).json({ success: false, message: 'Missing refresh token' });
+      return;
+    }
+
+    // Xác thực refresh token
+    const decoded = verifyRefreshToken(refreshToken);
+    if (!decoded || !decoded.id) {
+      res.status(401).json({ success: false, message: 'Invalid refresh token' });
+      return;
+    }
+
+    // Lấy user từ DB
+    const { data: user, error } = await supabaseAuthService.getUserProfile(decoded.id);
+    if (error || !user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    // Kiểm tra refresh token có trong DB không
+    const tokens = user.refresh_tokens || [];
+    if (!tokens.includes(refreshToken)) {
+      res.status(401).json({ success: false, message: 'Refresh token not recognized' });
+      return;
+    }
+
+    // Sinh token mới
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+
+    // Cập nhật refresh_tokens: xóa token cũ, thêm token mới
+    const updatedTokens = tokens.filter((t: string) => t !== refreshToken);
+    updatedTokens.push(newRefreshToken);
+    const { error: updateError } = await supabaseAuthService.updateUserRefreshTokens(user.id, updatedTokens);
+    if (updateError) {
+      res.status(500).json({ success: false, message: 'Failed to update refresh tokens' });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      accessToken,
+      refreshToken: newRefreshToken
+    });
+    return;
+  } catch (error) {
+    console.error('Refresh token error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error', error });
+  }
 };
 
 // Forgot password (placeholder)

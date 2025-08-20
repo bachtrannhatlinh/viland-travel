@@ -23,8 +23,16 @@ export default function DriverServiceBookingPage() {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleSubmitItinerary = async (data: ItineraryData) => {
-    // Gọi API tạo itinerary qua apiClient
-    const json = await apiClient.post('/drivers/itinerary', data);
+    // Map dữ liệu sang đúng field backend yêu cầu
+    const payload = {
+      start_location: data.pickupLocation,
+      end_location: data.dropoffLocation,
+      start_time: data.date + 'T' + data.time,
+      end_time: data.date + 'T' + data.time, // Có thể cần sửa nếu có end_time riêng
+      notes: data.notes,
+      service_type: data.serviceType,
+    };
+    const json = await apiClient.post('/drivers/itinerary', payload);
     if (json?.success === false || json?.error) {
       setLoginDialogOpen(true);
       console.error('API error:', json?.error || json);

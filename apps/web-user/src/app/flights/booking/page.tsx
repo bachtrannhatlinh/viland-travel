@@ -160,8 +160,12 @@ export default function FlightBookingPage() {
       status: 'pending'
     }
 
-    // Lưu vào Zustand store
-    clear() // Xoá các booking cũ nếu cần, chỉ giữ 1 booking flight
+    // Lưu vào Zustand store, chỉ clear nếu chưa có booking flight
+    const currentItems = useBookingStore.getState().items
+    const hasFlight = currentItems.some(i => i.type === 'flight')
+    if (!hasFlight) {
+      clear()
+    }
     addItem({
       id: bookingData.flight.id,
       type: 'flight',

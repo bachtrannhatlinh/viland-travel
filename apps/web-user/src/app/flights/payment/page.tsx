@@ -26,9 +26,8 @@ export default function FlightPaymentPage() {
   useEffect(() => {
     if (bookingItem && bookingItem.details) {
       setBookingData(bookingItem.details)
-    } else {
-      router.push('/flights')
     }
+    // Nếu không có booking, không redirect mà hiển thị thông báo ở dưới
   }, [bookingItem, router])
 
   const formatPrice = (amount: number) => {
@@ -79,13 +78,10 @@ export default function FlightPaymentPage() {
       
       // Lưu dữ liệu xác nhận vào Zustand store (cập nhật lại booking flight)
       const updateItem = useBookingStore.getState().updateItem
-      const removeItem = useBookingStore.getState().removeItem
       if (bookingItem) {
         updateItem(bookingItem.id, { details: confirmationData })
       }
-      // Xoá booking flight khỏi store sau khi xác nhận (nếu muốn clear cart)
-      removeItem(bookingItem?.id || '')
-      
+      // KHÔNG xoá booking flight khỏi store sau khi xác nhận
       // Redirect to confirmation page
       router.push(`/flights/confirmation?code=${confirmationCode}`)
       
@@ -109,7 +105,13 @@ export default function FlightPaymentPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-          <h2 className="text-xl font-bold text-gray-900">Đang tải thông tin đặt vé...</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Không tìm thấy thông tin đặt vé chuyến bay.</h2>
+          <button
+            className="mt-4 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700"
+            onClick={() => router.push('/flights')}
+          >
+            Quay lại trang tìm chuyến bay
+          </button>
         </div>
       </div>
     )

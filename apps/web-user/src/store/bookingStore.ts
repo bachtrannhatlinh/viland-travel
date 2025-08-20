@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface BookingItem {
   id: string
@@ -17,12 +18,20 @@ interface BookingState {
   updateItem: (id: string, data: Partial<BookingItem>) => void
 }
 
-export const useBookingStore = create<BookingState>((set) => ({
-  items: [],
-  addItem: (item) => set((state) => ({ items: [...state.items, item] })),
-  removeItem: (id) => set((state) => ({ items: state.items.filter(i => i.id !== id) })),
-  clear: () => set({ items: [] }),
-  updateItem: (id, data) => set((state) => ({
-    items: state.items.map(i => i.id === id ? { ...i, ...data } : i)
-  })),
-}))
+export const useBookingStore = create<BookingState>()(
+  persist(
+    (set) => ({
+      items: [],
+      addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+      removeItem: (id) => set((state) => ({ items: state.items.filter(i => i.id !== id) })),
+      clear: () => set({ items: [] }),
+      updateItem: (id, data) => set((state) => ({
+        items: state.items.map(i => i.id === id ? { ...i, ...data } : i)
+      })),
+    }),
+    {
+      name: 'booking-storage', // key in localStorage
+      partialize: (state) => ({ items: state.items }),
+    }
+  )
+)

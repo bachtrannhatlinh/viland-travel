@@ -62,9 +62,9 @@ export default function FlightSearchPage() {
 
         const data = await apiClient.get('/flights/search', searchParams)
 
-        if (data.success) {
-          setFlights(data.data.flights)
-          setFilteredFlights(data.data.flights)
+        if (data.length > 0) {
+          setFlights(data)
+          setFilteredFlights(data)
         } else {
           console.error('Error searching flights:', data.message)
           setFlights([])

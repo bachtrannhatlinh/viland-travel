@@ -26,20 +26,18 @@ export const createItinerary = async (req: Request, res: Response) => {
 };
 
 // Các controller còn lại
-export const searchDrivers = (req: Request, res: Response) => {
-  res.json({ 
-    success: true, 
-    data: [],
-    message: 'Driver search API - coming soon',
-    searchParams: req.query,
-    features: [
-      'Search available drivers by location and time',
-      'Professional driver profiles with ratings',
-      'Hourly, daily, and trip-based pricing',
-      'Vehicle types and driver specializations',
-      'Real-time driver tracking and communication'
-    ]
-  });
+// Lấy danh sách tài xế từ Supabase
+export const searchDrivers = async (req: Request, res: Response) => {
+  try {
+    // Có thể filter theo itineraryId hoặc các tham số khác nếu cần
+    const { data, error } = await supabase
+      .from('drivers')
+      .select('id, name, rating, trips, vehicle, price');
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message || 'Failed to fetch drivers' });
+  }
 };
 
 export const getDriverDetails = (req: Request, res: Response) => {

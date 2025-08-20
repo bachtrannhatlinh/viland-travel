@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
+import { apiClient } from '@/lib/utils';
 
 export interface Driver {
   id: string;
@@ -27,8 +28,7 @@ export default function DriverList({ itineraryId, onSelectDriver }: Props) {
     const fetchDrivers = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/driver-service/search?itineraryId=${encodeURIComponent(itineraryId)}`);
-        const data = await res.json();
+        const data = await apiClient.get('/drivers/search', { itineraryId });
         setDrivers(data.data || []);
       } catch (e) {
         console.error(e);

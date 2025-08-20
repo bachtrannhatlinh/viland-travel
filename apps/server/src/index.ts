@@ -38,6 +38,7 @@ const allowedOrigins = {
   production: [
     "https://viland-travel-production.up.railway.app",
     "http://viland-travel-production.up.railway.app",
+    "https://viland-travel-user.vercel.app",
     "http://localhost:3000"
   ],
   development: [

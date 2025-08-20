@@ -57,6 +57,8 @@ interface ParticipantInfo {
   type: 'adult' | 'child' | 'infant'
 }
 
+const TourBookingForm = ({ tour }: TourBookingFormProps) => {
+
   const router = useRouter()
   const {
     stepData,
@@ -718,3 +720,5 @@ interface ParticipantInfo {
     </div>
   )
 }
+
+export default TourBookingForm;

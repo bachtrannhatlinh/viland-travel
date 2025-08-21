@@ -6,29 +6,29 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface TourConfirmationData {
-  tourId: string
-  tourTitle: string
-  selectedDate: string
+  tour_id: string
+  tour_title: string
+  selected_date: string
   participants: {
     adults: number
     children: number
     infants: number
   }
-  contactInfo: {
+  contact_info: {
     fullName: string
     email: string
     phone: string
     address: string
   }
-  participantDetails: Array<{
+  participant_details: Array<{
     fullName: string
     dateOfBirth: string
     gender: string
     identityCard: string
     type: string
   }>
-  specialRequests: string
-  totalAmount: number
+  special_requests: string
+  total_amount: number
   confirmationNumber: string
   paymentMethod: string
   paymentStatus: string
@@ -39,15 +39,10 @@ export default function TourConfirmationPage() {
   const router = useRouter()
   // Lấy dữ liệu xác nhận từ store (booking tour đã xác nhận)
   const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))
-  const [confirmationData, setConfirmationData] = useState<TourConfirmationData | null>(null)
-
-  useEffect(() => {
-    if (bookingItem && bookingItem.details) {
-      setConfirmationData(bookingItem.details)
-    } else {
-      router.push('/tours')
-    }
-  }, [bookingItem, router])
+  // Chỉ lấy dữ liệu xác nhận một lần khi component mount
+  const [confirmationData] = useState<TourConfirmationData | null>(
+    bookingItem && bookingItem.details ? bookingItem.details : null
+  )
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -72,14 +67,7 @@ export default function TourConfirmationPage() {
   }
 
   if (!confirmationData) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-          <h2 className="text-xl font-bold text-gray-900">Đang tải thông tin xác nhận...</h2>
-        </div>
-      </div>
-    )
+    return null;
   }
 
   const getTotalParticipants = () => {
@@ -129,11 +117,11 @@ export default function TourConfirmationPage() {
               <div className="space-y-3">
                 <div>
                   <span className="text-gray-600">Tour:</span>
-                  <div className="font-medium text-gray-900">{confirmationData.tourTitle}</div>
+                  <div className="font-medium text-gray-900">{confirmationData.tour_title}</div>
                 </div>
                 <div>
                   <span className="text-gray-600">Ngày khởi hành:</span>
-                  <div className="font-medium text-gray-900">{formatDate(confirmationData.selectedDate)}</div>
+                  <div className="font-medium text-gray-900">{formatDate(confirmationData.selected_date)}</div>
                 </div>
                 <div>
                   <span className="text-gray-600">Số khách:</span>
@@ -141,7 +129,7 @@ export default function TourConfirmationPage() {
                 </div>
                 <div>
                   <span className="text-gray-600">Tổng tiền:</span>
-                  <div className="font-bold text-primary-600 text-lg">{formatPrice(confirmationData.totalAmount)}</div>
+                  <div className="font-bold text-primary-600 text-lg">{formatPrice(confirmationData.total_amount)}</div>
                 </div>
               </div>
             </div>
@@ -178,21 +166,21 @@ export default function TourConfirmationPage() {
               <div className="space-y-2">
                 <div>
                   <span className="text-gray-600">Họ và tên:</span>
-                  <div className="font-medium text-gray-900">{confirmationData.contactInfo.fullName}</div>
+                  <div className="font-medium text-gray-900">{confirmationData.contact_info.fullName}</div>
                 </div>
                 <div>
                   <span className="text-gray-600">Email:</span>
-                  <div className="font-medium text-gray-900">{confirmationData.contactInfo.email}</div>
+                  <div className="font-medium text-gray-900">{confirmationData.contact_info.email}</div>
                 </div>
               </div>
               <div className="space-y-2">
                 <div>
                   <span className="text-gray-600">Số điện thoại:</span>
-                  <div className="font-medium text-gray-900">{confirmationData.contactInfo.phone}</div>
+                  <div className="font-medium text-gray-900">{confirmationData.contact_info.phone}</div>
                 </div>
                 <div>
                   <span className="text-gray-600">Địa chỉ:</span>
-                  <div className="font-medium text-gray-900">{confirmationData.contactInfo.address}</div>
+                  <div className="font-medium text-gray-900">{confirmationData.contact_info.address}</div>
                 </div>
               </div>
             </div>
@@ -202,7 +190,7 @@ export default function TourConfirmationPage() {
           <div className="border-t border-gray-200 pt-8 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Danh sách hành khách</h3>
             <div className="space-y-4">
-              {confirmationData.participantDetails.map((participant, index) => (
+              {confirmationData.participant_details.map((participant, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">
@@ -231,11 +219,11 @@ export default function TourConfirmationPage() {
           </div>
 
           {/* Special Requests */}
-          {confirmationData.specialRequests && (
+          {confirmationData.special_requests && (
             <div className="border-t border-gray-200 pt-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Yêu cầu đặc biệt</h3>
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-gray-700">{confirmationData.specialRequests}</p>
+                <p className="text-gray-700">{confirmationData.special_requests}</p>
               </div>
             </div>
           )}
@@ -251,7 +239,7 @@ export default function TourConfirmationPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">Kiểm tra email xác nhận</h3>
-                <p className="text-gray-600 text-sm">Chúng tôi đã gửi email xác nhận chi tiết tour đến {confirmationData.contactInfo.email}</p>
+                <p className="text-gray-600 text-sm">Chúng tôi đã gửi email xác nhận chi tiết tour đến {confirmationData.contact_info.email}</p>
               </div>
             </div>
             <div className="flex items-start">
@@ -287,16 +275,18 @@ export default function TourConfirmationPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <button
             onClick={() => window.print()}
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a1 1 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             In xác nhận
           </button>
+        </div>
+        <div className="flex justify-center mt-4">
           <Link
             href="/tours"
             className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center"
@@ -304,16 +294,7 @@ export default function TourConfirmationPage() {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            Đặt tour khác
-          </Link>
-          <Link
-            href="/"
-            className="px-6 py-3 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            Về trang chủ
+            Quay lại trang tour
           </Link>
         </div>
 

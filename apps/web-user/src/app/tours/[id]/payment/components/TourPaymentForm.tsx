@@ -11,30 +11,30 @@ import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 interface TourBookingData {
-  tourId: string
-  tourTitle: string
-  selectedDate: string
+  tour_id: string
+  tour_title: string
+  selected_date: string
   participants: {
     adults: number
     children: number
     infants: number
   }
-  contactInfo: {
+  contact_info: {
     fullName: string
     email: string
     phone: string
     address: string
   }
-  participantDetails: Array<{
+  participant_details: Array<{
     fullName: string
     dateOfBirth: string
     gender: string
     identityCard: string
     type: string
   }>
-  specialRequests: string
-  totalAmount: number
-  bookingDate: string
+  special_requests: string
+  total_amount: number
+  booking_date: string
   status: string
 }
 
@@ -90,17 +90,17 @@ export default function TourPaymentForm() {
     try {
       // Chuẩn bị dữ liệu gửi lên backend
       const paymentPayload = {
-        bookingId: bookingData.tourId, // hoặc bookingNumber nếu backend trả về
-        amount: bookingData.totalAmount,
+        bookingId: bookingData.tour_id, // hoặc bookingNumber nếu backend trả về
+        amount: bookingData.total_amount,
         currency: 'VND',
-        description: `Thanh toán tour ${bookingData.tourTitle}`,
+        description: `Thanh toán tour ${bookingData.tour_title}`,
         customerInfo: {
-          name: bookingData.contactInfo.fullName,
-          email: bookingData.contactInfo.email,
-          phone: bookingData.contactInfo.phone
+          name: bookingData.contact_info.fullName,
+          email: bookingData.contact_info.email,
+          phone: bookingData.contact_info.phone
         },
         gateway: paymentMethod === 'bank' ? 'vnpay' : paymentMethod === 'wallet' ? 'momo' : 'onepay',
-        returnUrl: typeof window !== 'undefined' ? window.location.origin + `/tours/${bookingData.tourId}/confirmation` : undefined
+        returnUrl: typeof window !== 'undefined' ? window.location.origin + `/tours/${bookingData.tour_id}/confirmation` : undefined
       }
 
       const response = await (await import('@/lib/utils')).apiClient.post('/payments/create', paymentPayload)
@@ -113,8 +113,11 @@ export default function TourPaymentForm() {
         if (bookingItem) {
           updateItem(bookingItem.id, { details: { ...bookingData, paymentStatus: 'completed', paymentMethod } })
         }
-        removeItem(bookingItem?.id || '')
-        router.push(`/tours/${bookingData.tourId}/confirmation`)
+        router.push(`/tours/${bookingData.tour_id}/confirmation`)
+        // Xóa bookingItem sau khi đã chuyển trang xác nhận
+        setTimeout(() => {
+          removeItem(bookingItem?.id || '')
+        }, 1000)
       } else {
         throw new Error(response?.message || 'Không thể thanh toán. Vui lòng thử lại.')
       }
@@ -285,12 +288,12 @@ export default function TourPaymentForm() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Số tiền:</span>
                     <span className="font-medium text-primary-600">
-                      {formatPrice(bookingData.totalAmount)}
+                      {formatPrice(bookingData.total_amount)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Nội dung:</span>
-                    <span className="font-medium">TOUR {bookingData.tourId} {bookingData.contactInfo.fullName}</span>
+                    <span className="font-medium">TOUR {bookingData.tour_title} {bookingData.contact_info.fullName}</span>
                   </div>
                 </div>
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
@@ -341,7 +344,7 @@ export default function TourPaymentForm() {
                   Đang xử lý thanh toán...
                 </div>
               ) : (
-                `Thanh toán ${formatPrice(bookingData.totalAmount)}`
+                `Thanh toán ${formatPrice(bookingData.total_amount)}`
               )}
             </Button>
 
@@ -368,12 +371,12 @@ export default function TourPaymentForm() {
           <CardContent>
             {/* Tour Information */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-3">{bookingData.tourTitle}</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">{bookingData.tour_title}</h4>
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Ngày khởi hành:</span>
                   <span className="font-medium text-gray-900">
-                    {formatDate(bookingData.selectedDate)}
+                    {formatDate(bookingData.selected_date)}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -392,10 +395,10 @@ export default function TourPaymentForm() {
               <h4 className="font-semibold text-gray-900 mb-3">Thông tin liên hệ</h4>
               <div className="space-y-2 text-sm text-gray-600">
                 <div>
-                  <span className="font-medium text-gray-900">{bookingData.contactInfo.fullName}</span>
+                  <span className="font-medium text-gray-900">{bookingData.contact_info.fullName}</span>
                 </div>
-                <div>{bookingData.contactInfo.email}</div>
-                <div>{bookingData.contactInfo.phone}</div>
+                <div>{bookingData.contact_info.email}</div>
+                <div>{bookingData.contact_info.phone}</div>
               </div>
             </div>
 
@@ -426,14 +429,14 @@ export default function TourPaymentForm() {
               </div>
             </div>
 
-            {bookingData.specialRequests && (
+            {bookingData.special_requests && (
               <>
                 <Separator className="my-6" />
                 {/* Special Requests */}
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">Yêu cầu đặc biệt</h4>
                   <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                    {bookingData.specialRequests}
+                    {bookingData.special_requests}
                   </p>
                 </div>
               </>
@@ -445,7 +448,7 @@ export default function TourPaymentForm() {
             <div className="flex justify-between items-center">
               <span className="text-lg font-bold text-gray-900">Tổng cộng</span>
               <span className="text-xl font-bold text-primary-600">
-                {formatPrice(bookingData.totalAmount)}
+                {formatPrice(bookingData.total_amount)}
               </span>
             </div>
 

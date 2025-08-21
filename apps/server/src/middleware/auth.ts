@@ -25,51 +25,29 @@ const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunct
       }
     }
 
+
     if (!token) {
+      console.warn('[AUTH] No token provided');
       return res.status(401).json({ message: "Access denied. No token provided." });
     }
+
+    // Log token for debugging
+    console.log('[AUTH] Received token:', token);
 
     try {
       // Verify token
       const jwtSecret = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
-
-      const decoded = jwt.verify(token, jwtSecret) as { id: string };
-
-      // Get user from database using TypeORM
-      const userRepository = AppDataSource.getRepository(User);
-      const user = await userRepository.findOne({
-        where: { id: decoded.id },
-        select: ['id', 'firstName', 'lastName', 'email', 'role', 'status'] // Exclude password
-      });
-
-      if (!user) {
-        res.status(401).json({
-          success: false,
-          error: {
-            message: 'Token is valid but user not found'
-          }
-        });
-        return;
-      }
-
-      // Check if user is active
-      if (user.status !== 'active') {
-        res.status(401).json({
-          success: false,
-          error: {
-            message: 'User account is deactivated'
-          }
-        });
-        return;
-      }
-
-      req.user = user;
+      const decoded = jwt.verify(token, jwtSecret);
+      // Gán thông tin user từ token vào req.user
+      req.user = decoded;
       next();
     } catch (tokenError) {
+      console.error('[AUTH] Token verify error:', tokenError);
       res.status(401).json({
         success: false,
         error: {
-          message: 'Invalid token'
+          message: 'Invalid token',
+          details: tokenError instanceof Error ? tokenError.message : tokenError
         }
       });
     }

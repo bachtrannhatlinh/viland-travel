@@ -13,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
 const getBaseUrl = () => {
   // Force localhost in development
   if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
-  return 'https://viland-travel-production.up.railway.app';
+  return 'http://localhost:5000';
   }
   // Production
   return process.env.NEXT_PUBLIC_API_URL || 'https://viland-travel-production.up.railway.app';

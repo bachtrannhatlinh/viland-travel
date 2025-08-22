@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useBookingStore } from '@/store/bookingStore'
+import { apiClient } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -146,37 +147,34 @@ export default function FlightBookingPage() {
   const addItem = useBookingStore((state) => state.addItem)
   const clear = useBookingStore((state) => state.clear)
 
-  const handleConfirmBooking = () => {
-    if (!validateBooking()) return
+  const handleConfirmBooking = async () => {
+    if (!validateBooking()) return;
 
-    const finalBookingData: FlightBookingData = {
-      flight: bookingData.flight,
-      passengers,
+    // Chuẩn bị payload đúng với backend, chuyển dateOfBirth/passportExpiry rỗng thành null
+    const payload = {
+      flightId: bookingData.flight.id,
+      passengers: passengers.map((p) => ({
+        ...p,
+        dateOfBirth: p.dateOfBirth === '' ? null : p.dateOfBirth,
+        passportExpiry: p.passportExpiry === '' ? null : p.passportExpiry,
+      })),
       contactInfo,
       selectedClass: bookingData.selectedClass,
       specialRequests,
-      totalAmount: calculateTotalAmount(),
-      bookingDate: new Date().toISOString(),
-      status: 'pending'
-    }
+    };
 
-    // Lưu vào Zustand store, chỉ clear nếu chưa có booking flight
-    const currentItems = useBookingStore.getState().items
-    const hasFlight = currentItems.some(i => i.type === 'flight')
-    if (!hasFlight) {
-      clear()
+    try {
+      // Gọi API booking qua apiClient
+      const res = await apiClient.post('/flights/book', payload);
+      if (res.success) {
+        // Chuyển sang trang xác nhận booking (hoặc payment tuỳ flow)
+        router.push(`/flights/confirmation?code=${res.data.booking.booking_number}`);
+      } else {
+        alert(res.message || 'Đặt vé thất bại');
+      }
+    } catch (err: any) {
+      alert(err?.message || 'Có lỗi khi đặt vé');
     }
-    addItem({
-      id: bookingData.flight.id,
-      type: 'flight',
-      name: bookingData.flight.name || bookingData.flight.code || 'Chuyến bay',
-      details: finalBookingData,
-      quantity: passengers.length,
-      price: finalBookingData.totalAmount
-    })
-
-    // Navigate to payment page
-    router.push('/flights/payment')
   }
 
   const formatPrice = (amount: number) => {

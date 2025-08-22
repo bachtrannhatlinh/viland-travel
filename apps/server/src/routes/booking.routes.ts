@@ -97,6 +97,9 @@ const getBookingStats = (req: any, res: any) => {
 router.use(protect);
 
 // Customer routes
+
+// Route xác nhận booking theo mã code
+router.get('/confirmation/:bookingNumber', BookingSupabaseController.getBookingByNumber);
 router.get('/my-bookings', getUserBookings);
 router.get('/:bookingId', getBookingById);
 router.put('/:bookingId/cancel', cancelBooking);

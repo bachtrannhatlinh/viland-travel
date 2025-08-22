@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { FlightBookingData } from '@/types/flight.types'
+import { fetchFlightBookingConfirmation } from '@/lib/booking'
 
 // Force dynamic rendering - no SSG
 export const dynamic = 'force-dynamic'
@@ -27,11 +28,28 @@ export default function FlightConfirmationPage() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (bookingItem && bookingItem.details && bookingItem.details.confirmationCode === confirmationCode) {
-      setConfirmationData(bookingItem.details)
+    let ignore = false;
+    async function getData() {
+      if (bookingItem && bookingItem.details && bookingItem.details.confirmationCode === confirmationCode) {
+        setConfirmationData(bookingItem.details);
+        setIsLoading(false);
+        return;
+      }
+      // Nếu không có trong store, gọi API lấy thông tin xác nhận
+      if (confirmationCode) {
+        setIsLoading(true);
+        const data = await fetchFlightBookingConfirmation(confirmationCode);
+        if (!ignore) {
+          setConfirmationData(data as any);
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false)
-  }, [bookingItem, confirmationCode])
+    getData();
+    return () => { ignore = true; };
+  }, [bookingItem, confirmationCode]);
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -209,7 +227,7 @@ export default function FlightConfirmationPage() {
                     </div>
                     <div>
                       <div className="text-sm text-gray-500">Ngày sinh</div>
-                      <div className="font-medium">{formatDate(passenger.dateOfBirth)}</div>
+                      <div className="font-medium">{formatDate(passenger.date_of_birth)}</div>
                     </div>
                     <div>
                       <div className="text-sm text-gray-500">Quốc tịch</div>
@@ -228,15 +246,15 @@ export default function FlightConfirmationPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <div className="text-sm text-gray-500">Họ tên</div>
-                  <div className="font-medium">{confirmationData.contactInfo.name}</div>
+                  <div className="font-medium">{confirmationData.contact_info.name}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500">Điện thoại</div>
-                  <div className="font-medium">{confirmationData.contactInfo.phone}</div>
+                  <div className="font-medium">{confirmationData.contact_info.phone}</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-500">Email</div>
-                  <div className="font-medium">{confirmationData.contactInfo.email}</div>
+                  <div className="font-medium">{confirmationData.contact_info.email}</div>
                 </div>
               </div>
             </div>
@@ -259,17 +277,17 @@ export default function FlightConfirmationPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Giá vé ({confirmationData.passengers.length} hành khách)</span>
-                  <span className="font-medium">{formatPrice(confirmationData.totalAmount * 0.9)}</span>
+                  <span className="font-medium">{formatPrice(confirmationData.total_amount * 0.9)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Thuế và phí</span>
-                  <span className="font-medium">{formatPrice(confirmationData.totalAmount * 0.1)}</span>
+                  <span className="font-medium">{formatPrice(confirmationData.total_amount * 0.1)}</span>
                 </div>
                 <div className="border-t border-gray-300 pt-2">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-gray-900">Tổng cộng</span>
                     <span className="text-xl font-bold text-primary-600">
-                      {formatPrice(confirmationData.totalAmount)}
+                      {formatPrice(confirmationData.total_amount)}
                     </span>
                   </div>
                 </div>

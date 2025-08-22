@@ -133,7 +133,7 @@ export interface PassengerInfo {
   title: string;
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
+  date_of_birth: string;
   nationality: string;
   passportNumber?: string;
   passportExpiry?: string;
@@ -145,13 +145,13 @@ export interface FlightBookingData {
   flight: Flight;
   selectedClass: FlightClass;
   passengers: PassengerInfo[];
-  contactInfo: {
+  contact_info: {
     name: string;
     phone: string;
     email: string;
   };
   specialRequests?: string;
-  totalAmount: number;
+  total_amount: number;
   bookingDate?: string;
   status?: string;
 }

@@ -104,6 +104,8 @@ export const bookFlight = async (req: Request, res: Response) => {
     });
     totalAmount += totalAmount * 0.1;
     totalAmount = Math.round(totalAmount);
+    // Lấy user_id từ req.user (nếu có xác thực), hoặc gán tạm user_id test nếu chưa có auth
+    const userId = (req as any).user?.id || '00000000-0000-0000-0000-000000000000';
     const bookingData = {
       booking_number: bookingNumber,
       flight_id: flightId,
@@ -113,9 +115,15 @@ export const bookFlight = async (req: Request, res: Response) => {
       special_requests: specialRequests,
       status: "pending_payment" as "pending_payment",
       booking_type: "flight" as "flight",
-      service_id: flightId
+      service_id: flightId,
+      user_id: userId
     };
-    const booking = await supabaseService.createBooking(bookingData);
+    let booking;
+    try {
+      booking = await supabaseService.createBooking(bookingData);
+    } catch (err) {
+      throw err;
+    }
     const passengerData = passengers.map((p: any) => ({
       booking_id: booking.id || '',
       type: p.type,

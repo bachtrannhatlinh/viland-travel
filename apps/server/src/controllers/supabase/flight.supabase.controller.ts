@@ -111,11 +111,13 @@ export const bookFlight = async (req: Request, res: Response) => {
       selected_class: selectedClass,
       total_amount: totalAmount,
       special_requests: specialRequests,
-      status: 'pending_payment'
+      status: "pending_payment" as "pending_payment",
+      booking_type: "flight" as "flight",
+      service_id: flightId
     };
     const booking = await supabaseService.createBooking(bookingData);
     const passengerData = passengers.map((p: any) => ({
-      booking_id: booking.id,
+      booking_id: booking.id || '',
       type: p.type,
       title: p.title,
       first_name: p.firstName,

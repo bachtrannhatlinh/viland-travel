@@ -29,16 +29,15 @@ const getUserBookings = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
-    // Có thể thêm filter theo status, type nếu cần
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    res.json({ success: true, data });
+    return res.json({ success: true, data });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error fetching user bookings', error });
+    return res.status(500).json({ success: false, message: 'Error fetching user bookings', error });
   }
 };
 

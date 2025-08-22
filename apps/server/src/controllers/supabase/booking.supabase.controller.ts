@@ -4,15 +4,20 @@ import { supabase, TABLES } from '../../config/supabase';
 export class BookingSupabaseController {
   static async createBooking(req: Request, res: Response) {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const bookingData = { ...req.body, user_id: userId };
       const { data, error } = await supabase
         .from(TABLES.BOOKINGS)
-        .insert(req.body)
+        .insert(bookingData)
         .select()
         .single();
       if (error) throw error;
-      res.status(201).json(data);
+      return res.status(201).json(data);
     } catch (error) {
-      res.status(500).json({ message: 'Error creating booking', error });
+      return res.status(500).json({ message: 'Error creating booking', error });
     }
   }
 

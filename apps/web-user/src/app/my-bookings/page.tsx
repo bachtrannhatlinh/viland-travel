@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import BookingDetailModal from "./BookingDetailModal";
+import { apiClient } from "@/lib/utils";
 
 interface Booking {
   id: string;
@@ -24,11 +25,7 @@ export default function MyBookingsPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/bookings/my-bookings", {
-          credentials: "include"
-        });
-        if (!res.ok) throw new Error("Không thể lấy lịch sử booking");
-        const data = await res.json();
+        const data = await apiClient.get('/bookings/my-bookings');
         setBookings(data.data || []);
       } catch (err: any) {
         setError(err.message || "Lỗi không xác định");

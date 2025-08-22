@@ -5,7 +5,6 @@ import { LoginRequiredDialog } from '@/components/ui/LoginRequiredDialog'
 import { useMultiStepFormStore } from '@/store/multiStepFormStore'
 import { useBookingStore } from '@/store/bookingStore'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Label } from '@/components/ui/label'
 import { Typography } from '@/components/ui/typography'
@@ -69,7 +68,18 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
     reset: resetMultiStep
   } = useMultiStepFormStore()
   const [selectedDate, setSelectedDate] = useState(stepData[1]?.selectedDate || '')
-  const [participants, setParticipants] = useState(stepData[1]?.participants || { adults: 0, children: 0, infants: 0 })
+  // Fallback cho min/max group size nếu không hợp lệ
+  const fallbackMin = 1;
+  const fallbackMax = 99;
+  const safeMinGroupSize = (typeof tour.minGroupSize === 'number' && !isNaN(tour.minGroupSize) && tour.minGroupSize > 0) ? tour.minGroupSize : fallbackMin;
+  const safeMaxGroupSize = (typeof tour.maxGroupSize === 'number' && !isNaN(tour.maxGroupSize) && tour.maxGroupSize > 0) ? tour.maxGroupSize : fallbackMax;
+
+  const getDefaultParticipants = () => {
+    if (stepData[1]?.participants) return stepData[1].participants;
+    // Nếu minGroupSize > 1 thì mặc định số người lớn = minGroupSize
+    return { adults: 0, children: 0, infants: 0 };
+  };
+  const [participants, setParticipants] = useState(getDefaultParticipants());
   const [contactInfo, setContactInfo] = useState<ContactInfo>(
     (stepData[2] && stepData[2].contactInfo && typeof stepData[2].contactInfo === 'object')
       ? stepData[2].contactInfo
@@ -107,11 +117,11 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   }
 
   const calculateTotalPrice = () => {
-    const prices = tour.discountPrice || tour.price
-    const adultTotal = participants.adults * prices.adult
-    const childTotal = participants.children * prices.child
-    const infantTotal = participants.infants * prices.infant
-    return adultTotal + childTotal + infantTotal
+    const prices = tour.discountPrice || tour.price || {};
+    const adultTotal = participants.adults * (prices.adult ?? 0);
+    const childTotal = participants.children * (prices.child ?? 0);
+    const infantTotal = participants.infants * (prices.infant ?? 0);
+    return adultTotal + childTotal + infantTotal;
   }
 
   const getTotalParticipants = () => {
@@ -158,11 +168,12 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   }
 
   const handleParticipantChange = (field: keyof typeof participants, value: number) => {
+    console.log('handleParticipantChange', { field, value, participants, min: safeMinGroupSize, max: safeMaxGroupSize });
     const newParticipants = { ...participants, [field]: value }
     const total = newParticipants.adults + newParticipants.children + newParticipants.infants
 
     // Luôn cho phép update, chỉ validate khi submit
-    if (total <= tour.maxGroupSize && value >= 0) {
+    if (total <= safeMaxGroupSize && value >= 0) {
       setParticipants(newParticipants)
     }
   }
@@ -233,6 +244,8 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
         total_amount: calculateTotalPrice(),
         booking_date: new Date().toISOString(),
         status: 'pending',
+        booking_type: 'tour',
+        service_id: tour.id,
         // Các trường chỉ dùng cho flight, car... gửi null để tránh lỗi NOT NULL
         flight_id: null,
         selected_class: null
@@ -304,8 +317,8 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                         key={index}
                         onClick={() => setSelectedDate(date.startDate)}
                         className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${selectedDate === date.startDate
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 hover:border-primary-300'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-primary-300'
                           }`}
                       >
                         <Typography as="div" className="font-semibold text-gray-900">
@@ -331,7 +344,9 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                         <Typography as="div" className="font-medium text-gray-900">Người lớn</Typography>
                         <Typography as="div" className="text-sm text-gray-600">Từ 12 tuổi trở lên</Typography>
                         <Typography as="div" className="text-sm font-medium text-primary-600">
-                          {formatPrice(tour.discountPrice?.adult || tour.price.adult)}
+                          {formatPrice(
+                            (tour.discountPrice?.adult ?? tour.price?.adult) ?? 0
+                          )}
                         </Typography>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -351,7 +366,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                           onClick={() => handleParticipantChange('adults', participants.adults + 1)}
                           variant="outline"
                           size="icon"
-                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          disabled={getTotalParticipants() >= safeMaxGroupSize}
                           aria-label="Tăng số người lớn"
                         >
                           +
@@ -364,7 +379,9 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                         <Typography as="div" className="font-medium text-gray-900">Trẻ em</Typography>
                         <Typography as="div" className="text-sm text-gray-600">Từ 2-11 tuổi</Typography>
                         <Typography as="div" className="text-sm font-medium text-primary-600">
-                          {formatPrice(tour.discountPrice?.child || tour.price.child)}
+                          {formatPrice(
+                            (tour.discountPrice?.child ?? tour.price?.child) ?? 0
+                          )}
                         </Typography>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -383,7 +400,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                           onClick={() => handleParticipantChange('children', participants.children + 1)}
                           variant="outline"
                           size="icon"
-                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          disabled={getTotalParticipants() >= safeMaxGroupSize}
                           aria-label="Tăng số trẻ em"
                         >
                           +
@@ -396,7 +413,10 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                         <Typography as="div" className="font-medium text-gray-900">Em bé</Typography>
                         <Typography as="div" className="text-sm text-gray-600">Dưới 2 tuổi</Typography>
                         <Typography as="div" className="text-sm font-medium text-primary-600">
-                          {formatPrice(tour.discountPrice?.infant || tour.price.infant)}
+                          {formatPrice(
+                            (tour.discountPrice?.infant ?? tour.price?.infant) ?? 0
+                          )}
+
                         </Typography>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -415,23 +435,13 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                           onClick={() => handleParticipantChange('infants', participants.infants + 1)}
                           variant="outline"
                           size="icon"
-                          disabled={getTotalParticipants() >= tour.maxGroupSize}
+                          disabled={getTotalParticipants() >= safeMaxGroupSize}
                           aria-label="Tăng số em bé"
                         >
                           +
                         </Button>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <Typography className="text-sm text-gray-600">
-                      Tổng số khách: {getTotalParticipants()} người
-                      <br />
-                      Số khách tối thiểu: {tour.minGroupSize} người
-                      <br />
-                      Số khách tối đa: {tour.maxGroupSize} người
-                    </Typography>
                   </div>
                 </div>
               </div>
@@ -499,66 +509,66 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
               <div>
                 <Typography variant="h2" className="text-gray-900 mb-6">Thông tin khách tham gia</Typography>
                 <div className="space-y-6">
-            {(Array.isArray(participantDetails) ? participantDetails : []).map((participant, index) => (
-              participant && typeof participant === 'object' ? (
-                <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                  <Typography variant="h3" className="text-gray-900 mb-4">
-                    {participant.type === 'adult' ? 'Người lớn' :
-                      participant.type === 'child' ? 'Trẻ em' : 'Em bé'} #{index + 1}
-                  </Typography>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="block text-sm font-medium text-gray-700 mb-2">
-                        Họ và tên *
-                      </Label>
-                      <Input
-                        type="text"
-                        value={participant?.fullName || ''}
-                        onChange={(e) => handleParticipantDetailChange(index, 'fullName', e.target.value)}
-                        className="w-full"
-                        placeholder="Nhập họ và tên"
-                      />
-                    </div>
-                    <div>
-                      <Label className="block text-sm font-medium text-gray-700 mb-2">
-                        Ngày sinh *
-                      </Label>
-                      <DatePicker
-                        value={participant?.dateOfBirth || ''}
-                        onChange={(value) => handleParticipantDetailChange(index, 'dateOfBirth', value)}
-                        placeholder="Chọn ngày sinh"
-                      />
-                    </div>
-                    <div>
-                      <Label className="block text-sm font-medium text-gray-700 mb-2">
-                        Giới tính
-                      </Label>
-                      <Select value={participant?.gender || 'male'} onValueChange={(value) => handleParticipantDetailChange(index, 'gender', value)}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Chọn giới tính" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="male">Nam</SelectItem>
-                          <SelectItem value="female">Nữ</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="block text-sm font-medium text-gray-700 mb-2">
-                        CMND/CCCD *
-                      </Label>
-                      <Input
-                        type="text"
-                        value={participant?.identityCard || ''}
-                        onChange={(e) => handleParticipantDetailChange(index, 'identityCard', e.target.value)}
-                        className="w-full"
-                        placeholder="Nhập số CMND/CCCD"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : null
-            ))}
+                  {(Array.isArray(participantDetails) ? participantDetails : []).map((participant, index) => (
+                    participant && typeof participant === 'object' ? (
+                      <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                        <Typography variant="h3" className="text-gray-900 mb-4">
+                          {participant.type === 'adult' ? 'Người lớn' :
+                            participant.type === 'child' ? 'Trẻ em' : 'Em bé'} #{index + 1}
+                        </Typography>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2">
+                              Họ và tên *
+                            </Label>
+                            <Input
+                              type="text"
+                              value={participant?.fullName || ''}
+                              onChange={(e) => handleParticipantDetailChange(index, 'fullName', e.target.value)}
+                              className="w-full"
+                              placeholder="Nhập họ và tên"
+                            />
+                          </div>
+                          <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2">
+                              Ngày sinh *
+                            </Label>
+                            <DatePicker
+                              value={participant?.dateOfBirth || ''}
+                              onChange={(value) => handleParticipantDetailChange(index, 'dateOfBirth', value)}
+                              placeholder="Chọn ngày sinh"
+                            />
+                          </div>
+                          <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2">
+                              Giới tính
+                            </Label>
+                            <Select value={participant?.gender || 'male'} onValueChange={(value) => handleParticipantDetailChange(index, 'gender', value)}>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Chọn giới tính" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="male">Nam</SelectItem>
+                                <SelectItem value="female">Nữ</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label className="block text-sm font-medium text-gray-700 mb-2">
+                              CMND/CCCD *
+                            </Label>
+                            <Input
+                              type="text"
+                              value={participant?.identityCard || ''}
+                              onChange={(e) => handleParticipantDetailChange(index, 'identityCard', e.target.value)}
+                              className="w-full"
+                              placeholder="Nhập số CMND/CCCD"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : null
+                  ))}
                 </div>
               </div>
             )}
@@ -688,7 +698,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
             <div className="space-y-3 text-sm">
               <div>
                 <Typography variant="h4" className="text-gray-900">{tour.title}</Typography>
-                <Typography variant="muted" as="p">{tour.duration.days} ngày {tour.duration.nights} đêm</Typography>
+                <Typography variant="muted" as="p">{(tour.duration?.days ?? 0)} ngày {(tour.duration?.nights ?? 0)} đêm</Typography>
               </div>
 
               {selectedDate && (
@@ -707,7 +717,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                   <div className="flex justify-between items-center mb-1">
                     <Typography as="span" className="text-gray-600">Người lớn x {participants.adults}</Typography>
                     <Typography as="span" className="text-gray-900 font-medium">
-                      {formatPrice((tour.discountPrice?.adult || tour.price.adult) * participants.adults)}
+                      {formatPrice(((tour.discountPrice?.adult ?? tour.price?.adult) ?? 0) * participants.adults)}
                     </Typography>
                   </div>
                 )}
@@ -716,7 +726,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                   <div className="flex justify-between items-center mb-1">
                     <Typography as="span" className="text-gray-600">Trẻ em x {participants.children}</Typography>
                     <Typography as="span" className="text-gray-900 font-medium">
-                      {formatPrice((tour.discountPrice?.child || tour.price.child) * participants.children)}
+                      {formatPrice(((tour.discountPrice?.child ?? tour.price?.child) ?? 0) * participants.children)}
                     </Typography>
                   </div>
                 )}
@@ -725,7 +735,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
                   <div className="flex justify-between items-center mb-1">
                     <Typography as="span" className="text-gray-600">Em bé x {participants.infants}</Typography>
                     <Typography as="span" className="text-gray-900 font-medium">
-                      {formatPrice((tour.discountPrice?.infant || tour.price.infant) * participants.infants)}
+                      {formatPrice(((tour.discountPrice?.infant ?? tour.price?.infant) ?? 0) * participants.infants)}
                     </Typography>
                   </div>
                 )}

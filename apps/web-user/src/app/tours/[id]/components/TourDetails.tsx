@@ -340,14 +340,14 @@ export default function TourDetails({ tour }: TourDetailsProps) {
 
               {/* Booking Button */}
               <Link
-                href={`/tours/${tour.slug}/booking`}
+                href={`/tours/${tour.id}/booking`}
                 className="w-full bg-primary-600 hover:bg-primary-700 text-white text-center py-3 px-6 rounded-lg font-semibold transition-colors block mb-4"
               >
                 Đặt tour ngay
               </Link>
 
               <Link
-                href={`/tours/${tour.slug}/contact`}
+                href={`/tours/${tour.id}/contact`}
                 className="w-full border border-primary-600 text-primary-600 hover:bg-primary-50 text-center py-3 px-6 rounded-lg font-semibold transition-colors block"
               >
                 Liên hệ tư vấn

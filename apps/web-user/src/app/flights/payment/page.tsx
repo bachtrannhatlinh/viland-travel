@@ -299,7 +299,7 @@ export default function FlightPaymentPage() {
                     <p><strong>Ngân hàng:</strong> Vietcombank - Chi nhánh TP.HCM</p>
                     <p><strong>Số tài khoản:</strong> 1234567890</p>
                     <p><strong>Chủ tài khoản:</strong> CONG TY TNHH VIET NAM DU LICH</p>
-                    <p><strong>Nội dung:</strong> FLIGHT {bookingData.flight.flightNumber} {bookingData.contactInfo.name}</p>
+                    <p><strong>Nội dung:</strong> FLIGHT {bookingData.flight.flightNumber} {bookingData.contact_info.name}</p>
                     <p className="text-orange-600 font-medium">
                       Sau khi chuyển khoản, vui lòng gửi ảnh chụp biên lai để xác nhận.
                     </p>
@@ -376,7 +376,7 @@ export default function FlightPaymentPage() {
                 <div className="flex justify-between items-center text-xl font-bold text-gray-900">
                   <span>Tổng cộng</span>
                   <span className="text-primary-600">
-                    {formatPrice(bookingData.totalAmount)}
+                    {formatPrice(bookingData.total_amount)}
                   </span>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export default function FlightPaymentPage() {
                     Đang xử lý thanh toán...
                   </div>
                 ) : (
-                  `Thanh toán ${formatPrice(bookingData.totalAmount)}`
+                  `Thanh toán ${formatPrice(bookingData.total_amount)}`
                 )}
               </button>
 

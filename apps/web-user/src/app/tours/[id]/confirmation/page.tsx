@@ -1,9 +1,11 @@
 'use client'
 
+
 import { useState, useEffect } from 'react'
 import { useBookingStore } from '@/store/bookingStore'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { fetchBookingConfirmation } from '@/lib/booking'
 
 interface TourConfirmationData {
   tour_id: string
@@ -37,12 +39,41 @@ interface TourConfirmationData {
 
 export default function TourConfirmationPage() {
   const router = useRouter()
+  const searchParams = useSearchParams();
   // Lấy dữ liệu xác nhận từ store (booking tour đã xác nhận)
   const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))
-  // Chỉ lấy dữ liệu xác nhận một lần khi component mount
-  const [confirmationData] = useState<TourConfirmationData | null>(
+  const [confirmationData, setConfirmationData] = useState<TourConfirmationData | null>(
     bookingItem && bookingItem.details ? bookingItem.details : null
   )
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Ưu tiên lấy mã xác nhận từ query string nếu có
+  const confirmationNumber = searchParams?.get('confirmationNumber') || confirmationData?.confirmationNumber;
+
+  useEffect(() => {
+    // Nếu có confirmationNumber thì gọi API xác nhận booking
+    const fetchConfirmation = async () => {
+      if (!confirmationNumber) return;
+      setLoading(true);
+      setError(null);
+      try {
+        // Sử dụng hàm fetchBookingConfirmation chung
+        const data = await fetchBookingConfirmation(confirmationNumber);
+        if (data && data.success && data.confirmation) {
+          setConfirmationData(data.confirmation);
+        } else {
+          setError('Không tìm thấy thông tin xác nhận.');
+        }
+      } catch (err: any) {
+        setError('Có lỗi khi xác nhận booking.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchConfirmation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmationNumber]);
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -66,8 +97,14 @@ export default function TourConfirmationPage() {
     return date.toLocaleString('vi-VN')
   }
 
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Đang tải xác nhận booking...</div>;
+  }
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
+  }
   if (!confirmationData) {
-    return null;
+    return <div className="min-h-screen flex items-center justify-center text-gray-600">Không tìm thấy thông tin xác nhận booking.</div>;
   }
 
   const getTotalParticipants = () => {
@@ -109,7 +146,7 @@ export default function TourConfirmationPage() {
         {/* Confirmation Details */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Chi tiết đặt tour</h2>
-          
+
           {/* Tour Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div>
@@ -194,8 +231,8 @@ export default function TourConfirmationPage() {
                 <div key={index} className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-gray-900">
-                      {participant.type === 'adult' ? 'Người lớn' : 
-                       participant.type === 'child' ? 'Trẻ em' : 'Em bé'} #{index + 1}
+                      {participant.type === 'adult' ? 'Người lớn' :
+                        participant.type === 'child' ? 'Trẻ em' : 'Em bé'} #{index + 1}
                     </h4>
                     <span className="text-sm text-gray-600">{participant.gender === 'male' ? 'Nam' : 'Nữ'}</span>
                   </div>

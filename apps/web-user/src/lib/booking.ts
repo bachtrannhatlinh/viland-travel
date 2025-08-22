@@ -1,11 +1,10 @@
 // API call to get booking confirmation by code
 import { apiClient } from '@/lib/utils'
-import { FlightBookingData } from '@/types/flight.types'
 
-export async function fetchFlightBookingConfirmation(confirmationCode: string): Promise<FlightBookingData | null> {
+// Dùng chung cho xác nhận tour (có thể generic nếu muốn cho flight)
+export async function fetchBookingConfirmation(confirmationCode: string): Promise<any | null> {
   if (!confirmationCode) return null
   try {
-    // Đổi endpoint cho đúng với backend của bạn
     const data = await apiClient.get(`/bookings/confirmation/${confirmationCode}`)
     if (data && data.success !== false) {
       return data

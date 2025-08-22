@@ -33,7 +33,12 @@ export const getTours = async (req: Request, res: Response): Promise<void> => {
 export const getTourById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    // Fetch the tour by id from supabaseService
     const tour = await supabaseService.getTourById(id);
+    // Extend the type to include optional availability property
+    type TourWithOptionalAvailability = typeof tour & { availability?: any };
+    const tourTyped = tour as TourWithOptionalAvailability;
+
     if (!tour) {
       res.status(404).json({
         success: false,
@@ -41,9 +46,29 @@ export const getTourById = async (req: Request, res: Response): Promise<void> =>
       });
       return;
     }
+    // Bổ sung field availability nếu chưa có (mock data)
+    const now = new Date();
+    const mockAvailability = [
+      {
+        startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7).toISOString(),
+        endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 10).toISOString(),
+        availableSlots: 10,
+        isAvailable: true
+      },
+      {
+        startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14).toISOString(),
+        endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 17).toISOString(),
+        availableSlots: 5,
+        isAvailable: true
+      }
+    ];
+    const tourWithAvailability = {
+      ...tourTyped,
+      availability: Array.isArray(tourTyped.availability) ? tourTyped.availability : mockAvailability
+    };
     res.json({
       success: true,
-      data: tour
+      data: tourWithAvailability
     });
   } catch (error: any) {
     res.status(500).json({

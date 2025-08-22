@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { FlightBookingData } from '@/types/flight.types'
-import { fetchFlightBookingConfirmation } from '@/lib/booking'
+import { fetchBookingConfirmation } from '@/lib/booking'
 
 // Force dynamic rendering - no SSG
 export const dynamic = 'force-dynamic'
@@ -38,7 +38,7 @@ export default function FlightConfirmationPage() {
       // Nếu không có trong store, gọi API lấy thông tin xác nhận
       if (confirmationCode) {
         setIsLoading(true);
-        const data = await fetchFlightBookingConfirmation(confirmationCode);
+        const data = await fetchBookingConfirmation(confirmationCode);
         if (!ignore) {
           setConfirmationData(data as any);
           setIsLoading(false);

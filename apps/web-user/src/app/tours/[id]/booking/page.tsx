@@ -1,46 +1,11 @@
-import { Metadata } from 'next'
+'use client';
+
 import { notFound } from 'next/navigation'
 import TourBookingForm from './components/TourBookingForm'
 
-// Mock data - sẽ thay thế bằng API call thực tế
-const mockTourData = {
-  id: '1',
-  title: 'Tour Hạ Long 3 ngày 2 đêm',
-  duration: { days: 3, nights: 2 },
-  price: {
-    adult: 2500000,
-    child: 1875000,
-    infant: 500000,
-    currency: 'VND'
-  },
-  discountPrice: {
-    adult: 2200000,
-    child: 1650000,
-    infant: 400000
-  },
-  availability: [
-    {
-      startDate: '2025-08-15',
-      endDate: '2025-08-17',
-      availableSlots: 15,
-      isAvailable: true
-    },
-    {
-      startDate: '2025-08-22',
-      endDate: '2025-08-24',
-      availableSlots: 8,
-      isAvailable: true
-    },
-    {
-      startDate: '2025-08-29',
-      endDate: '2025-08-31',
-      availableSlots: 20,
-      isAvailable: true
-    }
-  ],
-  maxGroupSize: 25,
-  minGroupSize: 4
-}
+
+import { apiClient } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 interface TourBookingPageProps {
   params: {
@@ -48,19 +13,60 @@ interface TourBookingPageProps {
   }
 }
 
-export async function generateMetadata({ params }: TourBookingPageProps): Promise<Metadata> {
-  return {
-    title: `Đặt tour - ${mockTourData.title} - ViLand Travel`,
-    description: `Đặt tour ${mockTourData.title} với giá ưu đãi`,
-  }
-}
-
 export default function TourBookingPage({ params }: TourBookingPageProps) {
-  // Trong thực tế sẽ fetch data từ API dựa trên params.id
-  const tour = mockTourData
-  
-  if (!tour) {
-    notFound()
+  const [tour, setTour] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTour = async () => {
+      try {
+        setLoading(true);
+        const res = await apiClient.get(`/tours/${params.id}`);
+        if (res.success && res.data) {
+          // Map snake_case -> camelCase và chuẩn hóa dữ liệu cho TourBookingForm
+          const raw = res.data;
+          const mappedTour = {
+            id: raw.id,
+            title: raw.title,
+            duration: {
+              days: raw.duration_days ?? 0,
+              nights: raw.duration_nights ?? 0,
+            },
+            price: {
+              adult: raw.price_adult ?? 0,
+              child: raw.price_child ?? 0,
+              infant: raw.price_infant ?? 0,
+              currency: raw.currency ?? 'VND',
+            },
+            discountPrice: (raw.discount_adult || raw.discount_child || raw.discount_infant) ? {
+              adult: raw.discount_adult ?? 0,
+              child: raw.discount_child ?? 0,
+              infant: raw.discount_infant ?? 0,
+            } : undefined,
+            availability: Array.isArray(raw.availability) ? raw.availability : [],
+            maxGroupSize: raw.max_group_size ?? 15,
+            minGroupSize: raw.min_group_size ?? 1,
+            // ...bạn có thể map thêm các trường khác nếu cần
+          };
+          setTour(mappedTour);
+        } else {
+          setError(res.message || 'Không tìm thấy tour');
+        }
+      } catch (err: any) {
+        setError('Có lỗi xảy ra khi tải tour: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTour();
+  }, [params.id]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Đang tải thông tin tour...</div>;
+  }
+  if (error || !tour) {
+    notFound();
   }
 
   return (
@@ -95,5 +101,5 @@ export default function TourBookingPage({ params }: TourBookingPageProps) {
         <TourBookingForm tour={tour} />
       </div>
     </div>
-  )
+  );
 }

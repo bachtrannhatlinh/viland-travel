@@ -5,19 +5,41 @@ import { BookingSupabaseController } from '../controllers/supabase/booking.supab
 
 const router = express.Router();
 
-// Placeholder controllers for booking management
-const getUserBookings = (req: any, res: any) => {
-  res.json({ 
-    success: true, 
-    data: [],
-    message: 'User bookings API - coming soon',
-    features: [
-      'Get all user bookings across all services',
-      'Filter by booking status, date, service type',
-      'Booking details with payment information',
-      'Cancellation and modification options'
-    ]
-  });
+
+import { Request, Response } from 'express';
+
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface UserPayload {
+      id: string;
+      [key: string]: any;
+    }
+    interface Request {
+      user?: UserPayload;
+    }
+  }
+}
+import { supabase, TABLES } from '../config/supabase';
+
+// Lấy lịch sử booking của user đã đăng nhập
+const getUserBookings = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    // Có thể thêm filter theo status, type nếu cần
+    const { data, error } = await supabase
+      .from(TABLES.BOOKINGS)
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching user bookings', error });
+  }
 };
 
 const getBookingById = (req: any, res: any) => {

@@ -24,8 +24,7 @@ export const TABLES = {
   PASSENGERS: 'passengers',
   PAYMENTS: 'payments',
   TOURS: 'tours',
-  TOUR_ITINERARY: 'tour_itinerary',
-  TOUR_BOOKINGS: 'tour_bookings'
+  TOUR_ITINERARY: 'tour_itinerary'
 } as const;
 
 // Flight interface
@@ -56,17 +55,26 @@ export interface Flight {
 export interface Booking {
   id?: string;
   booking_number: string;
-  flight_id: string;
   user_id?: string;
+  booking_type: 'flight' | 'tour' | 'hotel' | 'car_rental';
+  service_id: string; // id của flight, tour, hotel, car_rental
   contact_info: {
     name: string;
     email: string;
     phone: string;
   };
-  selected_class: 'economy' | 'business' | 'first';
+  // Flight only
+  selected_class?: 'economy' | 'business' | 'first';
+  // Tour only
+  number_of_adults?: number;
+  number_of_children?: number;
+  number_of_infants?: number;
+  start_date?: string;
+  // Common
   total_amount: number;
   special_requests?: string;
   status: 'pending_payment' | 'confirmed' | 'cancelled' | 'completed';
+  details?: any; // JSON cho các thông tin đặc thù khác
   created_at?: string;
   updated_at?: string;
 }
@@ -158,19 +166,19 @@ export class SupabaseService {
     return data;
   }
 
-  // Tạo booking chuyến bay
-  async createBooking(bookingData: any) {
+  // Tạo booking (flight, tour, hotel, car_rental)
+  async createBooking(bookingData: Booking) {
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
       .insert([bookingData])
       .select()
       .single();
     if (error) throw new Error(`Error creating booking: ${error.message}`);
-    return data;
+    return data as Booking;
   }
 
   // Cập nhật trạng thái booking
-  async updateBookingStatus(bookingId: string, status: string) {
+  async updateBookingStatus(bookingId: string, status: Booking['status']) {
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
       .update({ status })
@@ -178,13 +186,20 @@ export class SupabaseService {
       .select()
       .single();
     if (error) throw new Error(`Error updating booking status: ${error.message}`);
-    return data;
+    return data as Booking;
+  }
+  // Lấy booking theo loại dịch vụ (flight, tour, ...)
+  async getBookingsByType(booking_type: Booking['booking_type'], user_id?: string) {
+    let query = supabase
+      .from(TABLES.BOOKINGS)
+      .select('*')
+      .eq('booking_type', booking_type);
+    if (user_id) query = query.eq('user_id', user_id);
+    const { data, error } = await query;
+    if (error) throw new Error(`Error getting bookings: ${error.message}`);
+    return data as Booking[];
   }
   
-  // ...existing code...
-
-  // ...existing code...
-
   // Passenger operations
   async createPassengers(passengers: Omit<Passenger, 'id' | 'created_at'>[]) {
     const { data, error } = await supabase

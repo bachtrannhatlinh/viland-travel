@@ -140,12 +140,12 @@ export function Header() {
                     </SheetDescription>
                   </SheetHeader>
                   <div className="py-4 space-y-4">
-            {/* User info for mobile */}
-            {isAuthenticated && user && (
-              <div className="pb-4 border-b border-gray-200">
-                <UserAvatar user={user} />
-              </div>
-            )}
+                    {/* User info for mobile */}
+                    {isAuthenticated && user && (
+                      <div className="pb-4 border-b border-gray-200">
+                        <UserAvatar user={user} />
+                      </div>
+                    )}
 
                     {/* Login button for mobile */}
                     {!isAuthenticated && (

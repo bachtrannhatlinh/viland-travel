@@ -2,6 +2,16 @@
 import { useEffect, useState } from "react";
 import BookingDetailModal from "./BookingDetailModal";
 import { apiClient } from "@/lib/utils";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell
+} from "@/components/ui/table";
+import { Typography } from "@/components/ui/typography";
+import { Input } from "@/components/ui/input";
 
 interface Booking {
   id: string;
@@ -45,10 +55,10 @@ export default function MyBookingsPage() {
     : bookings;
 
   return (
-    <div className="max-w-2xl mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-4">Lịch sử đặt dịch vụ</h1>
-      <input
-        className="border px-2 py-1 mb-4 w-full"
+    <div className="max-w-5xl mx-auto py-8">
+      <Typography variant="h2" className="mb-4">Lịch sử đặt dịch vụ</Typography>
+      <Input
+        className="mb-4"
         placeholder="Lọc theo mã booking, loại dịch vụ, trạng thái..."
         value={filter}
         onChange={e => setFilter(e.target.value)}
@@ -56,28 +66,50 @@ export default function MyBookingsPage() {
       {loading && <div>Đang tải...</div>}
       {error && <div className="text-red-500">{error}</div>}
       {!loading && filteredBookings.length === 0 && <div>Bạn chưa có booking nào.</div>}
-      <ul className="space-y-4">
-        {filteredBookings.map((b) => (
-          <li key={b.id} className="border rounded p-4 shadow hover:bg-gray-50 cursor-pointer">
-            <div className="font-semibold">
-              <a
-                href={`/my-bookings/${b.id}`}
-                className="text-blue-600 hover:underline"
-                onClick={e => {
-                  e.preventDefault();
-                  setSelectedBooking(b);
-                }}
-              >
-                Mã booking: {b.booking_number}
-              </a>
-            </div>
-            <div>Loại dịch vụ: {b.booking_type}</div>
-            <div>Trạng thái: {b.status}</div>
-            <div>Ngày đặt: {new Date(b.created_at).toLocaleString()}</div>
-            <div>Tổng tiền: {b.total_amount?.toLocaleString()} VND</div>
-          </li>
-        ))}
-      </ul>
+      {!loading && filteredBookings.length > 0 && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Mã booking</TableHead>
+              <TableHead>Loại dịch vụ</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead>Ngày đặt</TableHead>
+              <TableHead>Tổng tiền</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredBookings.map((b) => (
+              <TableRow key={b.id} className="cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                <TableCell className="font-semibold text-blue-600">
+                  <a
+                    href={`/my-bookings/${b.id}`}
+                    className="hover:underline"
+                    onClick={e => {
+                      e.preventDefault();
+                      setSelectedBooking(b);
+                    }}
+                  >
+                    {b.booking_number}
+                  </a>
+                </TableCell>
+                <TableCell>{b.booking_type}</TableCell>
+                <TableCell>
+                  <span className={
+                    b.status === 'pending' ? 'bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs' :
+                    b.status === 'completed' ? 'bg-green-100 text-green-800 px-2 py-1 rounded text-xs' :
+                    b.status === 'cancelled' ? 'bg-red-100 text-red-800 px-2 py-1 rounded text-xs' :
+                    'bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs'
+                  }>
+                    {b.status}
+                  </span>
+                </TableCell>
+                <TableCell>{new Date(b.created_at).toLocaleString()}</TableCell>
+                <TableCell>{b.total_amount?.toLocaleString()} VND</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       {selectedBooking && (
         <BookingDetailModal booking={selectedBooking} onClose={() => setSelectedBooking(null)} />
       )}

@@ -113,7 +113,7 @@ export const bookFlight = async (req: Request, res: Response) => {
       selected_class: selectedClass,
       total_amount: totalAmount,
       special_requests: specialRequests,
-      status: "pending_payment" as "pending_payment",
+      status: "pending" as "pending",
       booking_type: "flight" as "flight",
       service_id: flightId,
       user_id: userId

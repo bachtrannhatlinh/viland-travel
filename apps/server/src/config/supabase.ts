@@ -73,7 +73,7 @@ export interface Booking {
   // Common
   total_amount: number;
   special_requests?: string;
-  status: 'pending_payment' | 'confirmed' | 'cancelled' | 'completed';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   details?: any; // JSON cho các thông tin đặc thù khác
   created_at?: string;
   updated_at?: string;

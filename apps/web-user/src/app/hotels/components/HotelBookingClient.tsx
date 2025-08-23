@@ -87,9 +87,47 @@ export default function HotelBookingClient() {
     setCurrentStep('booking')
   }
 
-  const handleSubmitBooking = (data: any) => {
-    setBookingData(data)
-    setCurrentStep('payment')
+  const handleSubmitBooking = async (data: any) => {
+    setLoading(true);
+    try {
+      // Chuẩn bị payload chuẩn hóa cho bảng bookings
+      const payload = {
+        hotel_id: data.hotel.id,
+        service_id: data.hotel.id,
+        booking_type: 'hotel',
+        status: 'pending',
+        room_type: data.room.type || data.room.roomType || data.room.typeName,
+        quantity: data.quantity,
+        check_in: data.checkIn,
+        check_out: data.checkOut,
+        guests: data.guests,
+        contact_info: data.contactInfo,
+        special_requests: data.specialRequests,
+        total_amount: data.totalAmount,
+        payment_method: data.paymentMethod,
+        booking_date: new Date().toISOString(),
+        // Các trường không dùng cho hotel nhưng NOT NULL ở bảng bookings
+        tour_id: null,
+        tour_title: null,
+        flight_id: null,
+        selected_class: null,
+        participant_details: null,
+        participants: null,
+        selected_date: null
+      };
+      // Gửi booking hotel lên endpoint chung
+      const res = await apiClient.post('/bookings', payload);
+      if (res.success || res.id || res.bookingNumber) {
+        setBookingData({ ...data, bookingNumber: res.bookingNumber || res.id, transactionId: res.transactionId, booking: res });
+        setCurrentStep('payment');
+      } else {
+        alert(res.message || 'Đặt phòng thất bại, vui lòng thử lại!');
+      }
+    } catch (error: any) {
+      alert(error?.message || 'Đặt phòng thất bại, vui lòng thử lại!');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handlePaymentComplete = (result: any) => {

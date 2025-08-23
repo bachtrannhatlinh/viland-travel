@@ -164,7 +164,6 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   }
 
   const handleParticipantChange = (field: keyof typeof participants, value: number) => {
-    console.log('handleParticipantChange', { field, value, participants, min: safeMinGroupSize, max: safeMaxGroupSize });
     const newParticipants = { ...participants, [field]: value }
     const total = newParticipants.adults + newParticipants.children + newParticipants.infants
 
@@ -247,7 +246,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
         selected_class: null
       }
 
-      const response = await apiClient.post('/bookings', bookingData);
+      const response = await apiClient.post('/tours/book', bookingData);
       if (response.status === 401) {
         setShowLoginDialog(true);
         return;

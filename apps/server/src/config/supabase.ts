@@ -1,30 +1,30 @@
-import { createClient } from '@supabase/supabase-js';
-import 'dotenv/config';
+import { createClient } from "@supabase/supabase-js";
+import "dotenv/config";
 
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY!;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Missing Supabase environment variables');
+  throw new Error("Missing Supabase environment variables");
 }
 
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
 // Database table names
 export const TABLES = {
-  FLIGHTS: 'flights',
-  BOOKINGS: 'bookings',
-  PASSENGERS: 'passengers',
-  PAYMENTS: 'payments',
-  TOURS: 'tours',
-  TOUR_ITINERARY: 'tour_itinerary'
+  FLIGHTS: "flights",
+  BOOKINGS: "bookings",
+  PASSENGERS: "passengers",
+  PAYMENTS: "payments",
+  TOURS: "tours",
+  TOUR_ITINERARY: "tour_itinerary",
 } as const;
 
 // Flight interface
@@ -46,7 +46,7 @@ export interface Flight {
     business?: { price: number; available: number };
     first?: { price: number; available: number };
   };
-  status: 'scheduled' | 'delayed' | 'cancelled' | 'completed';
+  status: "scheduled" | "delayed" | "cancelled" | "completed";
   created_at?: string;
   updated_at?: string;
 }
@@ -56,7 +56,7 @@ export interface Booking {
   id?: string;
   booking_number: string;
   user_id?: string;
-  booking_type: 'flight' | 'tour' | 'hotel' | 'car_rental';
+  booking_type: "flight" | "tour" | "hotel" | "car_rental";
   service_id: string; // id của flight, tour, hotel, car_rental
   contact_info: {
     name: string;
@@ -64,16 +64,18 @@ export interface Booking {
     phone: string;
   };
   // Flight only
-  selected_class?: 'economy' | 'business' | 'first';
+  selected_class?: "economy" | "business" | "first";
   // Tour only
-  number_of_adults?: number;
-  number_of_children?: number;
-  number_of_infants?: number;
+  participants?: {
+    adults: number;
+    children: number;
+    infants: number;
+  };
   start_date?: string;
   // Common
   total_amount: number;
   special_requests?: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  status: "pending" | "confirmed" | "cancelled" | "completed";
   details?: any; // JSON cho các thông tin đặc thù khác
   created_at?: string;
   updated_at?: string;
@@ -83,7 +85,7 @@ export interface Booking {
 export interface Passenger {
   id?: string;
   booking_id: string;
-  type: 'adult' | 'child' | 'infant';
+  type: "adult" | "child" | "infant";
   title: string;
   first_name: string;
   last_name: string;
@@ -101,9 +103,9 @@ export interface Payment {
   transaction_id: string;
   amount: number;
   currency: string;
-  gateway: 'vnpay' | 'zalopay' | 'momo' | 'onepay';
+  gateway: "vnpay" | "zalopay" | "momo" | "onepay";
   payment_url?: string;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled' | 'processing';
+  status: "pending" | "completed" | "failed" | "cancelled" | "processing";
   paid_at?: string;
   created_at?: string;
   updated_at?: string;
@@ -159,8 +161,8 @@ export class SupabaseService {
   async getFlightById(flightId: string) {
     const { data, error } = await supabase
       .from(TABLES.FLIGHTS)
-      .select('*')
-      .eq('id', flightId)
+      .select("*")
+      .eq("id", flightId)
       .single();
     if (error) throw new Error(`Error getting flight: ${error.message}`);
     return data;
@@ -178,30 +180,34 @@ export class SupabaseService {
   }
 
   // Cập nhật trạng thái booking
-  async updateBookingStatus(bookingId: string, status: Booking['status']) {
+  async updateBookingStatus(bookingId: string, status: Booking["status"]) {
     const { data, error } = await supabase
       .from(TABLES.BOOKINGS)
       .update({ status })
-      .eq('id', bookingId)
+      .eq("id", bookingId)
       .select()
       .single();
-    if (error) throw new Error(`Error updating booking status: ${error.message}`);
+    if (error)
+      throw new Error(`Error updating booking status: ${error.message}`);
     return data as Booking;
   }
   // Lấy booking theo loại dịch vụ (flight, tour, ...)
-  async getBookingsByType(booking_type: Booking['booking_type'], user_id?: string) {
+  async getBookingsByType(
+    booking_type: Booking["booking_type"],
+    user_id?: string
+  ) {
     let query = supabase
       .from(TABLES.BOOKINGS)
-      .select('*')
-      .eq('booking_type', booking_type);
-    if (user_id) query = query.eq('user_id', user_id);
+      .select("*")
+      .eq("booking_type", booking_type);
+    if (user_id) query = query.eq("user_id", user_id);
     const { data, error } = await query;
     if (error) throw new Error(`Error getting bookings: ${error.message}`);
     return data as Booking[];
   }
-  
+
   // Passenger operations
-  async createPassengers(passengers: Omit<Passenger, 'id' | 'created_at'>[]) {
+  async createPassengers(passengers: Omit<Passenger, "id" | "created_at">[]) {
     const { data, error } = await supabase
       .from(TABLES.PASSENGERS)
       .insert(passengers)
@@ -215,7 +221,9 @@ export class SupabaseService {
   }
 
   // Payment operations
-  async createPayment(paymentData: Omit<Payment, 'id' | 'created_at' | 'updated_at'>) {
+  async createPayment(
+    paymentData: Omit<Payment, "id" | "created_at" | "updated_at">
+  ) {
     const { data, error } = await supabase
       .from(TABLES.PAYMENTS)
       .insert(paymentData)
@@ -229,12 +237,16 @@ export class SupabaseService {
     return data as Payment;
   }
 
-  async updatePaymentStatus(transactionId: string, status: Payment['status'], paidAt?: string) {
-    const updateData: any = { 
-      status, 
-      updated_at: new Date().toISOString() 
+  async updatePaymentStatus(
+    transactionId: string,
+    status: Payment["status"],
+    paidAt?: string
+  ) {
+    const updateData: any = {
+      status,
+      updated_at: new Date().toISOString(),
     };
-    
+
     if (paidAt) {
       updateData.paid_at = paidAt;
     }
@@ -242,7 +254,7 @@ export class SupabaseService {
     const { data, error } = await supabase
       .from(TABLES.PAYMENTS)
       .update(updateData)
-      .eq('transaction_id', transactionId)
+      .eq("transaction_id", transactionId)
       .select()
       .single();
 
@@ -256,8 +268,8 @@ export class SupabaseService {
   async getPaymentByTransactionId(transactionId: string) {
     const { data, error } = await supabase
       .from(TABLES.PAYMENTS)
-      .select('*')
-      .eq('transaction_id', transactionId)
+      .select("*")
+      .eq("transaction_id", transactionId)
       .single();
 
     if (error) {
@@ -268,28 +280,27 @@ export class SupabaseService {
   }
 
   // Tour operations
-  async getTours(params: {
-    category?: string;
-    difficulty?: string;
-    featured?: boolean;
-    limit?: number;
-    offset?: number;
-  } = {}) {
-    let query = supabase
-      .from(TABLES.TOURS)
-      .select('*')
-      .eq('is_active', true);
+  async getTours(
+    params: {
+      category?: string;
+      difficulty?: string;
+      featured?: boolean;
+      limit?: number;
+      offset?: number;
+    } = {}
+  ) {
+    let query = supabase.from(TABLES.TOURS).select("*").eq("is_active", true);
 
     if (params.category) {
-      query = query.eq('category', params.category);
+      query = query.eq("category", params.category);
     }
 
     if (params.difficulty) {
-      query = query.eq('difficulty', params.difficulty);
+      query = query.eq("difficulty", params.difficulty);
     }
 
     if (params.featured) {
-      query = query.eq('is_featured', true);
+      query = query.eq("is_featured", true);
     }
 
     if (params.limit) {
@@ -297,10 +308,15 @@ export class SupabaseService {
     }
 
     if (params.offset) {
-      query = query.range(params.offset, params.offset + (params.limit || 10) - 1);
+      query = query.range(
+        params.offset,
+        params.offset + (params.limit || 10) - 1
+      );
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
+    const { data, error } = await query.order("created_at", {
+      ascending: false,
+    });
 
     if (error) {
       throw new Error(`Error getting tours: ${error.message}`);
@@ -312,12 +328,14 @@ export class SupabaseService {
   async getTourById(tourId: string) {
     const { data, error } = await supabase
       .from(TABLES.TOURS)
-      .select(`
+      .select(
+        `
         *,
         tour_itinerary (*)
-      `)
-      .eq('id', tourId)
-      .eq('is_active', true)
+      `
+      )
+      .eq("id", tourId)
+      .eq("is_active", true)
       .single();
 
     if (error) {
@@ -335,36 +353,33 @@ export class SupabaseService {
     duration?: number;
     limit?: number;
   }) {
-    let query = supabase
-      .from(TABLES.TOURS)
-      .select('*')
-      .eq('is_active', true);
+    let query = supabase.from(TABLES.TOURS).select("*").eq("is_active", true);
 
     if (params.destination) {
-      query = query.contains('destinations', [params.destination]);
+      query = query.contains("destinations", [params.destination]);
     }
 
     if (params.category) {
-      query = query.eq('category', params.category);
+      query = query.eq("category", params.category);
     }
 
     if (params.minPrice) {
-      query = query.gte('price_adult', params.minPrice);
+      query = query.gte("price_adult", params.minPrice);
     }
 
     if (params.maxPrice) {
-      query = query.lte('price_adult', params.maxPrice);
+      query = query.lte("price_adult", params.maxPrice);
     }
 
     if (params.duration) {
-      query = query.eq('duration_days', params.duration);
+      query = query.eq("duration_days", params.duration);
     }
 
     if (params.limit) {
       query = query.limit(params.limit);
     }
 
-    const { data, error } = await query.order('rating', { ascending: false });
+    const { data, error } = await query.order("rating", { ascending: false });
 
     if (error) {
       throw new Error(`Error searching tours: ${error.message}`);
@@ -375,21 +390,24 @@ export class SupabaseService {
 
   // Utility methods
   async initializeDatabase() {
-    console.log('🔄 Initializing Supabase database...');
-    
+    console.log("🔄 Initializing Supabase database...");
+
     try {
       // Test connection
-      const { data, error } = await supabase.from(TABLES.FLIGHTS).select('count').limit(1);
-      
+      const { data, error } = await supabase
+        .from(TABLES.FLIGHTS)
+        .select("count")
+        .limit(1);
+
       if (error) {
-        console.error('❌ Supabase connection failed:', error.message);
+        console.error("❌ Supabase connection failed:", error.message);
         throw error;
       }
-      
-      console.log('✅ Supabase connected successfully');
+
+      console.log("✅ Supabase connected successfully");
       return true;
     } catch (error) {
-      console.error('❌ Supabase initialization failed:', error);
+      console.error("❌ Supabase initialization failed:", error);
       throw error;
     }
   }

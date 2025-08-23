@@ -179,8 +179,8 @@ export default function TourConfirmationPage() {
                 </div>
                 <div>
                   <span className="text-gray-600">Trạng thái:</span>
-                  <div className="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                    ✓ Đã thanh toán
+                  <div className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+                    ⏳ Chưa thanh toán
                   </div>
                 </div>
                 <div>

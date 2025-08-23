@@ -11,8 +11,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { Typography } from '@/components/ui/typography'
 import { Section } from '@/components/ui/section'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import { FlightClass, PassengerInfo, FlightBookingData } from '@/types/flight.types'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -50,7 +48,7 @@ export default function FlightBookingPage() {
           title: '',
           firstName: '',
           lastName: '',
-          dateOfBirth: '',
+          date_of_birth: '',
           nationality: 'VN',
           passportNumber: '',
           passportExpiry: ''
@@ -64,7 +62,7 @@ export default function FlightBookingPage() {
           title: '',
           firstName: '',
           lastName: '',
-          dateOfBirth: '',
+          date_of_birth: '',
           nationality: 'VN',
           passportNumber: '',
           passportExpiry: ''
@@ -78,7 +76,7 @@ export default function FlightBookingPage() {
           title: '',
           firstName: '',
           lastName: '',
-          dateOfBirth: '',
+          date_of_birth: '',
           nationality: 'VN',
           passportNumber: '',
           passportExpiry: ''
@@ -135,7 +133,7 @@ export default function FlightBookingPage() {
     
     // Validate passengers
     for (const passenger of passengers) {
-      if (!passenger.firstName || !passenger.lastName || !passenger.dateOfBirth) {
+      if (!passenger.firstName || !passenger.lastName || !passenger.date_of_birth) {
         alert('Vui lòng điền đầy đủ thông tin hành khách')
         return false
       }
@@ -155,7 +153,7 @@ export default function FlightBookingPage() {
       flightId: bookingData.flight.id,
       passengers: passengers.map((p) => ({
         ...p,
-        dateOfBirth: p.dateOfBirth === '' ? null : p.dateOfBirth,
+        date_of_birth: p.date_of_birth === '' ? null : p.date_of_birth,
         passportExpiry: p.passportExpiry === '' ? null : p.passportExpiry,
       })),
       contactInfo,
@@ -439,8 +437,8 @@ export default function FlightBookingPage() {
                           Ngày sinh *
                         </Label>
                         <DatePicker
-                          value={passenger.dateOfBirth}
-                          onChange={(value) => handlePassengerUpdate(index, {...passenger, dateOfBirth: value})}
+                          value={passenger.date_of_birth}
+                          onChange={(value) => handlePassengerUpdate(index, {...passenger, date_of_birth: value})}
                           placeholder="Chọn ngày sinh"
                         />
                       </div>

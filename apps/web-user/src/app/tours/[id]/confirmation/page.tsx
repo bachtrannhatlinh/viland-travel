@@ -1,6 +1,5 @@
 'use client'
 
-
 import { useState, useEffect } from 'react'
 import { useBookingStore } from '@/store/bookingStore'
 import { useRouter, useSearchParams } from 'next/navigation'

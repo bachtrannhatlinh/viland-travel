@@ -166,7 +166,13 @@ export default function FlightBookingPage() {
       const res = await apiClient.post('/flights/book', payload);
       if (res.success) {
         // Chuyển sang trang xác nhận booking (hoặc payment tuỳ flow)
-        router.push(`/flights/confirmation?code=${res.data.booking.booking_number}`);
+        clear()
+        addItem({
+          id: bookingData.flight.id,
+          type: 'flight',
+          details: res.data.booking,
+        })
+        router.push(`/flights/payment?code=${res.data.booking.booking_number}`);
       } else {
         alert(res.message || 'Đặt vé thất bại');
       }

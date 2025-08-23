@@ -257,7 +257,7 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
           id: tour.id,
           type: 'tour',
           name: tour.title,
-          details: response,
+          details: response.data.booking,
           quantity: getTotalParticipants(),
           price: bookingData.total_amount
         })

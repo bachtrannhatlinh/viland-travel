@@ -56,7 +56,7 @@ export default function TourPaymentForm() {
   const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))
   useEffect(() => {
     if (bookingItem && bookingItem.details) {
-      setBookingData(bookingItem.details?.data?.booking)
+      setBookingData(bookingItem.details)
     } else {
       router.push('/tours')
     }

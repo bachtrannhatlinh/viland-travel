@@ -8,6 +8,7 @@ import { Typography } from '@/components/ui/typography'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AlertCircle } from 'lucide-react'
 import { apiClient } from '@/lib/utils'
+import { useBookingStore } from '@/store/bookingStore'
 
 
 // Lazy load components để tránh SSR issues
@@ -22,6 +23,8 @@ export default function FlightSearchPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchCriteria, setSearchCriteria] = useState<FlightSearchParams | null>(null)
 
+  const clear = useBookingStore((state) => state.clear)
+
   useEffect(() => {
     // Parse search parameters
     const from = searchParams.get('from') || ''
@@ -29,8 +32,8 @@ export default function FlightSearchPage() {
     const departureDate = searchParams.get('departureDate') || ''
     const returnDate = searchParams.get('returnDate') || ''
     const adults = parseInt(searchParams.get('adults') || '1')
-    const children = parseInt(searchParams.get('children') || '0')
-    const infants = parseInt(searchParams.get('infants') || '0')
+    const children = parseInt(searchParams.get('children') || '1')
+    const infants = parseInt(searchParams.get('infants') || '1')
     const flightClass = (searchParams.get('class') || FlightClass.ECONOMY) as FlightClass
     const tripType = (searchParams.get('tripType') || 'one-way') as 'one-way' | 'round-trip'
 
@@ -84,6 +87,7 @@ export default function FlightSearchPage() {
 
   const handleSelectFlight = (flight: Flight) => {
     // Store selected flight and navigate to booking
+    clear()
     const bookingData = {
       flight,
       searchCriteria,

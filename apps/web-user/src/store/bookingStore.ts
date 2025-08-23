@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware'
 export interface BookingItem {
   id: string
   type: 'tour' | 'flight' | 'hotel' | 'car' // loại dịch vụ
-  name: string
+  name?: string
   details?: any // tuỳ ý, có thể refine sau
   quantity?: number
   price?: number

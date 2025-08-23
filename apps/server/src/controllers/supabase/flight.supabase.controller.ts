@@ -130,7 +130,7 @@ export const bookFlight = async (req: Request, res: Response) => {
       title: p.title,
       first_name: p.firstName,
       last_name: p.lastName,
-      date_of_birth: p.dateOfBirth,
+      date_of_birth: p.date_of_birth,
       nationality: p.nationality,
       passport_number: p.passportNumber,
       passport_expiry: p.passportExpiry

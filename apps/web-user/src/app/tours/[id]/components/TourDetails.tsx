@@ -1,5 +1,10 @@
+'use client'
+
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useBookingStore } from '@/store/bookingStore'
 
 interface TourDetailsProps {
   tour: {
@@ -36,6 +41,7 @@ interface TourDetailsProps {
 }
 
 export default function TourDetails({ tour }: TourDetailsProps) {
+  const router = useRouter()
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -66,13 +72,12 @@ export default function TourDetails({ tour }: TourDetailsProps) {
       </div>
     )
   }
+  const clear = useBookingStore((state) => state.clear)
 
-  const formatDuration = (durationDays: Date, durationNights: Date) => {
-    const days = durationDays ? new Date(durationDays).getDate() : 0
-    const nights = durationNights ? new Date(durationNights).getDate() : 0
-    return `${days} ngày ${nights} đêm`
+  const moveToBook = () => {
+    clear()
+    return router.push(`/tours/${tour.id}/booking`)
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -282,8 +287,8 @@ export default function TourDetails({ tour }: TourDetailsProps) {
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-2xl font-bold text-gray-900">
-                    {(tour.discount_adult !== null && tour.discount_adult > 0) ? 
-                      formatPrice(calculateDiscountedPrice(tour.price_adult, tour.discount_adult)) : 
+                    {(tour.discount_adult !== null && tour.discount_adult > 0) ?
+                      formatPrice(calculateDiscountedPrice(tour.price_adult, tour.discount_adult)) :
                       formatPrice(tour.price_adult)
                     }
                   </span>
@@ -336,13 +341,13 @@ export default function TourDetails({ tour }: TourDetailsProps) {
                 </div>
               </div>
 
-              {/* Booking Button */}
-              <Link
-                href={`/tours/${tour.id}/booking`}
-                className="w-full bg-primary-600 hover:bg-primary-700 text-white text-center py-3 px-6 rounded-lg font-semibold transition-colors block mb-4"
+              <Button
+                className="w-full mb-4"
+                onClick={moveToBook}
+                size="lg"
               >
                 Đặt tour ngay
-              </Link>
+              </Button>
 
               <Link
                 href={`/tours/${tour.id}/contact`}

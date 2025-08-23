@@ -13,6 +13,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
+import { apiClient } from '@/lib/utils';
+
 interface TourData {
   id: string
   title: string
@@ -93,12 +95,6 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
   const [specialRequests, setSpecialRequests] = useState(stepData[3]?.specialRequests || '')
   const [isProcessing, setIsProcessing] = useState(false)
   const [showLoginDialog, setShowLoginDialog] = useState(false)
-  // Lắng nghe sự kiện để mở dialog đăng nhập khi cần
-  useEffect(() => {
-    const handler = () => setShowLoginDialog(true)
-    window.addEventListener('show-login-required-dialog', handler)
-    return () => window.removeEventListener('show-login-required-dialog', handler)
-  }, [])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -251,29 +247,12 @@ const TourBookingForm = ({ tour }: TourBookingFormProps) => {
         selected_class: null
       }
 
-      // Gọi API backend để tạo booking, lấy cả status code
-      const res = await fetch((await import('@/lib/utils')).API_CONFIG.FULL_URL + '/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(typeof window !== 'undefined' && localStorage.getItem('vilandtravel_access_token')
-            ? { Authorization: `Bearer ${localStorage.getItem('vilandtravel_access_token')}` }
-            : {})
-        },
-        body: JSON.stringify(bookingData),
-        credentials: 'include',
-      })
-      if (res.status === 401) {
-        // Hiển thị dialog yêu cầu đăng nhập
-        if (window && window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent('show-login-required-dialog'))
-        } else {
-          alert('Bạn cần đăng nhập để đặt tour!')
-        }
-        return
+      const response = await apiClient.post('/bookings', bookingData);
+      if (response.status === 401) {
+        setShowLoginDialog(true);
+        return;
       }
-      const response = await res.json()
-      if (res.ok && (response.success || response.id || response.bookingNumber)) {
+      if (response.success || response.id || response.bookingNumber) {
         clear()
         addItem({
           id: tour.id,

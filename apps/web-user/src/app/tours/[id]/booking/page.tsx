@@ -1,11 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation'
-import TourBookingForm from './components/TourBookingForm'
-
 
 import { apiClient } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+
+import TourBookingForm from './components/TourBookingForm'
 
 interface TourBookingPageProps {
   params: {

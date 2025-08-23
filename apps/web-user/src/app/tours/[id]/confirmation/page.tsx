@@ -38,7 +38,6 @@ interface TourConfirmationData {
 }
 
 export default function TourConfirmationPage() {
-  const router = useRouter()
   const searchParams = useSearchParams();
   // Lấy dữ liệu xác nhận từ store (booking tour đã xác nhận)
   const bookingItem = useBookingStore((state) => state.items.find(i => i.type === 'tour'))

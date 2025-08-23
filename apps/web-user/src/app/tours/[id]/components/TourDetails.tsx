@@ -68,8 +68,6 @@ export default function TourDetails({ tour }: TourDetailsProps) {
   }
 
   const formatDuration = (durationDays: Date, durationNights: Date) => {
-    // Assuming these Date objects contain the number of days/nights
-    // You might need to adjust this based on your actual data structure
     const days = durationDays ? new Date(durationDays).getDate() : 0
     const nights = durationNights ? new Date(durationNights).getDate() : 0
     return `${days} ngày ${nights} đêm`

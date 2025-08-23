@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { apiClient } from '@/lib/utils'
 
 interface TourBookingData {
   tour_id: string
@@ -40,8 +41,6 @@ interface TourBookingData {
 
 export default function TourPaymentForm() {
   const router = useRouter()
-  // Lấy booking item từ store (giả sử chỉ lấy booking tour đầu tiên)
-  // bookingItem đã được khai báo ở trên, không cần lặp lại
   const [bookingData, setBookingData] = useState<TourBookingData | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'wallet'>('card')
   const [cardInfo, setCardInfo] = useState({
@@ -103,7 +102,7 @@ export default function TourPaymentForm() {
         returnUrl: typeof window !== 'undefined' ? window.location.origin + `/tours/${bookingData.tour_id}/confirmation` : undefined
       }
 
-      const response = await (await import('@/lib/utils')).apiClient.post('/payments/create', paymentPayload)
+      const response = await apiClient.post('/payments/create', paymentPayload)
 
       if (response && response.paymentUrl) {
         // Nếu là redirect sang cổng thanh toán (VNPay, MoMo, ...)
@@ -114,10 +113,6 @@ export default function TourPaymentForm() {
           updateItem(bookingItem.id, { details: { ...bookingData, paymentStatus: 'completed', paymentMethod } })
         }
         router.push(`/tours/${bookingData.tour_id}/confirmation`)
-        // Xóa bookingItem sau khi đã chuyển trang xác nhận
-        setTimeout(() => {
-          removeItem(bookingItem?.id || '')
-        }, 1000)
       } else {
         throw new Error(response?.message || 'Không thể thanh toán. Vui lòng thử lại.')
       }

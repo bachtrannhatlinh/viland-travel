@@ -290,7 +290,7 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
         contactInfo: sameAsDriver ? driverInfo : contactInfo,
         additionalServices,
         specialRequests,
-        totalAmount: calculateTotalPrice(),
+        totalPrice: calculateTotalPrice(),
         paymentMethod
       };
       const result = await apiClient.post('/car-rental/book', bookingData);

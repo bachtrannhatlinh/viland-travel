@@ -64,10 +64,9 @@ export function DatePicker({
 
   const defaultMonth = React.useMemo(() => {
     if (date) return date
-    if (effectiveMaxDate) return effectiveMaxDate
-    if (effectiveMinDate) return effectiveMinDate
-    return undefined
-  }, [date, effectiveMinDate, effectiveMaxDate])
+    // Hiển thị mặc định tháng 1 năm 1997 nếu chưa chọn ngày
+    return new Date(1997, 0, 1)
+  }, [date])
 
   const disabledMatchers = React.useMemo(() => {
     const rules: any[] = []

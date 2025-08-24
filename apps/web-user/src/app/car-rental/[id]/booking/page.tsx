@@ -51,6 +51,8 @@ async function getCarData(id: string) {
         pickupPoints: ensurePickupPoints(raw.location?.pickupPoints),
       },
       rentalTerms: {
+        minAge: raw.rental_terms?.minAge ?? 22,
+        maxAge: raw.rental_terms?.maxAge ?? 65,
         additionalFees: {
           youngDriver: { age: '22-24', fee: raw.rental_terms?.additionalFees?.youngDriver || 200000, description: 'Áp dụng cho tài xế trẻ' },
           additionalDriver: { fee: raw.rental_terms?.additionalFees?.additionalDriver || 100000, description: 'Phụ phí tài xế phụ' },
@@ -60,6 +62,11 @@ async function getCarData(id: string) {
         },
       },
       insurance: {
+        basic: {
+          included: true,
+          coverage: 'Bảo hiểm cơ bản',
+          description: 'Bảo hiểm trách nhiệm dân sự bắt buộc',
+        },
         comprehensive: {
           available: true,
           pricePerDay: raw.insurance?.comprehensive?.pricePerDay || 150000,

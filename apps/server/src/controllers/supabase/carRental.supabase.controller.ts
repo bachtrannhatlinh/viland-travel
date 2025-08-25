@@ -110,7 +110,7 @@ export const bookCar = async (req: any, res: Response) => {
       booking_type: 'car_rental',
       user_id: userId,
       service_id: carId,
-      status: 'confirmed',
+      status: 'pending',
       total_amount: totalPrice,
       paid_amount: 0,
       currency: 'VND',

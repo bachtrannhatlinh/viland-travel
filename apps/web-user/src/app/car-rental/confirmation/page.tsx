@@ -133,7 +133,7 @@ export default function CarRentalConfirmationPage() {
             <div>
               <span className="text-gray-600">Trạng thái:</span>
               <div className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
-                {confirmation.status === 'CONFIRMED' ? 'Chờ thanh toán' : confirmation.status}
+                {confirmation.status === 'pending' ? 'Chờ thanh toán' : confirmation.status}
               </div>
             </div>
           </div>

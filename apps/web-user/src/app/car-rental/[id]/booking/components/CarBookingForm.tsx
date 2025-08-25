@@ -591,7 +591,6 @@ export default function CarBookingForm({ car }: CarBookingFormProps) {
                       <DatePicker
                         value={driverInfo.licenseExpiryDate}
                         onChange={(value) => setDriverInfo({...driverInfo, licenseExpiryDate: value})}
-                        min={new Date().toISOString().split('T')[0]}
                         placeholder="Chọn ngày hết hạn"
                       />
                     </div>

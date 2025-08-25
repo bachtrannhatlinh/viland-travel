@@ -71,6 +71,27 @@ export interface Booking {
     children: number;
     infants: number;
   };
+  // Hotel only
+  booking_details?: {
+    serviceName: string;
+    description: string;
+    duration: string;
+    startDate: string;
+    endDate: string;
+    participants?: number;
+    specialRequests?: string;
+    contactInfo?: any;
+    roomDetails?: {
+      type: string;
+      name: string;
+      quantity: number;
+      pricePerNight: number;
+    };
+    guests?: any;
+    [key: string]: any;
+  };
+  currency?: string;
+  metadata?: Object;
   start_date?: string;
   // Common
   total_amount: number;

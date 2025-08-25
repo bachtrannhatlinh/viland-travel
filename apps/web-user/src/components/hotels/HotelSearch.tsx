@@ -137,7 +137,6 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
                       <DatePicker
                         value={field.value}
                         onChange={field.onChange}
-                        min={today}
                         placeholder="Chọn ngày nhận phòng"
                       />
                     </FormControl>
@@ -162,7 +161,6 @@ export default function HotelSearch({ onSearch, loading = false }: HotelSearchPr
                       <DatePicker
                         value={field.value}
                         onChange={field.onChange}
-                        min={form.watch('checkIn') || tomorrow}
                         placeholder="Chọn ngày trả phòng"
                       />
                     </FormControl>

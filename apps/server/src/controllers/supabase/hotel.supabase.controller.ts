@@ -1,19 +1,10 @@
+import { Request, Response } from 'express';
+import { Booking, supabaseService } from "../../config/supabase";
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_SERVICE_KEY as string
-);
-// --- Hotel Booking Features with Supabase Auth ---
-import { Hotel, HotelStatus, RoomType } from '../../entities/Hotel.entity';
-import { BookingType, BookingStatus } from '../../entities/Booking.entity';
-import { PaymentService } from '../../services/payment/PaymentService';
-import { PaymentRequest } from '../../types/payment.types';
-import { Request, Response } from 'express';
-
-interface SupabaseAuthRequest extends Request {
-  user?: any;
-}
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const searchHotels = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -56,7 +47,7 @@ export const getHotelDetails = async (req: Request, res: Response): Promise<void
 // Đặt phòng khách sạn
 export const bookHotel = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Hỗ trợ snake_case và camelCase cho các trường từ FE
+    // Chuẩn hóa dữ liệu đầu vào
     const body = req.body || {};
     const hotelId = body.hotel_id || body.hotelId;
     const roomType = body.room_type || body.roomType;
@@ -77,6 +68,7 @@ export const bookHotel = async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({ success: false, message: 'Bạn cần đăng nhập để đặt phòng' });
       return;
     }
+    // Lấy thông tin khách sạn và phòng
     const { data: hotel, error: hotelError } = await supabase.from('hotels').select('*').eq('id', hotelId).single();
     if (hotelError || !hotel) {
       res.status(404).json({ success: false, message: 'Không tìm thấy khách sạn' });
@@ -91,17 +83,25 @@ export const bookHotel = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ success: false, message: 'Không đủ phòng trống' });
       return;
     }
-    const bookingNumber = 'BK' + Date.now().toString();
+    // Tạo booking_number chuẩn hóa
+    const bookingNumber = 'HOTEL' + Date.now().toString().slice(-6) + Math.random().toString(36).substr(2, 3).toUpperCase();
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
     const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-    const bookingData = {
-      bookingNumber,
-      bookingType: BookingType.HOTEL,
-      status: BookingStatus.PENDING,
-      userId: user.id,
-      serviceId: hotelId,
-      bookingDetails: {
+    // Chuẩn hóa contact_info
+    const contact = {
+      name: contactInfo.fullName || `${contactInfo.firstName || ''} ${contactInfo.lastName || ''}`.trim(),
+      email: contactInfo.email,
+      phone: contactInfo.phone
+    };
+    const bookingData: Booking  = {
+      booking_number: bookingNumber,
+      booking_type: 'hotel',
+      status: 'pending',
+      user_id: user.id,
+      service_id: hotelId,
+      contact_info: contact,
+      booking_details: {
         serviceName: hotel.name,
         description: `${room.name} - ${quantity} phòng, ${nights} đêm`,
         duration: `${nights} đêm`,
@@ -118,63 +118,39 @@ export const bookHotel = async (req: Request, res: Response): Promise<void> => {
         },
         guests
       },
-      totalAmount,
-      currency: 'VND'
+      total_amount: totalAmount,
+      currency: 'VND',
+      special_requests: specialRequests,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      metadata: {}
     };
+    // Insert booking vào bảng bookings
+    let booking;
     try {
-      const paymentService = new PaymentService({
-        vnpay: {
-          tmnCode: 'VNPAY_TMN_CODE',
-          hashSecret: 'VNPAY_HASH_SECRET',
-          url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-          apiUrl: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
-          returnUrl: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/return',
-          notifyUrl: process.env.VNPAY_NOTIFY_URL || 'http://localhost:3001/api/payment/vnpay/callback'
-        }
-      });
-      const paymentRequest: PaymentRequest = {
-        bookingId: bookingNumber,
-        amount: totalAmount,
-        currency: 'VND',
-        description: `Thanh toán đặt phòng ${hotel.name} - ${bookingNumber}`,
-        customerInfo: {
-          name: `${contactInfo.firstName} ${contactInfo.lastName}`,
-          email: contactInfo.email,
-          phone: contactInfo.phone
-        }
-      };
-      const paymentResult = await paymentService.createPayment(paymentRequest, paymentMethod as any);
-      if (paymentResult.success) {
-        await supabase.from('rooms').update({ available: room.available - quantity }).eq('id', room.id);
-        if (paymentResult.paymentUrl) {
-          res.json({
-            success: true,
-            message: 'Đang chuyển hướng đến trang thanh toán',
-            redirectUrl: paymentResult.paymentUrl,
-            bookingNumber,
-            transactionId: paymentResult.transactionId
-          });
-        } else {
-          res.json({
-            success: true,
-            message: 'Đặt phòng và thanh toán thành công',
-            bookingNumber,
-            transactionId: paymentResult.transactionId,
-            booking: bookingData
-          });
-        }
-      } else {
-        res.status(400).json({ success: false, message: paymentResult.error || 'Thanh toán thất bại' });
-      }
-    } catch (paymentError) {
-      res.json({
-        success: true,
-        message: 'Đặt phòng thành công (Demo mode)',
-        bookingNumber,
-        transactionId: 'DEMO_' + Date.now(),
-        booking: bookingData
-      });
+      // Sử dụng supabaseService nếu có, nếu không thì dùng supabase trực tiếp
+      booking = await supabaseService.createBooking(bookingData);
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: 'Lỗi khi tạo booking', error: err.message });
+      return;
     }
+    // Update số lượng phòng sau khi booking thành công
+    await supabase.from('rooms').update({ available: room.available - quantity }).eq('id', room.id);
+    // Chuẩn bị thông tin thanh toán (nếu có tích hợp)
+    const paymentInfo = {
+      amount: totalAmount,
+      currency: 'VND',
+      description: `Hotel booking ${bookingNumber} - ${hotel.name}`
+    };
+    res.json({
+      success: true,
+      data: {
+        booking,
+        paymentInfo
+      },
+      message: 'Đặt phòng thành công. Vui lòng tiến hành thanh toán.'
+    });
+    return;
   } catch (error) {
     res.status(500).json({ success: false, message: 'Lỗi khi đặt phòng', error: error instanceof Error ? error.message : 'Unknown error' });
   }

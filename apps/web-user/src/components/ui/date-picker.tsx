@@ -107,6 +107,7 @@ export function DatePicker({
 
   const handleSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate)
+    setMonth(selectedDate) // Ensure calendar updates to selected month
     if (selectedDate && onChange) {
       const isoDate = format(selectedDate, "yyyy-MM-dd")
       onChange(isoDate)

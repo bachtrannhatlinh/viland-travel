@@ -23,7 +23,18 @@ export default function DriverServiceBookingPage() {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleSubmitItinerary = async (data: ItineraryData) => {
-    // Map dữ liệu sang đúng field backend yêu cầu
+    let userId = '';
+    if (typeof window !== 'undefined') {
+      const userStr = localStorage.getItem('vilandtravel_user');
+      if (userStr) {
+        try {
+          const userObj = JSON.parse(userStr);
+          userId = userObj.id || userObj._id || '';
+        } catch (e) {
+          userId = '';
+        }
+      }
+    }
     const payload = {
       start_location: data.pickupLocation,
       end_location: data.dropoffLocation,
@@ -31,28 +42,53 @@ export default function DriverServiceBookingPage() {
       end_time: data.date + 'T' + data.time, // Có thể cần sửa nếu có end_time riêng
       notes: data.notes,
       service_type: data.serviceType,
+      user_id: userId,
     };
+    // Gọi endpoint tạo itinerary
     const json = await apiClient.post('/drivers/itinerary', payload);
     if (json?.success === false || json?.error) {
       setLoginDialogOpen(true);
       console.error('API error:', json?.error || json);
       return;
     }
-    setItineraryId(json.itineraryId);
+    let newItineraryId = '';
+    if (json?.itineraryId) {
+      newItineraryId = json.itineraryId;
+    } else if (json?.data?.id) {
+      newItineraryId = json.data.id;
+    } else if (json?.data?.itineraryId) {
+      newItineraryId = json.data.itineraryId;
+    }
+    if (!newItineraryId || typeof newItineraryId !== 'string') {
+      setLoginDialogOpen(true);
+      console.error('Không nhận được itineraryId từ backend hoặc itineraryId không hợp lệ:', json);
+      return;
+    }
+    setItineraryId(newItineraryId);
     setItinerary(data);
     setStep('select-driver');
   };
 
   const handleSelectDriver = (driver: Driver) => {
     setSelectedDriver(driver);
+    const validItineraryId = itineraryId || '';
     const payload: DriverBookingPayload = {
-      itineraryId,
+      itineraryId: validItineraryId,
       driverId: driver.id,
       totalAmount: driver.price,
       paymentMethod: 'onepay',
     };
-    setPaymentPayload(payload);
-    setStep('payment');
+    // Gọi API /drivers/book
+    (async () => {
+      const json = await apiClient.post('/drivers/book', payload);
+      if (json?.success === false || json?.error) {
+        setLoginDialogOpen(true);
+        console.error('API error:', json?.error || json);
+        return;
+      }
+      setPaymentPayload(payload);
+      setStep('payment');
+    })();
   };
 
   const handlePaymentComplete = (result: PaymentResult) => {

@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 }
 
 export default function DriverServicePage() {
+
   return (
     <Section className="min-h-screen bg-gray-50">
       <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -36,76 +37,12 @@ export default function DriverServicePage() {
           <Typography variant="large" className="text-xl text-gray-600">
             Tài xế chuyên nghiệp, an toàn cho mọi chuyến đi
           </Typography>
+          <div className="mt-8">
+            <Button size="lg" asChild>
+              <Link href="/driver-service/booking" prefetch={true}>Đặt tài xế ngay</Link>
+            </Button>
+          </div>
         </Section>
-
-        {/* Driver Service Form */}
-        <Card className="mb-12">
-          <CardContent className="p-8">
-            <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-6">Đặt tài xế</Typography>
-            <Section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Section>
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Điểm đón
-                </Label>
-                <Input
-                  type="text"
-                  placeholder="Địa chỉ đón"
-                />
-              </Section>
-              <Section>
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Điểm đến
-                </Label>
-                <Input
-                  type="text"
-                  placeholder="Địa chỉ đến"
-                />
-              </Section>
-              <Section>
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ngày sử dụng
-                </Label>
-                <DatePicker placeholder="Chọn ngày sử dụng" />
-              </Section>
-              <Section>
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Thời gian
-                </Label>
-                <TimePicker placeholder="Chọn thời gian" />
-              </Section>
-              <Section className="md:col-span-2">
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Loại dịch vụ
-                </Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn loại dịch vụ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="one-way">Một chiều</SelectItem>
-                    <SelectItem value="round-trip">Khứ hồi</SelectItem>
-                    <SelectItem value="hourly">Thuê theo giờ</SelectItem>
-                    <SelectItem value="daily">Thuê theo ngày</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Section>
-              <Section className="md:col-span-2">
-                <Label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ghi chú lịch trình
-                </Label>
-                <Textarea
-                  rows={4}
-                  placeholder="Mô tả chi tiết lịch trình, yêu cầu đặc biệt..."
-                />
-              </Section>
-              <Section className="md:col-span-2">
-                <Button className="w-full py-3" asChild>
-                  <Link href="/driver-service/booking" prefetch={true}>Đặt tài xế ngay</Link>
-                </Button>
-              </Section>
-            </Section>
-          </CardContent>
-        </Card>
 
         {/* Service Features */}
         <Section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">

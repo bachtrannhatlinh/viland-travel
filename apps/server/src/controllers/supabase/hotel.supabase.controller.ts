@@ -56,7 +56,18 @@ export const getHotelDetails = async (req: Request, res: Response): Promise<void
 // Đặt phòng khách sạn
 export const bookHotel = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { hotelId, roomType, quantity = 1, checkIn, checkOut, guests, contactInfo, specialRequests, totalAmount, paymentMethod } = req.body;
+    // Hỗ trợ snake_case và camelCase cho các trường từ FE
+    const body = req.body || {};
+    const hotelId = body.hotel_id || body.hotelId;
+    const roomType = body.room_type || body.roomType;
+    const quantity = body.quantity ?? 1;
+    const checkIn = body.check_in || body.checkIn;
+    const checkOut = body.check_out || body.checkOut;
+    const guests = body.guests;
+    const contactInfo = body.contact_info || body.contactInfo;
+    const specialRequests = body.special_requests || body.specialRequests;
+    const totalAmount = body.total_amount || body.totalAmount;
+    const paymentMethod = body.payment_method || body.paymentMethod;
     const user = (req as any).user;
     if (!hotelId || !roomType || !checkIn || !checkOut || !contactInfo || !totalAmount || !paymentMethod) {
       res.status(400).json({ success: false, message: 'Thiếu thông tin bắt buộc' });

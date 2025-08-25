@@ -26,12 +26,21 @@ async function getCarDetails(id: string) {
         id: p?.id || `${idx}`,
         name: p?.name || `Điểm ${idx + 1}`,
         address: p?.address || raw?.location?.address || 'Địa điểm nhận xe',
+        coordinates: p?.coordinates || raw?.location?.coordinates || { lat: 10.77, lng: 106.7 },
         available24h: p?.available24h ?? true,
         fee: p?.fee ?? 0,
         openHours: p?.openHours || '08:00-20:00',
       }));
       if (arr.length === 0) {
-        arr.push({ id: 'default', name: 'Văn phòng', address: raw?.location?.address || 'Trung tâm', available24h: true, fee: 0, openHours: '08:00-20:00' });
+        arr.push({
+          id: 'default',
+          name: 'Văn phòng',
+          address: raw?.location?.address || 'Trung tâm',
+          coordinates: raw?.location?.coordinates || { lat: 10.77, lng: 106.7 },
+          available24h: true,
+          fee: 0,
+          openHours: '08:00-20:00'
+        });
       }
       return arr;
     };

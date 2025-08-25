@@ -143,16 +143,15 @@ export default function CarDetails({ car }: CarDetailsProps) {
 
   const handleBookNow = () => {
     const params = new URLSearchParams();
-    if (searchParams.get('pickupDate')) {
-      params.set('pickupDate', searchParams.get('pickupDate')!);
-    }
-    if (searchParams.get('returnDate')) {
-      params.set('returnDate', searchParams.get('returnDate')!);
-    }
-    if (searchParams.get('pickupLocation')) {
-      params.set('pickupLocation', searchParams.get('pickupLocation')!);
-    }
-    
+    params.set('pickupDate', searchParams.get('pickupDate') || new Date().toISOString().split('T')[0]);
+    params.set('returnDate', searchParams.get('returnDate') || (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return d.toISOString().split('T')[0];
+    })());
+    params.set('pickupLocation', searchParams.get('pickupLocation') || (car.location.pickupPoints[0]?.id || ''));
+
+    console.log(params, 'params')
     router.push(`/car-rental/${car.id}/booking?${params}`);
   };
 

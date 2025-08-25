@@ -116,7 +116,7 @@ export default function HotelBookingClient() {
         selected_date: null
       };
       // Gửi booking hotel lên endpoint chung
-      const res = await apiClient.post('/bookings', payload);
+      const res = await apiClient.post('/hotels/book', payload);
       if (res.success || res.id || res.bookingNumber) {
         setBookingData({ ...data, bookingNumber: res.bookingNumber || res.id, transactionId: res.transactionId, booking: res });
         setCurrentStep('payment');

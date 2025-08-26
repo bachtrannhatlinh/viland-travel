@@ -14,6 +14,12 @@ const nextConfig = {
   experimental: {},
 
   // No webpack customization to avoid hanging
+
+  images: {
+    domains: [
+      'wcykdjywcosdlfpiyixo.supabase.co', // domain Supabase của bạn
+    ],
+  },
 }
 
 module.exports = nextConfig

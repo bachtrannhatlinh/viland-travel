@@ -20,9 +20,8 @@ export async function generateMetadata({ params }: TourDetailPageProps): Promise
 async function getTourDetail(id: string) {
   try {
     let tour = null;
-    const response = await apiClient.get(`/tours/${id}`, {
-      cache: 'no-store' // For dynamic content
-    });
+    // Truyền cache: 'no-store' vào fetch options (tham số thứ 3)
+    const response = await apiClient.get(`/tours/${id}`, undefined, { cache: 'no-store' });
 
     if (response.success) {
       tour = response.data;

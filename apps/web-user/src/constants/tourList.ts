@@ -16,7 +16,7 @@ export const TOUR_LIST: Tour[] = [
         id: "beijing-1",
         title: "Du lịch khám phá Bắc Kinh",
         duration: '5 ngày 4 đêm',
-        startDate: '2/9/2025',
+        startDate: '20/09, 11/10, 18/10, 25/10',
         short_description: "Tour Bắc Kinh khám phá trái tim văn hóa ngàn năm của Trung Hoa.",
         destinations: ["Bắc Kinh", "Macau", "Đà Nẵng"],
         price_adult: 16990000,

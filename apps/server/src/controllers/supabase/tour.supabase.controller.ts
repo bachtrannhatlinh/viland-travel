@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { supabaseService } from "../../config/supabase";
+import { supabase } from '../../services/supabase.service';
 import type { Booking } from "../../config/supabase";
 
 export const bookTour = async (req: Request, res: Response) => {
@@ -53,8 +54,8 @@ export const bookTour = async (req: Request, res: Response) => {
     const priceInfant = tour.discount_infant ?? tour.price_infant ?? 0;
     const totalAmount = Math.round(
       (participants.adults || 0) * priceAdult +
-        (participants.children || 0) * priceChild +
-        (participants.infants || 0) * priceInfant
+      (participants.children || 0) * priceChild +
+      (participants.infants || 0) * priceInfant
     );
     // Lấy user_id từ req.user (nếu có xác thực), hoặc gán tạm user_id test nếu chưa có auth
     const userId =
@@ -174,6 +175,24 @@ export const getTourById = async (
       });
       return;
     }
+
+    // Xử lý images: nếu là signed URL thì giữ nguyên, nếu là path thì tạo signed URL
+    if (tour.images && Array.isArray(tour.images)) {
+      const processedImages = await Promise.all(
+        tour.images.map(async (img: string) => {
+          if (img.startsWith('http://') || img.startsWith('https://')) {
+            return img;
+          }
+          const cleanPath = img.startsWith('/') ? img.slice(1) : img;
+          const [bucket, ...fileParts] = cleanPath.split('/');
+          const filePath = fileParts.join('/');
+          const { data } = await supabase.storage.from(bucket).createSignedUrl(filePath, 60 * 60);
+          return data?.signedUrl || null;
+        })
+      );
+      tourTyped.images = processedImages.filter((url): url is string => Boolean(url));
+    }
+
     // Bổ sung field availability nếu chưa có (mock data)
     const now = new Date();
     const mockAvailability = [

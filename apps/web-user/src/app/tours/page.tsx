@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Metadata } from 'next'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Typography } from '@/components/ui/typography'
 import { Section } from '@/components/ui/section'
@@ -123,6 +123,8 @@ export default function ToursPage() {
     );
   }
 
+  console.log(tours, 'tour')
+
   return (
     <Section className="min-h-screen bg-gray-50">
       <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -144,34 +146,47 @@ export default function ToursPage() {
 
             return (
               <Card key={tour.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <Section className="h-48 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
-                  <Typography variant="large" className="text-white text-xl font-bold">
-                    {tour.destinations[0] || 'Tour'}
-                  </Typography>
+                <Section className="h-48 flex items-center justify-center">
+
+                  <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 shadow-sm group">
+                    {tour.images && tour.images[0] ? (
+                      <Image
+                        src={tour.images[0]}
+                        alt={tour.title + ' - Ảnh đại diện'}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        priority
+                      />
+                    ) : (
+                      <Typography variant="large" className="text-white text-xl font-bold">
+                        {tour.destinations[0] || 'Tour'}
+                      </Typography>
+                    )}
+                  </div>
                 </Section>
                 <CardContent className="p-6">
                   <Section className="flex items-center justify-between mb-2">
-                    <Badge 
-                      variant={tour.is_featured ? "default" : "secondary"} 
-                      className={`text-xs font-medium px-2 py-1 rounded ${
-                        tour.is_featured 
-                          ? "bg-orange-100 text-orange-800" 
-                          : "bg-green-100 text-green-800"
-                      }`}
+                    <Badge
+                      variant={tour.is_featured ? "default" : "secondary"}
+                      className={`text-xs font-medium px-2 py-1 rounded ${tour.is_featured
+                        ? "bg-orange-100 text-orange-800"
+                        : "bg-green-100 text-green-800"
+                        }`}
                     >
                       {tour.is_featured ? 'Nổi bật' : tour.category}
                     </Badge>
                     {renderStars(tour.rating)}
                   </Section>
-                  
+
                   <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-2">
                     {tour.title}
                   </Typography>
-                  
+
                   <Typography variant="p" className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {tour.short_description}
                   </Typography>
-                  
+
                   <Section className="flex items-center justify-between mb-4">
                     <Section className="flex items-center text-sm text-gray-600">
                       <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -188,7 +203,7 @@ export default function ToursPage() {
                       <Typography variant="small">{tour.destinations.join(', ')}</Typography>
                     </Section>
                   </Section>
-                  
+
                   <Section className="flex items-center justify-between">
                     <Section>
                       <Typography variant="large" className="text-2xl font-bold text-primary-600">
@@ -227,7 +242,7 @@ export default function ToursPage() {
               Sắp có thêm nhiều tour hấp dẫn
             </Typography>
             <Typography variant="p" className="text-gray-100 mb-8 max-w-md mx-auto">
-              Chúng tôi đang cập nhật thêm nhiều tour du lịch mới nhất và hấp dẫn nhất. 
+              Chúng tôi đang cập nhật thêm nhiều tour du lịch mới nhất và hấp dẫn nhất.
               Đăng ký nhận thông báo để không bỏ lỡ các ưu đãi đặc biệt.
             </Typography>
             <Section className="space-x-4">

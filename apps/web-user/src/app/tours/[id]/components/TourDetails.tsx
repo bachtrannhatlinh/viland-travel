@@ -78,6 +78,9 @@ export default function TourDetails({ tour }: TourDetailsProps) {
     clear()
     return router.push(`/tours/${tour.id}/booking`)
   }
+
+  console.log(tour.description, 'alo')
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -191,7 +194,13 @@ export default function TourDetails({ tour }: TourDetailsProps) {
                 </div>
               )}
 
-              <p className="text-gray-700 leading-relaxed">{tour.description}</p>
+              {/* Description: render HTML safely */}
+              {tour.description && (
+                <div
+                  className="prose prose-blue max-w-none text-gray-700 leading-relaxed bg-blue-50/50 rounded-lg p-4 mb-4"
+                  dangerouslySetInnerHTML={{ __html: tour.description }}
+                />
+              )}
             </div>
 
             {/* Inclusions & Exclusions */}

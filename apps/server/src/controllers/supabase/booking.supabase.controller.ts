@@ -35,9 +35,12 @@ export class BookingSupabaseController {
         .eq('booking_number', bookingNumber)
         .single();
       if (error) throw error;
-      res.json(data);
+      if (!data) {
+        return res.status(404).json({ message: 'Booking not found' });
+      }
+      return res.json(data);
     } catch (error) {
-      res.status(500).json({ message: 'Error getting booking', error });
+      return res.status(500).json({ message: 'Error getting booking', error });
     }
   }
 
@@ -52,9 +55,12 @@ export class BookingSupabaseController {
         .select()
         .single();
       if (error) throw error;
-      res.json(data);
+      if (!data) {
+        return res.status(404).json({ message: 'Booking not found' });
+      }
+      return res.json(data);
     } catch (error) {
-      res.status(500).json({ message: 'Error updating booking status', error });
+      return res.status(500).json({ message: 'Error updating booking status', error });
     }
   }
 }

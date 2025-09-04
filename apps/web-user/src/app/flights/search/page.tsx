@@ -22,6 +22,7 @@ export default function FlightSearchPage() {
   const [filteredFlights, setFilteredFlights] = useState<Flight[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchCriteria, setSearchCriteria] = useState<FlightSearchParams | null>(null)
+  const [searchExpired, setSearchExpired] = useState(false)
 
   const clear = useBookingStore((state) => state.clear)
 
@@ -49,6 +50,20 @@ export default function FlightSearchPage() {
       adults: adults
     })
 
+    // Sinh searchToken và expiredAt ngay khi vào trang (dù có flights hay không)
+    const searchToken = Math.random().toString(36).substring(2)
+    const expiredAt = Date.now() + 10 * 60 * 1000
+    sessionStorage.setItem('flight_search_token', searchToken)
+    sessionStorage.setItem('flight_search_expiredAt', expiredAt.toString())
+
+    // Kiểm tra hết hạn trước khi search
+    const expiredAtStr = sessionStorage.getItem('flight_search_expiredAt')
+    if (expiredAtStr && Number(expiredAtStr) < Date.now()) {
+      setSearchExpired(true)
+      setIsLoading(false)
+      return
+    }
+
     // Call API to search flights
     const searchFlights = async () => {
       try {
@@ -63,20 +78,26 @@ export default function FlightSearchPage() {
           ...(returnDate && { returnDate })
         }
 
+        // Gọi API, backend trả về { data, searchToken, expiredAt }
         const data = await apiClient.get('/flights/search', searchParams)
-
-        if (data.length > 0) {
-          setFlights(data)
-          setFilteredFlights(data)
+        const flightsData = data.data || []
+        // Không cần sinh lại token ở đây, chỉ lấy flights
+        if (flightsData.length > 0) {
+          setFlights(flightsData)
+          setFilteredFlights(flightsData)
         } else {
-          console.error('Error searching flights:', data.message)
           setFlights([])
           setFilteredFlights([])
         }
       } catch (error) {
-        console.error('Error calling search API:', error)
-        setFlights([])
-        setFilteredFlights([])
+        // Nếu lỗi là search expired thì setSearchExpired(true)
+        const err = error as any;
+        if (err?.message === 'SEARCH_EXPIRED' || (err?.response && err.response.data?.error === 'SEARCH_EXPIRED')) {
+          setSearchExpired(true)
+        } else {
+          setFlights([])
+          setFilteredFlights([])
+        }
       } finally {
         setIsLoading(false)
       }
@@ -117,7 +138,7 @@ export default function FlightSearchPage() {
     // Apply departure time filter
     if (filters.departureTime) {
       filtered = filtered.filter(flight => {
-        const hour = new Date(flight.departureDate).getHours()
+        const hour = new Date(flight.departure_date).getHours()
         switch (filters.departureTime) {
           case 'morning': return hour >= 6 && hour < 12
           case 'afternoon': return hour >= 12 && hour < 18
@@ -129,6 +150,24 @@ export default function FlightSearchPage() {
     }
 
     setFilteredFlights(filtered)
+  }
+
+
+  if (searchExpired) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full text-center">
+          <Typography variant="h2" className="text-xl font-bold text-gray-900 mb-2">Kết quả tìm kiếm của bạn đã hết hạn</Typography>
+          <Typography variant="p" className="text-gray-600 mb-6">Vui lòng làm mới để xem giá và tình trạng chỗ mới nhất.</Typography>
+          <button
+            onClick={() => router.push('/flights')}
+            className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+          >
+            Làm mới
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (isLoading) {

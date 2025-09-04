@@ -1,4 +1,7 @@
 import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+// Simple in-memory cache for search tokens (for demo, use Redis in production)
+const searchTokenCache: Record<string, number> = {};
 import { supabase, TABLES } from '../../config/supabase';
 import { supabaseService } from '../../config/supabase';
 
@@ -25,9 +28,19 @@ export const searchFlights = async (req: Request, res: Response) => {
       query = query.limit(Number(limit));
     }
 
-    const { data, error } = await query.order('departure_time', { ascending: true });
+    const { data, error } = await query.order('departure_date', { ascending: true });
     if (error) throw error;
-    res.json(data);
+
+    // Generate searchToken and expiredAt (10 minutes)
+    const searchToken = uuidv4();
+    const expiredAt = Date.now() + 10 * 60 * 1000;
+    searchTokenCache[searchToken] = expiredAt;
+
+    res.json({
+      data,
+      searchToken,
+      expiredAt
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error searching flights', error });
   }

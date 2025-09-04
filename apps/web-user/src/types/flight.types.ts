@@ -53,8 +53,9 @@ export interface Flight {
   arrivalAirport: string;
   departureCity: string;
   arrivalCity: string;
-  departureDate: string;
+  departure_date: string;
   arrivalDate: string;
+  arrival_date: string;
   duration: number;
   pricing: FlightPricing;
   currency?: string;

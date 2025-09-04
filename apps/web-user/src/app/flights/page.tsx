@@ -1,146 +1,355 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Typography } from '@/components/ui/typography'
-import { Section } from '@/components/ui/section'
-import { Card, CardContent } from '@/components/ui/card'
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Section } from "@/components/ui/section";
+import PromoCodes from "@/components/flights/PromoCodes";
+import PopularDestinations from "@/components/flights/PopularDestinations";
+import FlightFeatures from "@/components/flights/FlightFeatures";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export const metadata: Metadata = {
-  title: 'Vé máy bay giá rẻ - ViLand Travel',
-  description: 'Tìm kiếm và đặt vé máy bay đến mọi điểm đến trên thế giới với giá tốt nhất.',
-}
+  title: "Vé máy bay giá rẻ - ViLand Travel",
+  description:
+    "Tìm kiếm và đặt vé máy bay đến mọi điểm đến trên thế giới với giá tốt nhất.",
+};
 
-export default function FlightsPage() {
-  return (
-    <Section className="min-h-screen bg-gray-50">
-      <Section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Card className="text-center mb-12">
-          <CardContent className="p-8">
-            <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-4">
-              Vé máy bay giá rẻ
-            </Typography>
-            <Typography variant="large" className="text-xl text-gray-600">
-              Tìm kiếm và đặt vé máy bay đến mọi điểm đến trên thế giới
-            </Typography>
-          </CardContent>
-        </Card>
-
-        {/* Flight Search Form - Temporary Simple Form */}
-        <Card className="mb-12">
-          <CardContent className="p-8">
-            <Section className="text-center">
-              <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-4">
-                Tìm chuyến bay
-              </Typography>
-              <Button asChild size="lg">
-                <Link href="/flights/search" prefetch={true}>
-                  Tìm kiếm chuyến bay 
-                </Link>
-              </Button>
-            </Section>
-          </CardContent>
-        </Card>
-         {/* Popular Destinations */}
-        <Section className="mb-12">
-          <Typography variant="h2" className="text-2xl font-bold text-gray-900 mb-6">
-            Điểm đến phổ biến
-          </Typography>
-          <Section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {popularDestinations.map((destination) => (
-              <Card key={destination.code} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                <Section className="w-full h-48 bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
-                  <Typography variant="h2" className="text-white text-2xl font-bold">
-                    {destination.code}
-                  </Typography>
-                </Section>
-                <CardContent className="p-4">
-                  <Typography variant="h3" className="font-bold text-lg">
-                    {destination.city}
-                  </Typography>
-                  <Typography className="text-gray-600">
-                    {destination.country}
-                  </Typography>
-                  <Typography className="text-primary-600 font-semibold mt-2">
-                    Từ {destination.price.toLocaleString('vi-VN')} VND
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </Section>
-        </Section>
-
-        {/* Features */}
-        <Section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Section className="text-center">
-            <Section className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-              <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </Section>
-            <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-2">
-              Tìm kiếm thông minh
-            </Typography>
-            <Typography className="text-gray-600">
-              So sánh giá từ hàng trăm hãng hàng không để tìm ưu đãi tốt nhất
-            </Typography>
-          </Section>
-          
-          <Section className="text-center">
-            <Section className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-              <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </Section>
-            <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-2">
-              Đặt vé an toàn
-            </Typography>
-            <Typography className="text-gray-600">
-              Hệ thống thanh toán bảo mật và chính sách hoàn tiền linh hoạt
-            </Typography>
-          </Section>
-          
-          <Section className="text-center">
-            <Section className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-              <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 1 0 9.75 9.75c0-.372-.036-.74-.103-1.103a9.75 9.75 0 0 0-9.647-8.647Z" />
-              </svg>
-            </Section>
-            <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-2">
-              Hỗ trợ 24/7
-            </Typography>
-            <Typography className="text-gray-600">
-              Đội ngũ tư vấn chuyên nghiệp sẵn sàng hỗ trợ bạn mọi lúc
-            </Typography>
-          </Section>
-        </Section>
-      </Section>
-    </Section>
-  )
-}
+// Danh sách sân bay/city mẫu
+const airportOptions = [
+  { label: "Sân bay Tân Sơn Nhất", code: "SGN", subLabel: "TP HCM, Việt Nam" },
+  { label: "Sân bay Nội Bài", code: "HAN", subLabel: "Hà Nội, Việt Nam" },
+  { label: "Sân bay Đà Nẵng", code: "DAD", subLabel: "Đà Nẵng, Việt Nam" },
+  { label: "Bangkok", code: "", subLabel: "Thái Lan (Tất cả sân bay)" },
+  { label: "Singapore", code: "", subLabel: "Singapore (Tất cả sân bay)" },
+  { label: "Kuala Lumpur", code: "", subLabel: "Malaysia (Tất cả sân bay)" },
+  { label: "Seoul", code: "", subLabel: "Hàn Quốc (Tất cả sân bay)" },
+  {
+    label: "Sân bay quốc tế Bạch Vân",
+    code: "CAN",
+    subLabel: "Quảng Châu, Trung Quốc",
+  },
+];
 
 const popularDestinations = [
   {
-    code: 'SGN',
-    city: 'Hồ Chí Minh',
-    country: 'Việt Nam',
-    price: 1200000
+    code: "SGN",
+    city: "Hồ Chí Minh",
+    country: "Việt Nam",
+    price: 1200000,
   },
   {
-    code: 'HAN',
-    city: 'Hà Nội',
-    country: 'Việt Nam', 
-    price: 1500000
+    code: "HAN",
+    city: "Hà Nội",
+    country: "Việt Nam",
+    price: 1500000,
   },
   {
-    code: 'DAD',
-    city: 'Đà Nẵng',
-    country: 'Việt Nam',
-    price: 900000
+    code: "DAD",
+    city: "Đà Nẵng",
+    country: "Việt Nam",
+    price: 900000,
   },
   {
-    code: 'BKK',
-    city: 'Bangkok',
-    country: 'Thái Lan',
-    price: 3200000
-  }
-]
+    code: "BKK",
+    city: "Bangkok",
+    country: "Thái Lan",
+    price: 3200000,
+  },
+];
+
+export default function FlightsPage() {
+  return (
+    <Section className="min-h-screen bg-[#f5f7fa]">
+      <Section className="mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Banner với overlay và text */}
+        <div className="relative flex justify-center mb-0">
+          <div className="w-full max-w-7xl relative">
+            <Image
+              src="/images/banner-flight.png"
+              alt="Banner vé máy bay giá rẻ"
+              width={1200}
+              height={384}
+              className="rounded-3xl w-full max-h-96 object-cover shadow-md"
+              priority
+            />
+          </div>
+        </div>
+
+        {/* Search box nổi */}
+        <div className="relative z-30 flex justify-center -mt-16 mb-14">
+          <div className="bg-white rounded-3xl shadow-2xl px-8 py-7 w-full max-w-6xl flex flex-col items-center border border-gray-100">
+            {/* Tabs */}
+            <div className="flex gap-3 mb-5">
+              <button className="px-5 py-2 rounded-full bg-blue-100 text-blue-600 font-semibold focus:outline-none">
+                Một chiều
+              </button>
+              <button className="px-5 py-2 rounded-full text-gray-600 hover:bg-blue-50 font-semibold focus:outline-none">
+                Khứ hồi
+              </button>
+              <button className="px-5 py-2 rounded-full text-gray-600 hover:bg-blue-50 font-semibold focus:outline-none">
+                Nhiều thành phố
+              </button>
+            </div>
+            {/* Form */}
+            <form className="w-full flex flex-col gap-4 md:flex-row md:items-end md:gap-3">
+              {/* Điểm đi - Popover chọn sân bay */}
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-gray-500 mb-1">
+                  Từ
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="relative cursor-pointer">
+                      <Input
+                        readOnly
+                        value={airportOptions[0].label}
+                        className="pl-10 pr-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none text-base bg-white cursor-pointer"
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10.75 19.25L3.5 12m0 0l7.25-7.25M3.5 12h17"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-[350px]">
+                    <div className="px-4 py-2 border-b font-semibold text-gray-700 text-sm">
+                      Thành phố hoặc sân bay phổ biến
+                    </div>
+                    <ul className="max-h-72 overflow-y-auto divide-y">
+                      {airportOptions.map((item, idx) => (
+                        <li
+                          key={item.code}
+                          className="px-4 py-3 hover:bg-blue-50 cursor-pointer flex items-start gap-3"
+                        >
+                          <span className="mt-1 text-gray-400">
+                            <svg
+                              width="18"
+                              height="18"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M2.5 19l19-7-19-7v6l15 1-15 1v6z"
+                              />
+                            </svg>
+                          </span>
+                          <div>
+                            <div className="font-semibold text-gray-900 text-base">
+                              {item.label}{" "}
+                              <span className="text-xs text-gray-500 font-normal">
+                                {item.code}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {item.subLabel}
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Điểm đến - Popover chọn sân bay */}
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-gray-500 mb-1">
+                  Đến
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <div className="relative cursor-pointer">
+                      <Input
+                        readOnly
+                        value={airportOptions[1].label}
+                        className="pl-10 pr-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none text-base bg-white cursor-pointer"
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <svg
+                          width="20"
+                          height="20"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.25 4.75L20.5 12m0 0l-7.25 7.25M20.5 12h-17"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-[350px]">
+                    <div className="px-4 py-2 border-b font-semibold text-gray-700 text-sm">
+                      Thành phố hoặc sân bay phổ biến
+                    </div>
+                    <ul className="max-h-72 overflow-y-auto divide-y">
+                      {airportOptions.map((item, idx) => (
+                        <li
+                          key={item.code + idx}
+                          className="px-4 py-3 hover:bg-blue-50 cursor-pointer flex items-start gap-3"
+                        >
+                          <span className="mt-1 text-gray-400">
+                            <svg
+                              width="18"
+                              height="18"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M2.5 19l19-7-19-7v6l15 1-15 1v6z"
+                              />
+                            </svg>
+                          </span>
+                          <div>
+                            <div className="font-semibold text-gray-900 text-base">
+                              {item.label}{" "}
+                              <span className="text-xs text-gray-500 font-normal">
+                                {item.code}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {item.subLabel}
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              {/* Ngày đi - DatePicker */}
+              <div className="flex-1 min-w-[170px]">
+                <label className="block text-xs font-semibold text-gray-500 mb-1">
+                  Ngày khởi hành
+                </label>
+                <DatePicker className="w-full" placeholder="Chọn ngày đi" />
+              </div>
+              {/* Ngày về (disabled) */}
+              <div className="flex-1 min-w-[170px]">
+                <label className="block text-xs font-semibold text-gray-500 mb-1">
+                  Khứ hồi
+                </label>
+                <DatePicker className="w-full" placeholder="Chọn ngày về" />
+              </div>
+              {/* Nút tìm chuyến bay */}
+              <div className="flex items-end">
+                <Link
+                  href="/flights/search"
+                  prefetch={true}
+                  passHref
+                  legacyBehavior
+                >
+                  <Button
+                    type="button"
+                    className="w-full md:w-auto px-8 py-3 text-lg rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md"
+                  >
+                    Tìm chuyến bay
+                  </Button>
+                </Link>
+              </div>
+            </form>
+            {/* Dòng gợi ý */}
+            <div className="mt-3 text-sm text-blue-500 flex items-center gap-1 cursor-pointer hover:underline">
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"
+                />
+              </svg>
+              Tìm ý tưởng chuyến bay thú vị ở đây
+            </div>
+            {/* Tùy chọn nâng cao */}
+            <div className="flex flex-wrap items-center gap-5 mt-4">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" className="accent-blue-600 w-4 h-4" />
+                <span className="text-gray-700 text-sm">Bay thẳng</span>
+              </label>
+              <span className="text-gray-700 text-sm flex items-center gap-1">
+                <svg
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M15 10V5a3 3 0 00-6 0v5m6 0a3 3 0 01-6 0m6 0v1a3 3 0 01-6 0v-1"
+                  />
+                </svg>
+                1 Người lớn, 0 Trẻ em, 0 Em bé
+              </span>
+              <span className="text-gray-700 text-sm flex items-center gap-1">
+                <svg
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"
+                  />
+                </svg>
+                Phổ thông
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Promo Codes UI */}
+        <PromoCodes />
+
+        {/* Popular Destinations */}
+        <PopularDestinations />
+
+        {/* Features */}
+        <FlightFeatures />
+      </Section>
+    </Section>
+  );
+}

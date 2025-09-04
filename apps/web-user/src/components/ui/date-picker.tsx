@@ -43,7 +43,15 @@ export function DatePicker({
   max,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [date, setDate] = React.useState<Date | undefined>(() => {
+    if (value) {
+      try {
+        const parsedDate = parseISO(value)
+        if (isValid(parsedDate)) return parsedDate
+      } catch {}
+    }
+    return new Date();
+  })
   const [month, setMonth] = React.useState<Date | undefined>(undefined)
 
   const minDate = React.useMemo(() => (min ? startOfDay(parseISO(min)) : undefined), [min])
@@ -64,7 +72,6 @@ export function DatePicker({
 
   const defaultMonth = React.useMemo(() => {
     if (date) return date
-    // Hiển thị mặc định tháng 1 năm 1997 nếu chưa chọn ngày
     return new Date(1997, 0, 1)
   }, [date])
 
@@ -93,8 +100,8 @@ export function DatePicker({
         console.error('Error parsing date:', error)
       }
     } else {
-      setDate(undefined)
-      setMonth(undefined)
+      setDate(new Date())
+      setMonth(new Date())
     }
   }, [value])
 

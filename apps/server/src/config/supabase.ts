@@ -39,6 +39,7 @@ export interface Flight {
   arrival_city: string;
   departure_date: string;
   departure_time: string;
+  arrival_date: string;
   arrival_time: string;
   duration: string;
   pricing: {
@@ -178,17 +179,6 @@ export interface TourItinerary {
 
 // Supabase service class
 export class SupabaseService {
-  // Lấy chi tiết chuyến bay theo id
-  async getFlightById(flightId: string) {
-    const { data, error } = await supabase
-      .from(TABLES.FLIGHTS)
-      .select("*")
-      .eq("id", flightId)
-      .single();
-    if (error) throw new Error(`Error getting flight: ${error.message}`);
-    return data;
-  }
-
   // Tạo booking (flight, tour, hotel, car_rental)
   async createBooking(bookingData: Booking) {
     const { data, error } = await supabase
@@ -198,6 +188,38 @@ export class SupabaseService {
       .single();
     if (error) throw new Error(`Error creating booking: ${error.message}`);
     return data as Booking;
+  }
+  [x: string]: any;
+
+  // Lấy chi tiết chuyến bay theo id
+  async getFlightById(flightId: string) {
+    const { data, error } = await supabase
+      .from(TABLES.FLIGHTS)
+      .select("*")
+      .eq("id", flightId)
+      .single();
+    if (error) throw new Error(`Error getting flight: ${error.message}`);
+    // Map arrivalDate (camelCase) sang arrival_date nếu có
+    if (data && data.arrivalDate && !data.arrival_date) {
+      data.arrival_date = data.arrivalDate;
+    }
+    return data;
+  }
+
+  // Tạo chuyến bay mới (đảm bảo arrival_date đúng chuẩn snake_case)
+  async createFlight(flightData: any) {
+    // Nếu có arrivalDate (camelCase) thì map sang arrival_date
+    if (flightData.arrivalDate && !flightData.arrival_date) {
+      flightData.arrival_date = flightData.arrivalDate;
+      delete flightData.arrivalDate;
+    }
+    const { data, error } = await supabase
+      .from(TABLES.FLIGHTS)
+      .insert([flightData])
+      .select()
+      .single();
+    if (error) throw new Error(`Error creating flight: ${error.message}`);
+    return data;
   }
 
   // Cập nhật trạng thái booking

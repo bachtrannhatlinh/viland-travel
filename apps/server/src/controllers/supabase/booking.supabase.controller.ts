@@ -40,6 +40,7 @@ export class BookingSupabaseController {
   static async getBookingByNumber(req: Request, res: Response) {
     try {
       const { bookingNumber } = req.params;
+      console.log("[CONFIRM] API /bookings/confirmation - bookingNumber:", bookingNumber);
       const { data, error } = await supabase
         .from(TABLES.BOOKINGS)
         .select(`
@@ -52,6 +53,7 @@ export class BookingSupabaseController {
         .maybeSingle();
       if (error) throw error;
       if (!data) {
+        console.log("[CONFIRM] Booking not found for:", bookingNumber);
         return res.status(404).json({ message: 'Booking not found' });
       }
       // Bổ sung arrival_date vào object flight nếu có
@@ -62,6 +64,7 @@ export class BookingSupabaseController {
       }
       return res.json(result);
     } catch (error) {
+      console.error("[CONFIRM] Error in getBookingByNumber:", error);
       return res.status(500).json({ message: 'Error getting booking', error });
     }
   }

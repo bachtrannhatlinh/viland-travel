@@ -25,7 +25,6 @@ export default function LoginForm() {
 
     try {
       const result = await login(formData.email, formData.password);
-      console.log(result, 'result')
 
       if (result.success) {
         // Use router.push since we now have event system for auth state updates

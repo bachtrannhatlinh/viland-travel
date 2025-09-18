@@ -1,13 +1,77 @@
+
+
 import { Router } from 'express';
-import { PaymentController } from '../controllers/postgresql/PaymentController';
+import { PaymentController } from '../controllers/supabase/payment.supabase.controller';
 import { PaymentService } from '../services/payment/PaymentService';
 import { protect } from '../middleware/auth';
 
 // Initialize payment service from environment
 const paymentService = PaymentService.fromEnv();
-const paymentController = new PaymentController(paymentService);
+const paymentController = new PaymentController();
 
 const router = Router();
+
+
+// Sepay webhook handler: xác thực và cập nhật trạng thái payment/booking
+import { verifySepaySignature } from '../services/sepay.service';
+
+const sepayWebhook = async (req: any, res: any) => {
+  try {
+    const { bookingNumber, amount, status, transactionId, signature } = req.body;
+    // 1. Xác thực chữ ký callback (nếu Sepay yêu cầu)
+    if (!verifySepaySignature(req.body, signature)) {
+      return res.status(400).json({ success: false, message: 'Invalid signature' });
+    }
+    // 2. Kiểm tra trạng thái thanh toán thành công
+    if (status !== 'success') {
+      return res.status(200).json({ success: false, message: 'Payment not successful' });
+    }
+    // 3. Cập nhật trạng thái payment và booking
+    const { supabase, TABLES } = await import('../config/supabase');
+    // Tìm booking theo bookingNumber
+    const { data: bookingData, error: bookingFindError } = await supabase
+      .from(TABLES.BOOKINGS)
+      .select('id, booking_number, total_amount')
+      .eq('booking_number', bookingNumber)
+      .single();
+    if (bookingFindError || !bookingData) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+    const bookingId = bookingData.id;
+    // Lưu payment (nếu chưa có)
+    const paidAt = new Date().toISOString();
+    await supabase.from(TABLES.PAYMENTS).upsert([
+      {
+        booking_id: bookingId,
+        booking_number: bookingNumber,
+        amount: amount || bookingData.total_amount,
+        method: 'sepay',
+        currency: 'VND',
+        transaction_id: transactionId || null,
+        status: 'success',
+        gateway: 'sepay',
+        paid_at: paidAt,
+      }
+    ], { onConflict: 'booking_number,transaction_id' });
+    // Cập nhật trạng thái booking
+    await supabase.from(TABLES.BOOKINGS)
+      .update({
+        status: 'paid',
+        updated_at: paidAt,
+        paid_amount: amount || bookingData.total_amount,
+        payment_method: 'sepay'
+      })
+      .eq('booking_number', bookingNumber);
+    res.json({ success: true, message: 'Payment and booking updated' });
+  } catch (err) {
+    console.error('Sepay webhook error:', err);
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ success: false, message: 'Internal server error', error: errorMsg });
+  }
+};
+
+// Webhook routes (public)
+router.post('/sepay/webhook', sepayWebhook);
 
 /**
  * @route POST /api/payments/create
@@ -149,6 +213,7 @@ router.post('/vnpay/webhook', vnpayWebhook);
 router.post('/momo/webhook', momoWebhook);
 router.post('/zalopay/webhook', zalopayWebhook);
 router.post('/stripe/webhook', stripeWebhook);
+router.post('/sepay/webhook', sepayWebhook);
 
 // Return URLs (public)
 router.get('/vnpay/return', vnpayReturn);

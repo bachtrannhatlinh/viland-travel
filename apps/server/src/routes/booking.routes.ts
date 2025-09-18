@@ -63,18 +63,19 @@ const modifyBooking = (req: any, res: any) => {
   });
 };
 
-const getAllBookings = (req: any, res: any) => {
-  res.json({ 
-    success: true, 
-    data: [],
-    message: 'All bookings API - coming soon (Admin only)',
-    features: [
-      'Admin view of all bookings',
-      'Filter and search capabilities',
-      'Booking management and processing',
-      'Revenue and analytics data'
-    ]
-  });
+const getAllBookings = async (req: any, res: any) => {
+  try {
+    const { bookingType } = req.query;
+    let query = supabase.from(TABLES.BOOKINGS).select('*');
+    if (bookingType) {
+      query = query.eq('booking_type', bookingType);
+    }
+    const { data, error } = await query.order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching bookings', error });
+  }
 };
 
 const updateBookingStatus = (req: any, res: any) => {

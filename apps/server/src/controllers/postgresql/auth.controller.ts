@@ -159,6 +159,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Kiểm tra role nếu đăng nhập cho admin
+    if (req.body.adminOnly && user.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: { message: 'Chỉ admin mới được phép đăng nhập trang này.' }
+      });
+      return;
+    }
+
     // Generate tokens
     const { accessToken, refreshToken } = generateTokens(user);
 

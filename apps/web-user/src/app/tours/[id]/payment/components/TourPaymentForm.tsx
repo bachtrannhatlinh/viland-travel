@@ -42,7 +42,7 @@ interface TourBookingData {
 export default function TourPaymentForm() {
   const router = useRouter()
   const [bookingData, setBookingData] = useState<TourBookingData | null>(null)
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'wallet'>('card')
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'wallet' | 'sepay'>('card')
   const [cardInfo, setCardInfo] = useState({
     number: '',
     expiry: '',
@@ -98,7 +98,14 @@ export default function TourPaymentForm() {
           email: bookingData.contact_info.email,
           phone: bookingData.contact_info.phone
         },
-        gateway: paymentMethod === 'bank' ? 'vnpay' : paymentMethod === 'wallet' ? 'momo' : 'onepay',
+        gateway:
+          paymentMethod === 'bank'
+            ? 'vnpay'
+            : paymentMethod === 'wallet'
+            ? 'momo'
+            : paymentMethod === 'sepay'
+            ? 'sepay'
+            : 'onepay',
         returnUrl: typeof window !== 'undefined' ? window.location.origin + `/tours/${bookingData.tour_id}/confirmation` : undefined
       }
 
@@ -152,7 +159,26 @@ export default function TourPaymentForm() {
           {/* Payment Method Selection */}
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Chọn phương thức thanh toán</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div
+                onClick={() => setPaymentMethod('sepay')}
+                className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                  paymentMethod === 'sepay'
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 text-primary-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none" />
+                    <text x="10" y="15" textAnchor="middle" fontSize="10" fill="currentColor">S</text>
+                  </svg>
+                  <div>
+                    <div className="font-semibold text-gray-900">Sepay</div>
+                    <div className="text-sm text-gray-600">Ví Sepay</div>
+                  </div>
+                </div>
+              </div>
               <div
                 onClick={() => setPaymentMethod('card')}
                 className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${

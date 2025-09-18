@@ -50,7 +50,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   }
 };
 // Login user
-// Login user
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const errors = validationResult(req);
@@ -62,7 +61,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const { email, password } = req.body;
+
+    const { email, password, adminOnly } = req.body;
     const { data: user, error } = await supabaseAuthService.loginUser({
       email,
       password,
@@ -71,6 +71,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({
         success: false,
         error: { message: error.message || "Invalid email or password" },
+      });
+      return;
+    }
+    // Kiểm tra quyền admin nếu yêu cầu
+    if (adminOnly && user.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: { message: 'Chỉ admin mới được phép đăng nhập trang này.' }
       });
       return;
     }
@@ -90,7 +98,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     let token: string;
     try {
       const signOptions = { expiresIn: expiresIn as any };
-      token = jwt.sign({ id: user?.id, email: user?.email }, secret as jwt.Secret, signOptions);
+      // Thêm role vào payload JWT
+      token = jwt.sign({ id: user?.id, email: user?.email, role: user?.role }, secret as jwt.Secret, signOptions);
     } catch (signError) {
       console.error("[AUTH] Error signing JWT:", signError);
       res.status(500).json({

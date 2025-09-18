@@ -138,37 +138,39 @@ export default function FlightBookingPage() {
     setPassengers(updatedPassengers);
   };
 
-  const validateBooking = () => {
-    // Validate contact info
-    if (!contactInfo.name || !contactInfo.email || !contactInfo.phone) {
-      alert("Vui lòng điền đầy đủ thông tin liên hệ");
-      return false;
-    }
-
-    // Validate passengers
-    for (const passenger of passengers) {
-      if (
-        !passenger.firstName ||
-        !passenger.lastName ||
-        !passenger.date_of_birth
-      ) {
-        alert("Vui lòng điền đầy đủ thông tin hành khách");
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   const addItem = useBookingStore((state) => state.addItem);
   const clear = useBookingStore((state) => state.clear);
 
   const handleConfirmBooking = async () => {
-    if (!validateBooking()) return;
+    // Nếu chưa chọn ngày sinh thì set mặc định là ngày hiện tại
+    const passengersWithDate = passengers.map((p) => ({
+      ...p,
+      date_of_birth:
+        !p.date_of_birth || p.date_of_birth === ""
+          ? new Date().toISOString().slice(0, 10)
+          : p.date_of_birth,
+    }));
+
+    // Validate lại với passengersWithDate
+    for (const [idx, passenger] of passengersWithDate.entries()) {
+      if (
+        !passenger.firstName?.trim() ||
+        !passenger.lastName?.trim() ||
+        !passenger.date_of_birth
+      ) {
+        alert(`Vui lòng điền đầy đủ thông tin hành khách (Hành khách ${idx + 1})`);
+        return;
+      }
+    }
+
+    if (!contactInfo.name || !contactInfo.email || !contactInfo.phone) {
+      alert("Vui lòng điền đầy đủ thông tin liên hệ");
+      return;
+    }
 
     const payload = {
       flightId: bookingData.flight.id,
-      passengers: passengers.map((p) => ({
+      passengers: passengersWithDate.map((p) => ({
         ...p,
         date_of_birth: p.date_of_birth === "" ? null : p.date_of_birth,
         passportExpiry: p.passportExpiry === "" ? null : p.passportExpiry,
@@ -203,23 +205,6 @@ export default function FlightBookingPage() {
       style: "currency",
       currency: "VND",
     }).format(amount);
-  };
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("vi-VN", {
-      weekday: "short",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
-  const formatTime = (dateStr: string) => {
-    return new Date(dateStr).toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
   };
 
   if (isLoading) {
@@ -484,24 +469,59 @@ export default function FlightBookingPage() {
                 </Typography>
 
                 <div className="space-y-6">
-                  {passengers.map((passenger, index) => (
-                    <div
-                      key={index}
-                      className="border border-gray-200 rounded-lg p-4"
-                    >
-                      <Typography
-                        variant="h4"
-                        className="font-semibold text-gray-900 mb-3"
+                  {passengers.map((passenger, index) => {
+                    // Tìm số thứ tự của hành khách cùng loại
+                    const sameTypeCount = passengers.slice(0, index + 1).filter(p => p.type === passenger.type).length;
+                    return (
+                      <div
+                        key={index}
+                        className="border border-gray-200 rounded-lg p-4 relative"
                       >
-                        Hành khách {index + 1} -{" "}
-                        {passenger.type === "adult"
-                          ? "Người lớn"
-                          : passenger.type === "child"
-                          ? "Trẻ em"
-                          : "Em bé"}
-                      </Typography>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <Typography
+                            variant="h4"
+                            className="font-semibold text-gray-900"
+                          >
+                            Hành khách {sameTypeCount} -{" "}
+                            {passenger.type === "adult"
+                              ? "Người lớn"
+                              : passenger.type === "child"
+                              ? "Trẻ em"
+                              : "Em bé"}
+                          </Typography>
+                          {/* Nút + chỉ hiển thị cho hành khách đầu tiên của mỗi loại */}
+                          {passengers.findIndex(p => p.type === passenger.type) === index && (
+                            <button
+                              type="button"
+                              className="ml-2 px-2 py-1 rounded-full bg-primary-100 text-primary-600 hover:bg-primary-200 text-lg font-bold border border-primary-200"
+                              title={`Thêm ${passenger.type === "adult" ? "Người lớn" : passenger.type === "child" ? "Trẻ em" : "Em bé"}`}
+                              onClick={() => {
+                                // Tìm vị trí cuối cùng của loại hành khách này
+                                const lastIndex = passengers.map((p, idx) => ({...p, idx})).filter(p => p.type === passenger.type).pop()?.idx ?? index;
+                                const newPassenger = {
+                                  ...passenger,
+                                  title: "",
+                                  firstName: "",
+                                  lastName: "",
+                                  date_of_birth: "",
+                                  nationality: passenger.nationality || "VN",
+                                  passportNumber: "",
+                                  passportExpiry: "",
+                                };
+                                // Chèn ngay sau người cùng loại cuối cùng
+                                setPassengers([
+                                  ...passengers.slice(0, lastIndex + 1),
+                                  newPassenger,
+                                  ...passengers.slice(lastIndex + 1),
+                                ]);
+                              }}
+                            >
+                              +
+                            </button>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Danh xưng *
                           </Label>
@@ -523,9 +543,7 @@ export default function FlightBookingPage() {
                               <SelectItem value="Miss">Cô</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-
-                        <div>
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Tên *
                           </Label>
@@ -540,9 +558,7 @@ export default function FlightBookingPage() {
                             }
                             required
                           />
-                        </div>
-
-                        <div>
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Họ *
                           </Label>
@@ -557,25 +573,31 @@ export default function FlightBookingPage() {
                             }
                             required
                           />
-                        </div>
-
-                        <div>
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Ngày sinh *
                           </Label>
                           <DatePicker
-                            value={passenger.date_of_birth}
-                            onChange={(value) =>
+                            value={passenger.date_of_birth || ""}
+                            onChange={(value) => {
+                              let dateStr = "";
+                              if (typeof value === "string") {
+                                dateStr = value;
+                              } else if (value && Object.prototype.toString.call(value) === "[object Date]") {
+                                dateStr = (value as Date).toISOString().slice(0, 10);
+                              } else {
+                                // Nếu không chọn thì lấy ngày hiện tại
+                                const today = new Date();
+                                dateStr = today.toISOString().slice(0, 10);
+                              }
                               handlePassengerUpdate(index, {
                                 ...passenger,
-                                date_of_birth: value,
-                              })
-                            }
+                                date_of_birth: dateStr,
+                              });
+                            }}
                             placeholder="Chọn ngày sinh"
                           />
-                        </div>
-
-                        <div>
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Quốc tịch *
                           </Label>
@@ -599,9 +621,7 @@ export default function FlightBookingPage() {
                               <SelectItem value="CA">Canada</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-
-                        <div>
+                          {/* ...existing code... */}
                           <Label className="block text-sm font-medium text-gray-700 mb-2">
                             Số hộ chiếu
                           </Label>
@@ -617,8 +637,8 @@ export default function FlightBookingPage() {
                           />
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </Card>
 

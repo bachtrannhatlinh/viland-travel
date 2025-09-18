@@ -39,10 +39,12 @@ const allowedOrigins = {
     "https://viland-travel-production.up.railway.app",
     "http://viland-travel-production.up.railway.app",
     "https://viland-travel-user.vercel.app",
-    "http://localhost:3000"
+    "http://localhost:3000",//user
+    "http://localhost:4000"//admin
   ],
   development: [
-    "http://localhost:3000",
+    "http://localhost:3000",//user
+    "http://localhost:4000",//admin
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "https://localhost:3000",

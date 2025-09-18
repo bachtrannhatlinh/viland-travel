@@ -3,6 +3,7 @@ import { ZaloPayGateway } from './ZaloPayGateway';
 import { MoMoGateway } from './MoMoGateway';
 import { OnePayGateway } from './OnePayGateway';
 import { PaymentGateway } from './PaymentGateway.abstract';
+import { SepayGateway } from './SepayGateway';
 import { 
   PaymentRequest, 
   PaymentResponse, 
@@ -12,7 +13,7 @@ import {
   RefundResponse 
 } from '../../types/payment.types';
 
-export type SupportedGateway = 'vnpay' | 'zalopay' | 'momo' | 'onepay';
+export type SupportedGateway = 'vnpay' | 'zalopay' | 'momo' | 'onepay' | 'sepay';
 
 interface PaymentServiceConfig {
   vnpay?: {
@@ -45,6 +46,13 @@ interface PaymentServiceConfig {
     paymentUrl: string;
     queryUrl: string;
     returnUrl: string;
+  };
+  sepay?: {
+    apiKey: string;
+    secretKey: string;
+    apiUrl: string;
+    returnUrl: string;
+    notifyUrl: string;
   };
 }
 
@@ -84,6 +92,13 @@ export class PaymentService {
         const onePayGateway = new OnePayGateway(config.onepay);
         this.gateways.set('onepay', onePayGateway);
         console.log('✅ OnePay gateway initialized');
+      }
+
+      // Initialize Sepay
+      if (config.sepay) {
+        const sepayGateway = new SepayGateway(config.sepay);
+        this.gateways.set('sepay', sepayGateway);
+        console.log('✅ Sepay gateway initialized');
       }
 
       if (this.gateways.size === 0) {
@@ -350,6 +365,17 @@ export class PaymentService {
         paymentUrl: process.env.ONEPAY_PAYMENT_URL || '',
         queryUrl: process.env.ONEPAY_QUERY_URL || '',
         returnUrl: process.env.ONEPAY_RETURN_URL || ''
+      };
+    }
+
+    // Sepay configuration
+    if (process.env.SEPAY_API_KEY) {
+      config.sepay = {
+        apiKey: process.env.SEPAY_API_KEY,
+        secretKey: process.env.SEPAY_SECRET_KEY || '',
+        apiUrl: process.env.SEPAY_API_URL || '',
+        returnUrl: process.env.SEPAY_RETURN_URL || '',
+        notifyUrl: process.env.SEPAY_NOTIFY_URL || ''
       };
     }
 

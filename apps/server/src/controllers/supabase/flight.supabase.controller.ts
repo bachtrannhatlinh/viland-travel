@@ -1,3 +1,16 @@
+// Lấy tất cả chuyến bay (admin, staff)
+export const getAllFlights = async (req: Request, res: Response) => {
+  try {
+    const { data, error } = await supabase
+      .from(TABLES.FLIGHTS)
+      .select('*')
+      .order('departure_date', { ascending: true });
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Error fetching flights', error: error.message });
+  }
+};
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 // Simple in-memory cache for search tokens (for demo, use Redis in production)

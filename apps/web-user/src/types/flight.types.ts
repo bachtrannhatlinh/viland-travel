@@ -146,6 +146,7 @@ export interface FlightBookingData {
   flight: Flight;
   selectedClass: FlightClass;
   passengers: PassengerInfo[];
+  booking_number: number;
   contact_info: {
     name: string;
     phone: string;

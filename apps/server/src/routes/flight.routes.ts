@@ -5,14 +5,20 @@ import {
   getFlightDetails,
   bookFlight,
   getBookingHistory,
-  cancelBooking
+  cancelBooking,
+  getAllFlights
 } from '../controllers/supabase/flight.supabase.controller';
+import { authorize } from '../middleware/auth';
 
 const router = express.Router();
+
 
 // Public routes
 router.get('/search', searchFlights);
 router.get('/:flightId', getFlightDetails);
+
+// Admin/staff: lấy tất cả chuyến bay
+router.get('/', authorize('admin', 'staff'), getAllFlights);
 
 // Protected routes
 router.use(protect);

@@ -11,12 +11,18 @@ export function cn(...inputs: ClassValue[]) {
 // API Configuration
 
 const getBaseUrl = () => {
-  // Force localhost in development
-  if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
-  return 'http://localhost:5000';
+  // Check if we have custom API URL first
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
-  // Production
-  return process.env.NEXT_PUBLIC_API_URL || 'https://viland-travel-production.up.railway.app';
+  
+  // If running on Vercel (true production), use Railway
+  if (process.env.VERCEL_ENV) {
+    return 'https://viland-travel-production.up.railway.app';
+  }
+  
+  // Otherwise (development or Docker), use local server
+  return 'http://localhost:5000';
 };
 
 export const API_CONFIG = {
@@ -47,7 +53,7 @@ const getAuthHeader = (): Record<string, string> => {
 export const apiClient = {
   async get(
     endpoint: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
     options?: RequestInit
   ) {
     const url = new URL(`${API_CONFIG.FULL_URL}${endpoint}`);
@@ -80,7 +86,7 @@ export const apiClient = {
     }
   },
 
-  async post(endpoint: string, data?: any, options?: RequestInit) {
+  async post(endpoint: string, data?: unknown, options?: RequestInit) {
     try {
       const response = await fetch(`${API_CONFIG.FULL_URL}${endpoint}`, {
         method: "POST",
@@ -102,7 +108,7 @@ export const apiClient = {
     }
   },
 
-  async put(endpoint: string, data?: any, options?: RequestInit) {
+  async put(endpoint: string, data?: unknown, options?: RequestInit) {
     try {
       const response = await fetch(`${API_CONFIG.FULL_URL}${endpoint}`, {
         method: "PUT",

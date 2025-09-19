@@ -43,13 +43,13 @@ export interface TypographyProps
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div";
 }
 
-const Typography = React.forwardRef<HTMLElement, TypographyProps>(
+const Typography = React.forwardRef<HTMLDivElement, TypographyProps>(
   ({ className, variant, size, asChild = false, as, ...props }, ref) => {
     const Comp = asChild ? Slot : (as || getDefaultTag(variant));
     return (
       <Comp
         className={cn(typographyVariants({ variant, size, className }))}
-        ref={ref as any}
+        ref={ref}
         {...props}
       />
     );

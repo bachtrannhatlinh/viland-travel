@@ -8,6 +8,7 @@ import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import type { Matcher } from "react-day-picker"
 import { Input } from "@/components/ui/input"
 import {
   Popover,
@@ -75,8 +76,8 @@ export function DatePicker({
     return new Date(1997, 0, 1)
   }, [date])
 
-  const disabledMatchers = React.useMemo(() => {
-    const rules: any[] = []
+  const disabledMatchers = React.useMemo((): Matcher[] | undefined => {
+    const rules: Matcher[] = []
     if (effectiveMinDate) rules.push({ before: effectiveMinDate })
     if (effectiveMaxDate) rules.push({ after: effectiveMaxDate })
     return rules.length ? rules : undefined

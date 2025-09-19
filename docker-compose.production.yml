@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Admin Dashboard (using production API directly)
+  web-admin:
+    build:
+      context: ./apps/web-admin
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://viland-travel-production.up.railway.app
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://viland-travel-production.up.railway.app
+    networks:
+      - vilandtravel-network
+    restart: unless-stopped
+
+  # User Web App (using production API directly)
+  web-user:
+    build:
+      context: ./apps/web-user
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://viland-travel-production.up.railway.app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://viland-travel-production.up.railway.app
+    networks:
+      - vilandtravel-network
+    restart: unless-stopped
+
+networks:
+  vilandtravel-network:
+    driver: bridge

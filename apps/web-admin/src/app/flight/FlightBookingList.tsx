@@ -34,7 +34,7 @@ export default function FlightBookingList() {
     try {
       const res = await apiClient.get("/bookings?bookingType=flight");
       setBookings(res.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);

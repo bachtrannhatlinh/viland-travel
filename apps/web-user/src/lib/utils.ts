@@ -11,18 +11,37 @@ export function cn(...inputs: ClassValue[]) {
 // API Configuration
 
 const getBaseUrl = () => {
-  // Force localhost in development
-  if (!(process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV)) {
-  return 'http://localhost:5000';
+  console.log('🔍 Environment:', {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL_ENV: process.env.VERCEL_ENV
+  });
+  
+  // Check if we have custom API URL first
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    console.log('✅ Using NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    return process.env.NEXT_PUBLIC_API_URL;
   }
-  // Production
-  return process.env.NEXT_PUBLIC_API_URL || 'https://viland-travel-production.up.railway.app';
+  
+  // If running on Vercel (true production), use Railway
+  if (process.env.VERCEL_ENV) {
+    console.log('✅ Using Vercel/Railway URL');
+    return 'https://viland-travel-production.up.railway.app';
+  }
+  
+  // Otherwise (development or Docker), use local server
+  console.log('✅ Using localhost:5000');
+  return 'http://localhost:5000';
 };
 
 export const API_CONFIG = {
   BASE_URL: getBaseUrl(),
   VERSION: "v1",
   get FULL_URL() {
+    // If using proxy, don't append /api/v1 since proxy handles it
+    if (this.BASE_URL.includes('/api/proxy')) {
+      return this.BASE_URL;
+    }
     return `${this.BASE_URL}/api/${this.VERSION}`;
   },
 };

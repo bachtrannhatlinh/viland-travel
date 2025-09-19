@@ -41,7 +41,7 @@ export default function AdminTourPage() {
     try {
       const data = await apiClient.get("/tour");
       setTours(data.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);

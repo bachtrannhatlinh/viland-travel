@@ -30,7 +30,7 @@ export function TimePicker({ value, onChange, step = 5, placeholder = "Chọn th
       // parse value: 03:30 PM
       const match = value.match(/(\d{2}):(\d{2}) ?(AM|PM)?/i)
       if (match) {
-        let h = Number(match[1])
+        const h = Number(match[1])
         const m = Number(match[2])
         let ap: 'AM' | 'PM' = 'AM'
         if (match[3]) ap = match[3].toUpperCase() as 'AM' | 'PM'

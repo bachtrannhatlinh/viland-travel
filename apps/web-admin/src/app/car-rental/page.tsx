@@ -40,7 +40,7 @@ export default function AdminCarRentalPage() {
     try {
       const data = await apiClient.get("/car-rental");
       setCars(data.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);

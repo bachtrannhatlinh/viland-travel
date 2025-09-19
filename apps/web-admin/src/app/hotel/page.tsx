@@ -40,7 +40,7 @@ export default function AdminHotelPage() {
     try {
       const data = await apiClient.get("/hotel");
       setHotels(data.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);

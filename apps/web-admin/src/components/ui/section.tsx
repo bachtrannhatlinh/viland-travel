@@ -40,13 +40,13 @@ export interface SectionProps
   as?: "section" | "div" | "article" | "main" | "aside" | "header" | "footer";
 }
 
-const Section = React.forwardRef<HTMLElement, SectionProps>(
+const Section = React.forwardRef<HTMLDivElement, SectionProps>(
   ({ className, variant, background, spacing, asChild = false, as = "section", ...props }, ref) => {
     const Comp = asChild ? Slot : as;
     return (
       <Comp
         className={cn(sectionVariants({ variant, background, spacing, className }))}
-        ref={ref as any}
+        ref={ref}
         {...props}
       />
     );

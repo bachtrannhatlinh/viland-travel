@@ -52,7 +52,7 @@ export default function AdminFlightPage() {
     try {
       const data = await apiClient.get("/flights");
       setFlights(data.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);

@@ -41,7 +41,7 @@ export default function AdminDriverServicePage() {
     try {
       const data = await apiClient.get("/driver-service");
       setDrivers(data.data || []);
-    } catch (err) {
+    } catch {
       // handle error
     } finally {
       setLoading(false);
